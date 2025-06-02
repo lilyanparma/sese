@@ -188,28 +188,38 @@
             document.getElementById('creationDate').textContent = new Date().toLocaleDateString('ar-SA');
             
             // حساب الإجماليات
-            let totalSales = 0;
-            let totalCosts = 0;
-            let transactionsBody = '';
-            
-            data.forEach((item, index) => {
-                const profit = (item.finalPrice || 0) - (item.cost || 0);
-                totalSales += item.finalPrice || 0;
-                totalCosts += item.cost || 0;
-                
-                transactionsBody += `
-                    <tr>
-                        <td>${new Date(item.date).toLocaleDateString('ar-SA')}</td>
-                        <td>${item.product || 'غير معروف'}</td>
-                        <td>${item.pharmacy || 'غير معروف'}</td>
-                        <td>${(item.finalPrice || 0).toFixed(2)} ر.س</td>
-                        <td>${(item.cost || 0).toFixed(2)} ر.س</td>
-                        <td class="${profit >= 0 ? 'transaction-profit' : 'transaction-loss'}">
-                            ${profit.toFixed(2)} ر.س
-                        </td>
-                    </tr>
-                `;
-            });
+           // افترض أن allProducts معرف مسبقاً ويحتوي على بيانات المنتجات
+let totalSales = 0;
+let totalCosts = 0;
+let transactionsBody = '';
+
+data.forEach((item, index) => {
+    // إذا لم يكن هناك حقل cost في الفاتورة، ابحث عنه ضمن المنتجات باستخدام اسم المنتج
+    let costVal = item.cost;
+    if (typeof costVal === 'undefined' || costVal === null) {
+        const productData = allProducts.find(prod => prod.name === item.product);
+        costVal = productData ? productData.cost : 0;
+    }
+    
+    // حساب الربح باستخدام finalPrice و costVal
+    const profit = (item.finalPrice || 0) - costVal;
+    totalSales += item.finalPrice || 0;
+    totalCosts += costVal;
+    
+    transactionsBody += `
+        <tr>
+            <td>${new Date(item.date).toLocaleDateString('ar-SA')}</td>
+            <td>${item.product || 'غير معروف'}</td>
+            <td>${item.pharmacy || 'غير معروف'}</td>
+            <td>${(item.finalPrice || 0).toFixed(2)} ر.س</td>
+            <td>${(costVal || 0).toFixed(2)} ر.س</td>
+            <td class="${profit >= 0 ? 'transaction-profit' : 'transaction-loss'}">
+                ${profit.toFixed(2)} ر.س
+            </td>
+        </tr>
+    `;
+});
+
             
             // تحديث الإجماليات
             document.getElementById('totalSales').textContent = totalSales.toFixed(2) + ' ر.س';
