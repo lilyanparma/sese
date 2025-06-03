@@ -11,7 +11,46 @@
   "main": {
     "title": "Accueil - Graphiques des ventes"
   },
-   "footer": {
+  "footer": {
     "copyright": "Tous droits réservés © 2025 LILYAN ROSE"
+  },
+  "productList": {
+    "title": "Liste des produits",
+    "titleWithCount": "Liste des produits ({{count}} produit(s))",
+    "searchPlaceholder": "Rechercher un produit par nom...",
+    "gridView": "Vue grille",
+    "listView": "Vue liste",
+    "stockStatus": "Statut du stock:",
+    "expiryStatus": "Statut d'expiration:",
+    "sortBy": "Trier par:",
+    "all": "Tous",
+    "inStock": "En stock",
+    "lowStock": "Stock faible",
+    "outOfStock": "En rupture",
+    "valid": "Valide",
+    "expiringSoon": "Expire bientôt",
+    "expired": "Expiré",
+    "nameAsc": "Nom (A-Z)",
+    "nameDesc": "Nom (Z-A)",
+    "priceAsc": "Prix (bas-haut)",
+    "priceDesc": "Prix (haut-bas)",
+    "expiryAsc": "Expiration (proche-loin)",
+    "expiryDesc": "Expiration (loin-proche)",
+    "loading": "Chargement des produits...",
+    "noProducts": "Aucun produit ajouté",
+    "noResults": "Aucun résultat correspondant aux filtres",
+    "noName": "Produit sans nom",
+    "productImage": "Image du produit",
+    "batches": "Lots",
+    "batchNumber": "Numéro de lot",
+    "quantity": "Quantité",
+    "expiryDate": "Date d'expiration",
+    "price": "Prix",
+    "notSpecified": "Non spécifié",
+    "currency": "Dhs",
+    "totalQuantity": "Quantité totale",
+    "productNumber": "Numéro de produit",
+    "expiringIn": "Expire dans {{days}} jours",
+    "backToTop": "Retour en haut"
   }
 }
