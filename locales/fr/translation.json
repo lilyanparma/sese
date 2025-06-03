@@ -1,0 +1,17 @@
+{
+  "siteTitle": "PARAMEDICAL LILYAN ROSE",
+  "menu": {
+    "home": "Accueil",
+    "products": "Produits",
+    "viewProducts": "Voir les produits",
+    "sellProducts": "Vendre des produits",
+    "services": "Services supplémentaires",
+    "profits": "Bénéfices et comptes"
+  },
+  "main": {
+    "title": "Accueil - Graphiques des ventes"
+  },
+  "footer": {
+    "text": "Tous droits réservés &copy; 2025 LILYAN ROSE"
+  }
+}
