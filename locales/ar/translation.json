@@ -11,9 +11,9 @@
   "main": {
     "title": "الرئيسية - رسوم بيانية للمبيعات"
   },
-"footer": {
-  "copyright": "جميع الحقوق محفوظة © 2025 LILYAN ROSE"
-},
+  "footer": {
+    "copyright": "جميع الحقوق محفوظة © 2025 LILYAN ROSE"
+  },
   "title": "قائمة المنتجات",
   "titleWithCount": "قائمة المنتجات ({{count}} منتج)",
   "searchPlaceholder": "ابحث عن منتج بالاسم...",
@@ -52,4 +52,3 @@
   "expiringIn": "ينتهي خلال {{days}} يوم",
   "backToTop": "العودة لأعلى"
 }
- }
