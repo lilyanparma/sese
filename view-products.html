@@ -3,13 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>قائمة المنتجات - Lilyan Rose</title>
+  <title id="pageTitleText">قائمة المنتجات - Lilyan Rose</title>
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- خط Tajawal -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- i18next -->
+  <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend/i18nextHttpBackend.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.js"></script>
   
   <style>
     :root {
@@ -127,31 +132,30 @@
       gap: 5px;
     }
     
-    
     .batches-section {
-    border-top: 1px solid #eee;
-    padding-top: 10px;
-}
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
 
-.batch-item {
-    border-left: 3px solid #4CAF50;
-}
+    .batch-item {
+      border-left: 3px solid #4CAF50;
+    }
 
-.batch-item .expired-badge {
-    background-color: var(--danger);
-    color: white;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 0.8em;
-}
+    .batch-item .expired-badge {
+      background-color: var(--danger);
+      color: white;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.8em;
+    }
 
-.batch-item .expiring-soon-badge {
-    background-color: var(--warning);
-    color: var(--dark);
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 0.8em;
-}
+    .batch-item .expiring-soon-badge {
+      background-color: var(--warning);
+      color: var(--dark);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.8em;
+    }
     
     .view-btn:hover {
       border-color: var(--primary);
@@ -365,68 +369,82 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* RTL/LTR direction based on language */
+    body[dir="rtl"] {
+      text-align: right;
+    }
+    
+    body[dir="ltr"] {
+      text-align: left;
+    }
+    
+    body[dir="ltr"] .back-to-top {
+      left: auto;
+      right: 20px;
+    }
   </style>
 </head>
 <body>
 
-<h1 id="pageTitle">قائمة المنتجات</h1>
+<h1 id="pageTitle" data-i18n="products.title">قائمة المنتجات</h1>
 
 <div class="controls-container">
   <div class="search-container">
-    <input type="text" id="searchProductInput" placeholder="ابحث عن منتج بالاسم..." aria-label="بحث عن المنتجات">
+    <input type="text" id="searchProductInput" placeholder="" aria-label="بحث عن المنتجات" data-i18n-placeholder="products.searchPlaceholder">
   </div>
   
   <div class="view-controls">
-    <button id="gridViewBtn" class="view-btn active" title="عرض شبكة">
+    <button id="gridViewBtn" class="view-btn active" title="" data-i18n="[title]products.gridView">
       <i class="fas fa-th"></i>
-      <span>عرض شبكة</span>
+      <span data-i18n="products.gridView">عرض شبكة</span>
     </button>
-    <button id="listViewBtn" class="view-btn" title="عرض قائمة">
+    <button id="listViewBtn" class="view-btn" title="" data-i18n="[title]products.listView">
       <i class="fas fa-list"></i>
-      <span>عرض قائمة</span>
+      <span data-i18n="products.listView">عرض قائمة</span>
     </button>
   </div>
 </div>
 
 <div class="filters-container">
   <div class="filter-group">
-    <label for="stockFilter" class="filter-label">حالة المخزون:</label>
+    <label for="stockFilter" class="filter-label" data-i18n="products.stockStatus">حالة المخزون:</label>
     <select id="stockFilter" class="filter-select">
-      <option value="">الكل</option>
-      <option value="inStock">متوفر</option>
-      <option value="lowStock">كمية قليلة</option>
-      <option value="outOfStock">نفذ</option>
+      <option value="" data-i18n="products.all">الكل</option>
+      <option value="inStock" data-i18n="products.inStock">متوفر</option>
+      <option value="lowStock" data-i18n="products.lowStock">كمية قليلة</option>
+      <option value="outOfStock" data-i18n="products.outOfStock">نفذ</option>
     </select>
   </div>
   
   <div class="filter-group">
-    <label for="expiryFilter" class="filter-label">حالة الصلاحية:</label>
+    <label for="expiryFilter" class="filter-label" data-i18n="products.expiryStatus">حالة الصلاحية:</label>
     <select id="expiryFilter" class="filter-select">
-      <option value="">الكل</option>
-      <option value="valid">صالح</option>
-      <option value="expiringSoon">ينتهي قريباً</option>
-      <option value="expired">منتهي</option>
+      <option value="" data-i18n="products.all">الكل</option>
+      <option value="valid" data-i18n="products.valid">صالح</option>
+      <option value="expiringSoon" data-i18n="products.expiringSoon">ينتهي قريباً</option>
+      <option value="expired" data-i18n="products.expired">منتهي</option>
     </select>
   </div>
   
   <div class="filter-group">
-    <label for="sortBy" class="filter-label">ترتيب حسب:</label>
+    <label for="sortBy" class="filter-label" data-i18n="products.sortBy">ترتيب حسب:</label>
     <select id="sortBy" class="filter-select">
-      <option value="name-asc">الاسم (أ-ي)</option>
-      <option value="name-desc">الاسم (ي-أ)</option>
-      <option value="price-asc">السعر (منخفض-عالي)</option>
-      <option value="price-desc">السعر (عالي-منخفض)</option>
-      <option value="expiry-asc">الصلاحية (قريب-بعيد)</option>
-      <option value="expiry-desc">الصلاحية (بعيد-قريب)</option>
+      <option value="name-asc" data-i18n="products.nameAsc">الاسم (أ-ي)</option>
+      <option value="name-desc" data-i18n="products.nameDesc">الاسم (ي-أ)</option>
+      <option value="price-asc" data-i18n="products.priceAsc">السعر (منخفض-عالي)</option>
+      <option value="price-desc" data-i18n="products.priceDesc">السعر (عالي-منخفض)</option>
+      <option value="expiry-asc" data-i18n="products.expiryAsc">الصلاحية (قريب-بعيد)</option>
+      <option value="expiry-desc" data-i18n="products.expiryDesc">الصلاحية (بعيد-قريب)</option>
     </select>
   </div>
 </div>
 
 <div id="productsContainer">
-  <div id="noProducts">جارٍ تحميل المنتجات...</div>
+  <div id="noProducts" data-i18n="products.loading">جارٍ تحميل المنتجات...</div>
 </div>
 
-<button class="back-to-top" title="العودة لأعلى">
+<button class="back-to-top" title="" data-i18n="[title]products.backToTop">
   <i class="fas fa-arrow-up"></i>
 </button>
 
@@ -455,11 +473,77 @@
   // متغيرات النظام
   let allProducts = {};
   let debounceTimer;
+  let currentLanguage = 'ar';
+
+  // تهيئة i18next
+  function initI18n() {
+    i18next
+      .use(i18nextHttpBackend)
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        fallbackLng: 'ar',
+        debug: false,
+        ns: ['common', 'products'],
+        defaultNS: 'products',
+        backend: {
+          loadPath: 'locales/{{lng}}/{{ns}}.json'
+        }
+      }, function(err, t) {
+        if (err) console.error('i18next initialization error:', err);
+        updatePageLanguage();
+      });
+  }
+
+  // تحديث لغة الصفحة
+  function updatePageLanguage() {
+    currentLanguage = i18next.language;
+    document.documentElement.lang = currentLanguage;
+    document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+    i18next.changeLanguage(currentLanguage, () => {
+      // ترجمة العناصر
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = i18next.t(key);
+      });
+      
+      // ترجمة عناصر placeholder
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = i18next.t(key);
+      });
+      
+      // ترجمة عناصر title
+      document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        el.title = i18next.t(key);
+      });
+      
+      // ترجمة خيارات select
+      document.querySelectorAll('select option').forEach(option => {
+        if (option.hasAttribute('data-i18n')) {
+          option.textContent = i18next.t(option.getAttribute('data-i18n'));
+        }
+      });
+      
+      // إعادة تطبيق الفلاتر لتحديث المحتوى المترجم
+      if (Object.keys(allProducts).length > 0) {
+        applyFilters();
+      }
+    });
+  }
 
   // عند تحميل الصفحة
   document.addEventListener('DOMContentLoaded', function() {
+    initI18n();
     initProducts();
     setupEventListeners();
+    
+    // استمع لتغييرات اللغة من الصفحة الرئيسية
+    window.addEventListener('languageChanged', function(e) {
+      i18next.changeLanguage(e.detail.language, () => {
+        updatePageLanguage();
+      });
+    });
   });
 
   // تهيئة نظام المنتجات
@@ -517,7 +601,7 @@
     });
   }
 
-function applyFilters() {
+  function applyFilters() {
     const searchTerm = document.getElementById('searchProductInput').value.trim().toLowerCase();
     const stockStatus = document.getElementById('stockFilter').value;
     const expiryStatus = document.getElementById('expiryFilter').value;
@@ -582,12 +666,17 @@ function applyFilters() {
     
     // عرض رسالة إذا لم توجد نتائج
     if (visibleCount === 0) {
-        container.innerHTML = '<div id="noProducts">لا توجد نتائج مطابقة للبحث والفلاتر</div>';
+        const noProductsDiv = document.createElement('div');
+        noProductsDiv.id = 'noProducts';
+        noProductsDiv.setAttribute('data-i18n', 'products.noResults');
+        noProductsDiv.textContent = i18next.t('products.noResults');
+        container.innerHTML = '';
+        container.appendChild(noProductsDiv);
     } else {
         container.innerHTML = '';
         container.appendChild(fragment);
     }
-}
+  }
 
   // دالة لعرض المنتجات
   function displayProducts(products) {
@@ -597,7 +686,12 @@ function applyFilters() {
     
     // إذا لم يكن هناك منتجات
     if (!products || Object.keys(products).length === 0) {
-      container.innerHTML = '<div id="noProducts">لا توجد منتجات مضافة</div>';
+      const noProductsDiv = document.createElement('div');
+      noProductsDiv.id = 'noProducts';
+      noProductsDiv.setAttribute('data-i18n', 'products.noProducts');
+      noProductsDiv.textContent = i18next.t('products.noProducts');
+      container.innerHTML = '';
+      container.appendChild(noProductsDiv);
       return;
     }
 
@@ -617,7 +711,7 @@ function applyFilters() {
     container.appendChild(fragment);
   }
 
-function createProductCard(key, product) {
+  function createProductCard(key, product) {
     const card = document.createElement('div');
     card.className = 'product-card visible';
     card.dataset.id = key;
@@ -626,7 +720,7 @@ function createProductCard(key, product) {
     // رأس البطاقة
     const header = document.createElement('div');
     header.className = 'product-header';
-    header.textContent = product.name || 'منتج بدون اسم';
+    header.textContent = product.name || i18next.t('products.noName');
     
     // معلومات المنتج
     const info = document.createElement('div');
@@ -635,7 +729,7 @@ function createProductCard(key, product) {
     // صورة المنتج
     const imageHtml = product.image 
       ? `<div class="info-image-container">
-          <img src="placeholder.jpg" data-src="${product.image}" alt="صورة المنتج" loading="lazy" class="product-image">
+          <img src="placeholder.jpg" data-src="${product.image}" alt="${i18next.t('products.productImage')}" loading="lazy" class="product-image">
         </div>`
       : "";
     
@@ -655,17 +749,17 @@ function createProductCard(key, product) {
         // إنشاء HTML للدفعات
         batchesHtml = `
             <div class="batches-section" style="margin-top: 15px;">
-                <h4 style="margin-bottom: 10px; color: var(--secondary);">الدُفعات:</h4>
+                <h4 style="margin-bottom: 10px; color: var(--secondary);">${i18next.t('products.batches')}:</h4>
                 ${batchesArray.map(batch => {
                     const expiryInfo = getExpiryInfo(batch.expiryDate);
                     return `
                         <div class="batch-item" style="margin-bottom: 8px; padding: 8px; background: #f9f9f9; border-radius: 5px;">
                             <div style="display: flex; justify-content: space-between;">
-                                <span><strong>رقم الدفعة:</strong> ${batch.batchNumber || batch.id}</span>
-                                <span><strong>الكمية:</strong> ${batch.quantity}</span>
+                                <span><strong>${i18next.t('products.batchNumber')}:</strong> ${batch.batchNumber || batch.id}</span>
+                                <span><strong>${i18next.t('products.quantity')}:</strong> ${batch.quantity}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                                <span><strong>الصلاحية:</strong> ${formatDate(batch.expiryDate)}</span>
+                                <span><strong>${i18next.t('products.expiryDate')}:</strong> ${formatDate(batch.expiryDate)}</span>
                                 ${expiryInfo.badge || ''}
                             </div>
                         </div>
@@ -677,14 +771,14 @@ function createProductCard(key, product) {
     
     // حالة المخزون بناءً على الكمية الإجمالية
     const stockStatus = getStockStatus(totalQuantity);
-    const stockBadge = stockStatus.badge ? `<span class="badge ${stockStatus.class}">${stockStatus.badge}</span>` : '';
+    const stockBadge = stockStatus.badge ? `<span class="badge ${stockStatus.class}">${i18next.t(stockStatus.badgeKey)}</span>` : '';
     
     // معلومات المنتج
     info.innerHTML = `
       ${imageHtml}
-      <p><strong>السعر:</strong> ${product.price ? parseFloat(product.price).toFixed(2) + ' ر.س' : 'غير محدد'}</p>
-      <p><strong>الكمية الإجمالية:</strong> ${totalQuantity} ${stockBadge}</p>
-      <p><strong>رقم المنتج:</strong> ${key}</p>
+      <p><strong>${i18next.t('products.price')}:</strong> ${product.price ? parseFloat(product.price).toFixed(2) + ' ' + i18next.t('products.currency') : i18next.t('products.notSpecified')}</p>
+      <p><strong>${i18next.t('products.totalQuantity')}:</strong> ${totalQuantity} ${stockBadge}</p>
+      <p><strong>${i18next.t('products.productNumber')}:</strong> ${key}</p>
       ${batchesHtml}
     `;
 
@@ -716,7 +810,7 @@ function createProductCard(key, product) {
     }
     
     return card;
-}
+  }
 
   // دالة الترتيب
   function sortProducts(products, sortOption) {
@@ -725,8 +819,14 @@ function createProductCard(key, product) {
       const productB = b[1];
       
       switch(sortOption) {
-        case 'name-asc': return (productA.name || '').localeCompare(productB.name || '', 'ar');
-        case 'name-desc': return (productB.name || '').localeCompare(productA.name || '', 'ar');
+        case 'name-asc': 
+          return currentLanguage === 'ar' ? 
+            (productA.name || '').localeCompare(productB.name || '', 'ar') :
+            (productA.name || '').localeCompare(productB.name || '', 'en');
+        case 'name-desc': 
+          return currentLanguage === 'ar' ? 
+            (productB.name || '').localeCompare(productA.name || '', 'ar') :
+            (productB.name || '').localeCompare(productA.name || '', 'en');
         case 'price-asc': return (parseFloat(productA.price) || 0) - (parseFloat(productB.price) || 0);
         case 'price-desc': return (parseFloat(productB.price) || 0) - (parseFloat(productA.price) || 0);
         case 'expiry-asc': return new Date(productA.expiryDate || '9999-12-31') - new Date(productB.expiryDate || '9999-12-31');
@@ -741,16 +841,16 @@ function createProductCard(key, product) {
     const count = Object.keys(allProducts).length;
     const title = document.getElementById('pageTitle');
     if (title) {
-      title.textContent = `قائمة المنتجات (${count} منتج)`;
+      title.textContent = i18next.t('products.titleWithCount', { count });
     }
   }
 
   // دالة تنسيق التاريخ
   function formatDate(dateString) {
-    if (!dateString) return 'غير محدد';
+    if (!dateString) return i18next.t('products.notSpecified');
     const date = new Date(dateString);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-GB', options);
+    return date.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-GB', options);
   }
 
   // دالة التحقق من صلاحية المنتج
@@ -764,13 +864,13 @@ function createProductCard(key, product) {
     
     if (diffDays < 0) {
       return {
-        badge: '<span class="badge expired-badge">منتهي الصلاحية</span>',
+        badge: `<span class="badge expired-badge">${i18next.t('products.expired')}</span>`,
         isExpired: true
       };
     } 
     else if (diffDays <= 30) {
       return {
-        badge: `<span class="badge expiring-soon-badge">ينتهي خلال ${diffDays} يوم</span>`,
+        badge: `<span class="badge expiring-soon-badge">${i18next.t('products.expiringIn', { days: diffDays })}</span>`,
         isExpired: false
       };
     }
@@ -784,17 +884,17 @@ function createProductCard(key, product) {
     
     if (quantity <= 0) {
       return {
-        badge: 'نفذ',
+        badgeKey: 'products.outOfStock',
         class: 'out-of-stock-badge'
       };
     } else if (quantity <= 5) {
       return {
-        badge: 'كمية قليلة',
+        badgeKey: 'products.lowStock',
         class: 'low-stock-badge'
       };
     }
     
-    return { badge: '', class: '' };
+    return { badgeKey: '', class: '' };
   }
 
   // التحقق إذا كان المنتج منتهي الصلاحية
