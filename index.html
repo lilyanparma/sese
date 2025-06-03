@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -419,9 +418,7 @@
     <button class="translate-btn" onclick="switchLang()">
       <svg id="flagIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40">
         <rect width="60" height="40" fill="#c1272d"/>
-        <path fill="none" stroke="#006233" stroke-width="8" d="M0 20h60"/>
-        <path fill="#006233" d="M25 20a5 5 0 1 1 10 0 5 5 0 0 1-10 0z"/>
-        <path fill="#ffc400" d="M27 20a3 3 0 1 1 6 0 3 3 0 0 1-6 0z"/>
+        <path d="M30 10 L35 18 L43 18 L37 23 L39 31 L30 26 L21 31 L23 23 L17 18 L25 18 Z" fill="#006233"/>
       </svg>
       <span id="langText">FR</span>
     </button>
@@ -547,34 +544,60 @@
     async function switchToFrench() {
       try {
         const response = await fetch('lang/fr.json');
+        if (!response.ok) throw new Error('Network response was not ok');
+        
         const texts = await response.json();
         
         // تحديث النصوص
-        document.getElementById('siteTitle').textContent = texts.site_title || "PARAMEDICAL LILYAN ROSE";
-        document.getElementById('menuHome').textContent = texts.menu_home || "الصفحة الرئيسية";
-        document.getElementById('menuProducts').textContent = texts.menu_products || "منتجات";
-        document.getElementById('menuViewProducts').textContent = texts.menu_view_products || "عرض المنتجات";
-        document.getElementById('menuSellProducts').textContent = texts.menu_sell_products || "بيع المنتجات";
-        document.getElementById('menuServices').textContent = texts.menu_services || "خدمات اضافية";
-        document.getElementById('menuProfits').textContent = texts.menu_profits || "الارباح و الحسابات";
-        document.getElementById('mainTitle').textContent = texts.main_title || "الرئيسية - رسوم بيانية للمبيعات";
-        document.getElementById('footerText').innerHTML = `<p>${texts.footer_text || "جميع الحقوق محفوظة &copy; 2025 LILYAN ROSE"}</p>`;
+        document.getElementById('siteTitle').textContent = texts.site_title;
+        document.getElementById('menuHome').textContent = texts.menu_home;
+        document.getElementById('menuProducts').textContent = texts.menu_products;
+        document.getElementById('menuViewProducts').textContent = texts.menu_view_products;
+        document.getElementById('menuSellProducts').textContent = texts.menu_sell_products;
+        document.getElementById('menuServices').textContent = texts.menu_services;
+        document.getElementById('menuProfits').textContent = texts.menu_profits;
+        document.getElementById('mainTitle').textContent = texts.main_title;
+        document.getElementById('footerText').innerHTML = `<p>${texts.footer_text}</p>`;
+        
+        // تغيير اتجاه الصفحة لليسار
+        document.body.dir = 'ltr';
+        document.documentElement.lang = 'fr';
         
         // تحديث زر اللغة
-        document.getElementById('langText').textContent = 'FR';
+        document.getElementById('langText').textContent = 'AR';
         setFranceFlag();
         
         // حفظ اللغة
         localStorage.setItem('selectedLanguage', 'fr');
+        
+        // ضبط اتجاه تأثيرات الحركة
+        adjustLayoutForLanguage('fr');
+        
+        // إعادة تحميل الرسوم البيانية إذا لزم الأمر
+        initCharts();
       } catch (error) {
-        console.error("حدث خطأ في تحميل الترجمة:", error);
-        alert("تعذر تحميل الترجمة الفرنسية");
+        console.error("Erreur de chargement de la traduction:", error);
+        alert("Impossible de charger la traduction française");
       }
     }
 
     // العودة إلى العربية
     function switchToArabic() {
+      // تغيير اتجاه الصفحة لليمين
+      document.body.dir = 'rtl';
+      document.documentElement.lang = 'ar';
+      
+      // تحديث زر اللغة
+      document.getElementById('langText').textContent = 'FR';
+      setMoroccoFlag();
+      
+      // حفظ اللغة
       localStorage.setItem('selectedLanguage', 'ar');
+      
+      // ضبط اتجاه تأثيرات الحركة
+      adjustLayoutForLanguage('ar');
+      
+      // إعادة تحميل الصفحة
       location.reload();
     }
 
@@ -585,7 +608,6 @@
         <rect width="60" height="40" fill="#C1272D"/>
         <path d="M30 10 L35 18 L43 18 L37 23 L39 31 L30 26 L21 31 L23 23 L17 18 L25 18 Z" fill="#006233"/>
       `;
-      document.getElementById('langText').textContent = 'AR';
     }
 
     // تعيين علم فرنسا
@@ -596,6 +618,21 @@
         <rect x="20" width="20" height="40" fill="white"/>
         <rect x="40" width="20" height="40" fill="#EF4135"/>
       `;
+    }
+
+    // ضبط اتجاه العناصر حسب اللغة
+    function adjustLayoutForLanguage(lang) {
+      const elementsToAdjust = document.querySelectorAll('[data-aos]');
+      elementsToAdjust.forEach(el => {
+        el.setAttribute('data-aos', lang === 'fr' ? 'fade-right' : 'fade-left');
+      });
+      
+      // إعادة تهيئة AOS
+      AOS.init({
+        duration: 800,
+        once: true,
+        easing: 'ease-out-quart'
+      });
     }
 
     // تهيئة الرسوم البيانية
@@ -611,11 +648,17 @@
         container.classList.add('loaded');
       });
 
+      // ضبط اتجاه النصوص حسب اللغة
+      const isRTL = document.body.dir === 'rtl';
+      Chart.defaults.font.family = 'Tajawal';
+      Chart.defaults.rtl = isRTL;
+
       // بيانات المبيعات
       const salesData = {
-        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+        labels: isRTL ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'] : 
+                        ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'],
         datasets: [{
-          label: 'المبيعات (بالآلاف)',
+          label: isRTL ? 'المبيعات (بالآلاف)' : 'Ventes (en milliers)',
           data: [18, 25, 12, 15, 8, 14],
           backgroundColor: 'rgba(255, 105, 180, 0.7)',
           borderColor: 'rgba(255, 105, 180, 1)',
@@ -627,9 +670,10 @@
 
       // بيانات توزيع المنتجات
       const doughnutData = {
-        labels: ['منتج أ', 'منتج ب', 'منتج ج', 'منتج د'],
+        labels: isRTL ? ['منتج أ', 'منتج ب', 'منتج ج', 'منتج د'] : 
+                        ['Produit A', 'Produit B', 'Produit C', 'Produit D'],
         datasets: [{
-          label: 'توزيع المنتجات',
+          label: isRTL ? 'توزيع المنتجات' : 'Répartition des produits',
           data: [30, 25, 20, 25],
           backgroundColor: [
             'rgba(255, 105, 180, 0.7)',
@@ -655,7 +699,7 @@
         plugins: {
           legend: {
             position: 'top',
-            rtl: true,
+            rtl: isRTL,
             labels: {
               font: {
                 size: window.innerWidth < 576 ? 11 : 13,
@@ -672,7 +716,7 @@
             },
             callbacks: {
               label: function(context) {
-                return `${context.label}: ${context.raw}%`;
+                return `${context.label}: ${context.raw}${isRTL ? '' : '%'}`;
               }
             }
           }
