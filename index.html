@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- مكتبة تأثيرات التمرير -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- مكتبة i18next -->
+  <script src="https://unpkg.com/i18next@21.6.10/dist/umd/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@1.4.1/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@6.1.3/i18nextBrowserLanguageDetector.min.js"></script>
   <style>
     /* إعدادات عامة */
     * {
@@ -20,6 +24,7 @@
     
     body {
       font-family: 'Tajawal', Arial, sans-serif;
+      direction: rtl;
       overflow-x: hidden;
       background-color: #fff9fb;
       transition: all 0.4s ease;
@@ -407,48 +412,6 @@
     [data-aos] {
       transition: all 0.8s ease;
     }
-
-    /* توجيه النص للغة الفرنسية */
-    body[dir="ltr"] {
-      direction: ltr;
-      font-family: 'Tajawal', Arial, sans-serif;
-    }
-
-    body[dir="ltr"] .sidebar {
-      right: auto;
-      left: -280px;
-    }
-
-    body[dir="ltr"] .sidebar.active {
-      left: 0;
-      right: auto;
-    }
-
-    body[dir="ltr"] .sidebar ul li a i {
-      margin-left: 0;
-      margin-right: 12px;
-    }
-
-    body[dir="ltr"] .sidebar ul li a:hover {
-      transform: translateX(8px);
-      background: linear-gradient(to right, #fff0f6, #fff);
-    }
-
-    body[dir="ltr"] .hamburger {
-      left: auto;
-      right: 20px;
-    }
-
-    body[dir="ltr"] .translate-btn {
-      right: auto;
-      left: 20px;
-    }
-
-    body[dir="ltr"] main h2::after {
-      right: auto;
-      left: 50%;
-      transform: translateX(-50%);
-    }
   </style>
 </head>
 <body>
@@ -456,34 +419,35 @@
   <!-- رأس الموقع -->
   <header>
     <div class="hamburger" onclick="toggleSidebar()">&#9776;</div>
-    <button class="translate-btn" onclick="switchLanguage()">
+    <button class="translate-btn" onclick="switchLang()">
       <svg id="flagIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40">
-        <rect width="20" height="40" fill="#0055A4"/>
-        <rect x="20" width="20" height="40" fill="white"/>
-        <rect x="40" width="20" height="40" fill="#EF4135"/>
+        <rect width="60" height="40" fill="#c1272d"/>
+        <path fill="none" stroke="#006233" stroke-width="8" d="M0 20h60"/>
+        <path fill="#006233" d="M25 20a5 5 0 1 1 10 0 5 5 0 0 1-10 0z"/>
+        <path fill="#ffc400" d="M27 20a3 3 0 1 1 6 0 3 3 0 0 1-6 0z"/>
       </svg>
       <span id="langText">FR</span>
     </button>
-    <h1 data-i18n="siteTitle">PARAMEDICAL LILYAN ROSE</h1>
+    <h1 id="siteTitle">PARAMEDICAL LILYAN ROSE</h1>
   </header>
 
   <!-- القائمة الجانبية -->
   <nav id="sidebar" class="sidebar">
     <button class="close-btn" onclick="toggleSidebar()">×</button>
     <ul>
-      <li><a href="index.html" data-aos="fade-left" data-aos-delay="100"><i class="fas fa-home"></i><span data-i18n="menu.home">الصفحة الرئيسية</span></a></li>
-      <li><a href="products.html" data-aos="fade-left" data-aos-delay="150"><i class="fas fa-box-open"></i><span data-i18n="menu.products">المنتجات</span></a></li>
-      <li><a href="view-products.html" data-aos="fade-left" data-aos-delay="200"><i class="fas fa-list-ul"></i><span data-i18n="menu.viewProducts">عرض المنتجات</span></a></li>
-      <li><a href="sell-products.html" data-aos="fade-left" data-aos-delay="225"><i class="fas fa-cash-register"></i><span data-i18n="menu.sellProducts">بيع المنتجات</span></a></li>
-      <li><a href="services.html" data-aos="fade-left" data-aos-delay="250"><i class="fas fa-concierge-bell"></i><span data-i18n="menu.services">خدمات إضافية</span></a></li>
-      <li><a href="profits.html" data-aos="fade-left" data-aos-delay="300"><i class="fas fa-chart-line"></i><span data-i18n="menu.profits">الأرباح والحسابات</span></a></li>
+      <li><a href="index.html" data-aos="fade-left" data-aos-delay="100"><i class="fas fa-home"></i><span id="menuHome" data-i18n="menu.home">الصفحة الرئيسية</span></a></li>
+      <li><a href="products.html" data-aos="fade-left" data-aos-delay="150"><i class="fas fa-box-open"></i><span id="menuProducts" data-i18n="menu.products">منتجات</span></a></li>
+      <li><a href="view-products.html" data-aos="fade-left" data-aos-delay="200"><i class="fas fa-list-ul"></i><span id="menuViewProducts" data-i18n="menu.viewProducts">عرض المنتجات</span></a></li>
+      <li><a href="sell-products.html" data-aos="fade-left" data-aos-delay="225"><i class="fas fa-cash-register"></i><span id="menuSellProducts" data-i18n="menu.sellProducts">بيع المنتجات</span></a></li>
+      <li><a href="services.html" data-aos="fade-left" data-aos-delay="250"><i class="fas fa-concierge-bell"></i><span id="menuServices" data-i18n="menu.services">خدمات اضافية</span></a></li>
+      <li><a href="profits.html" data-aos="fade-left" data-aos-delay="300"><i class="fas fa-chart-line"></i><span id="menuProfits" data-i18n="menu.profits">الارباح و الحسابات</span></a></li>
     </ul>
   </nav>
   <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
   <!-- المحتوى الرئيسي -->
   <main>
-    <h2 data-i18n="main.title" data-aos="fade-down">الرئيسية - رسوم بيانية للمبيعات</h2>
+    <h2 id="mainTitle" data-aos="fade-down" data-i18n="main.title">الرئيسية - رسوم بيانية للمبيعات</h2>
 
     <!-- رسم بياني شريطي للمبيعات -->
     <div class="chart-container" data-aos="fade-up">
@@ -498,20 +462,75 @@
 
   <!-- التذييل -->
   <footer>
-    <p data-i18n="footer.text">جميع الحقوق محفوظة &copy; 2025 LILYAN ROSE</p>
+    <p id="footerText" data-i18n="footer.copyright">جميع الحقوق محفوظة &copy; 2025 LILYAN ROSE</p>
   </footer>
 
   <!-- مكتبة الرسوم البيانية -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" defer></script>
   <!-- مكتبة تأثيرات التمرير -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <!-- مكتبة i18next للترجمة -->
-  <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/i18next.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@1.3.2/i18nextHttpBackend.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.3/i18nextBrowserLanguageDetector.min.js"></script>
 
   <!-- السكربتات -->
   <script>
+    // تهيئة i18next
+    i18next
+      .use(i18nextHttpBackend)
+      .use(i18nextBrowserLanguageDetector)
+      .init({
+        fallbackLng: 'ar',
+        debug: false,
+        ns: ['translation'],
+        defaultNS: 'translation',
+        backend: {
+          loadPath: 'locales/{{lng}}/{{ns}}.json'
+        },
+        detection: {
+          order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+          caches: ['localStorage', 'cookie'],
+          lookupQuerystring: 'lng',
+          lookupCookie: 'i18next',
+          lookupLocalStorage: 'i18nextLng',
+          convertDetectedLanguage: (lng) => lng === 'fr' ? 'fr' : 'ar'
+        }
+      }, function(err, t) {
+        if (err) console.error('i18next initialization error:', err);
+        updateContent();
+      });
+
+    // تحديث المحتوى بناءً على اللغة
+    function updateContent() {
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        element.innerHTML = i18next.t(key);
+      });
+      
+      // تحديث زر اللغة
+      updateLanguageButton();
+      
+      // تحديث اتجاه الصفحة
+      updatePageDirection();
+    }
+
+    // تحديث زر اللغة
+    function updateLanguageButton() {
+      const langText = document.getElementById('langText');
+      const flagIcon = document.getElementById('flagIcon');
+      
+      if (i18next.language === 'fr') {
+        langText.textContent = 'FR';
+        setFranceFlag();
+      } else {
+        langText.textContent = 'AR';
+        setMoroccoFlag();
+      }
+    }
+
+    // تحديث اتجاه الصفحة
+    function updatePageDirection() {
+      document.documentElement.lang = i18next.language;
+      document.documentElement.dir = i18next.language === 'ar' ? 'rtl' : 'ltr';
+    }
+
     // تهيئة تأثيرات التمرير
     document.addEventListener('DOMContentLoaded', function() {
       AOS.init({
@@ -519,87 +538,7 @@
         once: true,
         easing: 'ease-out-quart'
       });
-      
-      // تهيئة i18next
-      i18next
-        .use(i18nextHttpBackend)
-        .use(i18nextBrowserLanguageDetector)
-        .init({
-          fallbackLng: 'ar',
-          supportedLngs: ['ar', 'fr'],
-          debug: false,
-          backend: {
-            loadPath: 'locales/{{lng}}/{{ns}}.json'
-          }
-        }, function(err, t) {
-          // تهيئة واجهة المستخدم بعد تحميل اللغة
-          updateContent();
-          initCharts();
-        });
     });
-
-    // تحديث محتوى الصفحة بناءً على اللغة
-    function updateContent() {
-      document.querySelectorAll('[data-i18n]').forEach(element => {
-        const keys = element.getAttribute('data-i18n').split('.');
-        let translation = i18next.t(keys[0]);
-        
-        for (let i = 1; i < keys.length; i++) {
-          translation = translation[keys[i]];
-        }
-        
-        element.textContent = translation;
-      });
-
-      // تحديث اتجاه الصفحة
-      document.body.setAttribute('dir', i18next.language === 'ar' ? 'rtl' : 'ltr');
-      document.documentElement.setAttribute('lang', i18next.language);
-
-      // تحديث زر اللغة
-      updateLanguageButton();
-    }
-
-    // تحديث زر تبديل اللغة
-    function updateLanguageButton() {
-      const langText = document.getElementById('langText');
-      const flagIcon = document.getElementById('flagIcon');
-      
-      if (i18next.language === 'ar') {
-        langText.textContent = 'FR';
-        flagIcon.innerHTML = `
-          <rect width="20" height="40" fill="#0055A4"/>
-          <rect x="20" width="20" height="40" fill="white"/>
-          <rect x="40" width="20" height="40" fill="#EF4135"/>
-        `;
-      } else {
-        langText.textContent = 'AR';
-        flagIcon.innerHTML = `
-          <rect width="60" height="40" fill="#C1272D"/>
-          <path d="M30 10 L35 18 L43 18 L37 23 L39 31 L30 26 L21 31 L23 23 L17 18 L25 18 Z" fill="#006233"/>
-        `;
-      }
-    }
-
-    // تبديل اللغة
-    function switchLanguage() {
-      const newLang = i18next.language === 'ar' ? 'fr' : 'ar';
-      i18next.changeLanguage(newLang, (err, t) => {
-        if (err) return console.error('حدث خطأ أثناء تغيير اللغة:', err);
-        updateContent();
-        updateChartsLanguage();
-      });
-    }
-
-    // تحديث لغة الرسوم البيانية
-    function updateChartsLanguage() {
-      if (window.salesChart) {
-        window.salesChart.destroy();
-      }
-      if (window.doughnutChart) {
-        window.doughnutChart.destroy();
-      }
-      initCharts();
-    }
 
     // حالة القائمة الجانبية
     let isSidebarOpen = false;
@@ -643,6 +582,34 @@
       }
     });
 
+    // دالة تبديل اللغة
+    function switchLang() {
+      const newLang = i18next.language === 'fr' ? 'ar' : 'fr';
+      i18next.changeLanguage(newLang, (err, t) => {
+        if (err) return console.error('Error changing language:', err);
+        updateContent();
+      });
+    }
+
+    // تعيين علم المغرب
+    function setMoroccoFlag() {
+      const flagIcon = document.getElementById('flagIcon');
+      flagIcon.innerHTML = `
+        <rect width="60" height="40" fill="#C1272D"/>
+        <path d="M30 10 L35 18 L43 18 L37 23 L39 31 L30 26 L21 31 L23 23 L17 18 L25 18 Z" fill="#006233"/>
+      `;
+    }
+
+    // تعيين علم فرنسا
+    function setFranceFlag() {
+      const flagIcon = document.getElementById('flagIcon');
+      flagIcon.innerHTML = `
+        <rect width="20" height="40" fill="#0055A4"/>
+        <rect x="20" width="20" height="40" fill="white"/>
+        <rect x="40" width="20" height="40" fill="#EF4135"/>
+      `;
+    }
+
     // تهيئة الرسوم البيانية
     function initCharts() {
       if (typeof Chart === 'undefined') {
@@ -657,18 +624,12 @@
       });
 
       // بيانات المبيعات
-      const salesLabels = i18next.language === 'ar' ? 
-        ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'] : 
-        ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'];
-      
-      const doughnutLabels = i18next.language === 'ar' ?
-        ['منتج أ', 'منتج ب', 'منتج ج', 'منتج د'] :
-        ['Produit A', 'Produit B', 'Produit C', 'Produit D'];
-
       const salesData = {
-        labels: salesLabels,
+        labels: i18next.language === 'fr' ? 
+          ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'] : 
+          ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
         datasets: [{
-          label: i18next.language === 'ar' ? 'المبيعات (بالآلاف)' : 'Ventes (en milliers)',
+          label: i18next.language === 'fr' ? 'Ventes (en milliers)' : 'المبيعات (بالآلاف)',
           data: [18, 25, 12, 15, 8, 14],
           backgroundColor: 'rgba(255, 105, 180, 0.7)',
           borderColor: 'rgba(255, 105, 180, 1)',
@@ -680,9 +641,11 @@
 
       // بيانات توزيع المنتجات
       const doughnutData = {
-        labels: doughnutLabels,
+        labels: i18next.language === 'fr' ? 
+          ['Produit A', 'Produit B', 'Produit C', 'Produit D'] : 
+          ['منتج أ', 'منتج ب', 'منتج ج', 'منتج د'],
         datasets: [{
-          label: i18next.language === 'ar' ? 'توزيع المنتجات' : 'Répartition des produits',
+          label: i18next.language === 'fr' ? 'Répartition des produits' : 'توزيع المنتجات',
           data: [30, 25, 20, 25],
           backgroundColor: [
             'rgba(255, 105, 180, 0.7)',
@@ -722,13 +685,18 @@
           tooltip: {
             bodyFont: {
               family: 'Tajawal'
+            },
+            callbacks: {
+              label: function(context) {
+                return `${context.label}: ${context.raw}%`;
+              }
             }
           }
         }
       };
 
       // رسم بياني شريطي
-      window.salesChart = new Chart(
+      new Chart(
         document.getElementById('salesChart').getContext('2d'),
         {
           type: 'bar',
@@ -764,7 +732,7 @@
       );
 
       // رسم بياني دائري
-      window.doughnutChart = new Chart(
+      new Chart(
         document.getElementById('doughnutChart').getContext('2d'),
         {
           type: 'doughnut',
@@ -782,9 +750,35 @@
       );
     }
 
-    // إغلاق القائمة عند النقر على رابط
-    document.querySelectorAll('.sidebar a').forEach(link => {
-      link.addEventListener('click', toggleSidebar);
+    // تحميل الرسوم عند ظهورها في الشاشة
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          initCharts();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    // تهيئة الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+      // مراقبة قسم الرسوم البيانية
+      const chartsSection = document.querySelectorAll('.chart-container');
+      if (chartsSection) {
+        chartsSection.forEach(chart => {
+          observer.observe(chart);
+        });
+      }
+      
+      // إغلاق القائمة عند النقر على رابط
+      document.querySelectorAll('.sidebar a').forEach(link => {
+        link.addEventListener('click', toggleSidebar);
+      });
+      
+      // تحديث الرسوم عند تغيير اللغة
+      i18next.on('languageChanged', () => {
+        initCharts();
+      });
     });
   </script>
 </body>
