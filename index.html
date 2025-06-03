@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -466,7 +466,7 @@
   </footer>
 
   <!-- مكتبة الرسوم البيانية -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
   <!-- مكتبة تأثيرات التمرير -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
@@ -497,6 +497,10 @@
         updateContent();
       });
 
+    // متغيرات لتخزين مثيلات الرسوم البيانية
+    let salesChart = null;
+    let doughnutChart = null;
+
     // تحديث المحتوى بناءً على اللغة
     function updateContent() {
       document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -507,8 +511,8 @@
       // تحديث زر اللغة
       updateLanguageButton();
       
-      // تحديث اتجاه الصفحة
-      updatePageDirection();
+      // إعادة إنشاء الرسوم البيانية مع البيانات الجديدة
+      initCharts();
     }
 
     // تحديث زر اللغة
@@ -523,12 +527,6 @@
         langText.textContent = 'AR';
         setMoroccoFlag();
       }
-    }
-
-    // تحديث اتجاه الصفحة
-    function updatePageDirection() {
-      document.documentElement.lang = i18next.language;
-      document.documentElement.dir = i18next.language === 'ar' ? 'rtl' : 'ltr';
     }
 
     // تهيئة تأثيرات التمرير
@@ -610,12 +608,22 @@
       `;
     }
 
+    // تدمير الرسوم البيانية الحالية إذا كانت موجودة
+    function destroyCharts() {
+      if (salesChart) {
+        salesChart.destroy();
+        salesChart = null;
+      }
+      if (doughnutChart) {
+        doughnutChart.destroy();
+        doughnutChart = null;
+      }
+    }
+
     // تهيئة الرسوم البيانية
     function initCharts() {
-      if (typeof Chart === 'undefined') {
-        setTimeout(initCharts, 100);
-        return;
-      }
+      // تدمير الرسوم البيانية القديمة أولاً
+      destroyCharts();
 
       // علامة تحميل الرسوم
       const chartContainers = document.querySelectorAll('.chart-container');
@@ -671,7 +679,7 @@
         plugins: {
           legend: {
             position: 'top',
-            rtl: i18next.language === 'ar',
+            rtl: true,
             labels: {
               font: {
                 size: window.innerWidth < 576 ? 11 : 13,
@@ -688,7 +696,7 @@
             },
             callbacks: {
               label: function(context) {
-                return `${context.label}: ${context.raw}%`;
+                return `${context.label}: ${context.raw}${context.dataset.label.includes('المبيعات') ? '' : '%'}`;
               }
             }
           }
@@ -696,58 +704,54 @@
       };
 
       // رسم بياني شريطي
-      new Chart(
-        document.getElementById('salesChart').getContext('2d'),
-        {
-          type: 'bar',
-          data: salesData,
-          options: {
-            ...commonOptions,
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  stepSize: 5,
-                  font: {
-                    family: 'Tajawal'
-                  }
-                },
-                grid: {
-                  color: 'rgba(0, 0, 0, 0.05)'
+      const salesCtx = document.getElementById('salesChart').getContext('2d');
+      salesChart = new Chart(salesCtx, {
+        type: 'bar',
+        data: salesData,
+        options: {
+          ...commonOptions,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 5,
+                font: {
+                  family: 'Tajawal'
                 }
               },
-              x: {
-                grid: {
-                  display: false
-                },
-                ticks: {
-                  font: {
-                    family: 'Tajawal'
-                  }
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                font: {
+                  family: 'Tajawal'
                 }
               }
             }
           }
         }
-      );
+      });
 
       // رسم بياني دائري
-      new Chart(
-        document.getElementById('doughnutChart').getContext('2d'),
-        {
-          type: 'doughnut',
-          data: doughnutData,
-          options: {
-            ...commonOptions,
-            cutout: '65%',
-            plugins: {
-              legend: {
-                position: window.innerWidth < 768 ? 'bottom' : 'right'
-              }
+      const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+      doughnutChart = new Chart(doughnutCtx, {
+        type: 'doughnut',
+        data: doughnutData,
+        options: {
+          ...commonOptions,
+          cutout: '65%',
+          plugins: {
+            legend: {
+              position: window.innerWidth < 768 ? 'bottom' : 'right'
             }
           }
         }
-      );
+      });
     }
 
     // تحميل الرسوم عند ظهورها في الشاشة
@@ -777,7 +781,7 @@
       
       // تحديث الرسوم عند تغيير اللغة
       i18next.on('languageChanged', () => {
-        initCharts();
+        updateContent();
       });
     });
   </script>
