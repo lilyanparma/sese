@@ -476,23 +476,23 @@
   let currentLanguage = 'ar';
 
   // تهيئة i18next
-  function initI18n() {
+ function initI18n() {
     i18next
-      .use(i18nextHttpBackend)
-      .use(i18nextBrowserLanguageDetector)
-      .init({
-        fallbackLng: 'ar',
-        debug: false,
-        ns: ['common', 'translation'],
-        defaultNS: 'translation',
-        backend: {
-          loadPath: 'locales/{{lng}}/{{ns}}.json'
-        }
-      }, function(err, t) {
-        if (err) console.error('i18next initialization error:', err);
-        updatePageLanguage();
-      });
-  }
+        .use(i18nextHttpBackend)
+        .use(i18nextBrowserLanguageDetector)
+        .init({
+            fallbackLng: 'ar',
+            debug: true,
+            ns: ['translation'],
+            defaultNS: 'translation',
+            backend: {
+                loadPath: 'locales/{{lng}}/translation.json' // لاحظ التغيير هنا
+            }
+        }, function(err, t) {
+            if (err) console.error("i18next error:", err);
+            updatePageLanguage();
+        });
+}
 
   // تحديث لغة الصفحة
   function updatePageLanguage() {
