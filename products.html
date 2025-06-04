@@ -496,6 +496,8 @@
 
 <script>
 // ================ تهيئة نظام الترجمة ================
+const i18n = i18next.createInstance(); // تعريف i18n
+
 const i18nextConfig = {
   lng: document.documentElement.lang || 'ar', // اللغة الحالية من وسم HTML
   fallbackLng: 'ar', // اللغة الافتراضية عند عدم توفر الترجمة
