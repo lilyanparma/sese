@@ -495,22 +495,41 @@
   <div id="alertsContainer"></div>
 
 <script>
-// ================ تهيئة نظام الترجمة ================
+// ================ تهيئة نظام الترجمة مع دالة تحميل مشابهة لـ i18nextHttpBackend ================
 const i18n = i18next.createInstance(); // تعريف i18n
 
 const i18nextConfig = {
   lng: document.documentElement.lang || 'ar', // اللغة الحالية من وسم HTML
-  fallbackLng: 'ar', // اللغة الافتراضية عند عدم توفر الترجمة
+  fallbackLng: 'ar', // اللغة الافتراضية
   supportedLngs: ['ar', 'fr'], // اللغات المدعومة
-  debug: false, // وضع التصحيح (إيقاف في الإنتاج)
+  debug: false,
   interpolation: {
-    escapeValue: false, // لا نحتاج إلى تهريب القيم
+    escapeValue: false,
   },
   resources: {
-    ar: { translation: {} }, // سيتم تحميله من ملف خارجي
-    fr: { translation: {} }  // سيتم تحميله من ملف خارجي
+    ar: { translation: {} },
+    fr: { translation: {} }
   }
 };
+
+// ✅ تحميل ملفات الترجمة من مسار نسبي مثل i18nextHttpBackend
+async function loadTranslations(lang) {
+  try {
+    const path = `locales/${lang}/translation.json`; // ✅ لا تبدأ بـ /
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const translations = await response.json();
+    i18n.addResourceBundle(lang, 'translation', translations);
+    return translations;
+  } catch (error) {
+    console.error(`Failed to load ${lang} translations:`, error);
+    if (lang !== i18nextConfig.fallbackLng) {
+      return loadTranslations(i18nextConfig.fallbackLng);
+    }
+    return {};
+  }
+}
+
 
 // دالة لتحميل ملفات الترجمة
 async function loadTranslations(lang) {
