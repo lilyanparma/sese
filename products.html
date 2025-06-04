@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="pageTitle">إدارة المنتجات - نظام الدُفعات</title>
+  <title data-i18n="productManagement.siteTitle">إدارة المنتجات - نظام الدُفعات</title>
   
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -14,9 +14,9 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   
-  <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js"></script>
-  <script src="https://unpkg.com/i18next-http-backend/i18nextHttpBackend.js"></script>
-  <script src="https://unpkg.com/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/23.11.5/i18next.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-http-backend/2.5.2/i18nextHttpBackend.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next-browser-languagedetector/8.0.0/i18nextBrowserLanguageDetector.min.js"></script>
   
   <style>
     /* التنسيق العام */
@@ -393,23 +393,23 @@
 </head>
 <body>
   <header>
-    <h1><i class="fas fa-boxes"></i> <span data-i18n="productManagement.title">إدارة المنتجات بنظام الدُفعات</span></h1>
+    <h1 data-i18n="productManagement.title"><i class="fas fa-boxes"></i> إدارة المنتجات بنظام الدُفعات</h1>
     <p data-i18n="productManagement.subtitle">نظام مسح الباركود وإدارة المخزون حسب تواريخ الصلاحية</p>
   </header>
   
   <div class="control-buttons">
-    <button class="btn btn-primary" id="scanBarcodeBtn">
-      <i class="fas fa-camera"></i> <span data-i18n="productManagement.buttons.scanBarcode">مسح الباركود</span>
+    <button class="btn btn-primary" onclick="toggleCamera()" data-i18n="productManagement.buttons.scanBarcode">
+      <i class="fas fa-camera"></i> مسح الباركود
     </button>
-    <button class="btn btn-secondary" id="manualEntryBtn">
-      <i class="fas fa-keyboard"></i> <span data-i18n="productManagement.buttons.manualEntry">إدخال يدوي</span>
+    <button class="btn btn-secondary" onclick="showManualEntry()" data-i18n="productManagement.buttons.manualEntry">
+      <i class="fas fa-keyboard"></i> إدخال يدوي
     </button>
-    </div>
+  </div>
   
   <div class="input-section" id="manualEntry" style="display: none;">
-    <input type="text" id="productCodeInput" class="input-field" data-i18n-placeholder="productManagement.placeholders.enterProductCode" placeholder="أدخل رقم المنتج">
-    <button class="btn btn-success" id="searchProductBtn">
-      <i class="fas fa-search"></i> <span data-i18n="productManagement.buttons.search">بحث</span>
+    <input type="text" id="productCodeInput" class="input-field" data-i18n-placeholder="productManagement.placeholders.enterProductCode">
+    <button class="btn btn-success" onclick="searchProduct()" data-i18n="productManagement.buttons.search">
+      <i class="fas fa-search"></i> بحث
     </button>
   </div>
   
@@ -419,7 +419,7 @@
       <div class="scanner-frame"></div>
       <div class="scanner-instruction">
         <i class="fas fa-barcode fa-3x"></i>
-        <p data-i18n="productManagement.scanner.instruction">وجه الكاميرا نحو الباركود</p>
+        <p data-i18n="productManagement.scanner.instruction"></p>
       </div>
     </div>
   </div>
@@ -428,7 +428,8 @@
   
   <div class="modal" id="productModal">
     <div class="modal-content">
-      <span class="close-btn" id="closeModalBtn">&times;</span> <h2 id="modalTitle" data-i18n="productManagement.productInfo.title">معلومات المنتج</h2>
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle" data-i18n="productManagement.productInfo.title">معلومات المنتج</h2>
       
       <div id="productInfo">
         <table class="product-info">
@@ -465,16 +466,16 @@
       </div>
       
       <div id="productForm" style="display: none;">
-        <input type="text" id="editName" class="input-field" data-i18n-placeholder="productManagement.placeholders.productName" placeholder="اسم المنتج" required>
-        <input type="number" id="editPrice" class="input-field" data-i18n-placeholder="productManagement.placeholders.sellingPrice" placeholder="سعر البيع" min="0" step="0.01" required>
-        <input type="number" id="editCost" class="input-field" data-i18n-placeholder="productManagement.placeholders.purchasePrice" placeholder="سعر الشراء" min="0" step="0.01" required>
+        <input type="text" id="editName" class="input-field" data-i18n-placeholder="productManagement.placeholders.productName" required>
+        <input type="number" id="editPrice" class="input-field" data-i18n-placeholder="productManagement.placeholders.sellingPrice" min="0" step="0.01" required>
+        <input type="number" id="editCost" class="input-field" data-i18n-placeholder="productManagement.placeholders.purchasePrice" min="0" step="0.01" required>
         <input type="date" id="editDate" class="input-field" required>
         <input type="file" id="editImage" class="input-field" accept="image/*">
         
         <h3 style="margin: 20px 0 10px;" data-i18n="productManagement.batch.addNewBatch">إضافة دفعة جديدة</h3>
-        <input type="text" id="batchNumber" class="input-field" data-i18n-placeholder="productManagement.placeholders.batchNumberOptional" placeholder="رقم الدفعة (اختياري)">
-        <input type="number" id="batchQuantity" class="input-field" data-i18n-placeholder="productManagement.placeholders.quantity" placeholder="الكمية" min="1" required>
-        <input type="date" id="batchExpiry" class="input-field" data-i18n-placeholder="productManagement.placeholders.expiryDate" placeholder="تاريخ انتهاء الصلاحية" required>
+        <input type="text" id="batchNumber" class="input-field" data-i18n-placeholder="productManagement.placeholders.batchNumberOptional">
+        <input type="number" id="batchQuantity" class="input-field" data-i18n-placeholder="productManagement.placeholders.quantity" min="1" required>
+        <input type="date" id="batchExpiry" class="input-field" data-i18n-placeholder="productManagement.placeholders.expiryDate" required>
       </div>
       
       <div class="modal-actions" id="modalActions">
@@ -484,520 +485,674 @@
 
   <div id="alertsContainer"></div>
 
-<script>
-// ================ تهيئة نظام الترجمة ================
-const i18n = i18next.createInstance(); // تعريف i18n
-
-const i18nextConfig = {
-  lng: document.documentElement.lang || 'ar', // اللغة الحالية من وسم HTML
-  fallbackLng: 'ar', // اللغة الافتراضية عند عدم توفر الترجمة
-  supportedLngs: ['ar', 'fr'], // اللغات المدعومة
-  debug: true, // وضع التصحيح (اجعله false في الإنتاج لتجنب رسائل الكونسول الكثيرة)
-  interpolation: {
-    escapeValue: false, // لا نحتاج إلى تهريب القيم HTML
-  },
-  backend: {
-    loadPath: 'locales/{{lng}}/translation.json' // المسار الصحيح لملفات الترجمة
-  },
-  use: [i18nextHttpBackend, i18nextBrowserLanguageDetector] // استخدام backend و detector
-};
-
-// دالة لتهيئة نظام الترجمة
-async function initI18n() {
-  try {
-    await i18n.use(i18nextHttpBackend).use(i18nextBrowserLanguageDetector).init(i18nextConfig);
+  <script>
+    // تهيئة Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRtJBPOjpfXXfsaDo98E_NTT7KWzz8gj4",
+      authDomain: "pharmacy-system-9def6.firebaseapp.com",
+      databaseURL: "https://pharmacy-system-9def6-default-rtdb.firebaseio.com",
+      projectId: "pharmacy-system-9def6",
+      storageBucket: "pharmacy-system-9def6.appspot.com",
+      messagingSenderId: "630855008414",
+      appId: "1:630855008414:web:b464bcb81c8a2091d0fb8f",
+      measurementId: "G-LC5NDKP6QZ"
+    };
     
-    // تحديث اتجاه الصفحة حسب اللغة التي تم اكتشافها أو تعيينها
-    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = i18n.language; // تحديث سمة lang في وسم HTML
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
     
-    console.log('i18n initialized successfully with language:', i18n.language);
+    // متغيرات النظام
+    let currentProduct = null;
+    let codeReader = new ZXing.BrowserMultiFormatReader();
+    let cameraActive = false;
     
-    // تحديث المحتوى المترجم الأولي
-    refreshTranslatedContent();
-    
-    return true;
-  } catch (error) {
-    console.error('Failed to initialize i18n:', error);
-    return false;
-  }
-}
-
-// دالة تغيير اللغة (تم حذفها لأن الأزرار حذفت من هذه الصفحة)
-// إذا كنت تستدعي هذه الدالة من مكان آخر، احتفظ بها
-/*
-async function changeLanguage(lng) {
-  try {
-    if (!i18nextConfig.supportedLngs.includes(lng)) {
-      console.warn(`Language ${lng} is not supported. Falling back to ${i18n.language}.`);
-      return false;
-    }
-    
-    await i18n.changeLanguage(lng);
-    
-    // تحديث لغة واتجاه المستند
-    document.documentElement.lang = lng;
-    document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
-    
-    // إعادة تحميل البيانات أو العناصر التي تحتاج تحديث
-    refreshTranslatedContent();
-    
-    showAlert(t('productManagement.languageChanged', {lang: lng === 'ar' ? 'العربية' : 'Français'}), 'info');
-    
-    return true;
-  } catch (error) {
-    console.error(`Failed to change language to ${lng}:`, error);
-    return false;
-  }
-}
-*/
-
-// دالة مساعدة للترجمة مع معالجة الأخطاء
-function t(key, options = {}) {
-  // استخدام i18n.t مباشرة بعد تهيئة i18n
-  if (i18n.isInitialized) {
-    return i18n.t(key, options);
-  } else {
-    console.warn(`i18n not initialized yet. Returning key for "${key}".`);
-    return key; // إرجاع المفتاح إذا لم تكن i18n مهيأة بعد
-  }
-}
-
-// دالة لتحديث المحتوى المترجم في الصفحة
-function refreshTranslatedContent() {
-  // ترجمة النصوص ذات سمة data-i18n
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    el.textContent = t(key);
-  });
-
-  // ترجمة الـ placeholder
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    el.placeholder = t(key);
-  });
-
-  // ترجمة عنوان الصفحة
-  document.title = t('productManagement.siteTitle'); // الآن تحت productManagement
-
-  // تحديث أي نصوص أخرى غير موجودة كـ data-i18n
-  // هذا الجزء قد لا يكون ضرورياً إذا استخدمت data-i18n-placeholder و data-i18n بشكل شامل
-}
-
-// ================ ربط معالجات الأحداث (Event Listeners) للأزرار ================
-// تشغيل التهيئة عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', () => {
-    initI18n(); // قم بتهيئة i18n أولاً
-
-    // ربط معالجات الأحداث (Event Listeners) للأزرار
-    const manualEntryBtn = document.getElementById('manualEntryBtn');
-    if (manualEntryBtn) {
-        manualEntryBtn.addEventListener('click', showManualEntry);
+    // ================ وظائف الترجمة (جديد) ================
+        // ================ وظائف الترجمة ================
+    function initI18n() {
+      i18next
+        .use(i18nextHttpBackend)
+        .use(i18nextBrowserLanguageDetector)
+        .init({
+          debug: true,
+          initAsync: true,
+          fallbackLng: 'ar',
+          supportedLngs: ['ar', 'fr'],
+          ns: ['translation'],
+          defaultNS: 'translation',
+          backend: {
+            loadPath: 'locales/{{lng}}/translation.json'
+          },
+          detection: {
+            order: ['localStorage', 'navigator', 'htmlTag'],
+            caches: ['localStorage'],
+          },
+          interpolation: {
+            escapeValue: false,
+          }
+        }, (err, t) => {
+          if (err) return console.error('i18next initialization failed', err);
+          console.log('i18n initialized successfully with language:', i18next.language);
+          updateContent(); // تحديث المحتوى بعد التهيئة
+          // ضبط اتجاه الصفحة بناءً على اللغة
+          document.documentElement.dir = i18next.dir(i18next.language);
+          document.documentElement.lang = i18next.language;
+          
+          // === إضافة جديدة: استدعاء دالة فحص الصلاحية بعد تهيئة i18next ===
+          checkAndShowExpiryAlerts(); 
+        });
     }
 
-    const scanBarcodeBtn = document.getElementById('scanBarcodeBtn');
-    if (scanBarcodeBtn) {
-        scanBarcodeBtn.addEventListener('click', toggleCamera);
+    function updateContent() {
+      // ... (الكود الموجود لديك) ...
     }
 
-    const searchProductBtn = document.getElementById('searchProductBtn');
-    if (searchProductBtn) {
-        searchProductBtn.addEventListener('click', searchProduct);
-    }
+    // استدعاء تهيئة i18next عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', initI18n);
 
-    const closeModalBtn = document.getElementById('closeModalBtn'); // استخدام الـ id الجديد
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeModal);
-    }
+    // ================ وظيفة جديدة: فحص وعرض تنبيهات الصلاحية ================
+    async function checkAndShowExpiryAlerts() {
+        try {
+            const snapshot = await database.ref('products').once('value');
+            const products = snapshot.val();
 
-    // ... هنا يمكنك إضافة ربط لأي أزرار أخرى تستخدم onclick في HTML
-});
+            if (!products) {
+                console.log("No products found to check expiry.");
+                return;
+            }
 
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // لإزالة الوقت ومقارنة اليوم فقط
 
-// ================ تهيئة Firebase (هذا الجزء هو نفسه) ================
-const firebaseConfig = {
-  apiKey: "AIzaSyDRtJBPOjpfXXfsaDo98E_NTT7KWzz8gj4", // قم بتغيير هذا
-  authDomain: "pharmacy-system-9def6.firebaseapp.com", // قم بتغيير هذا
-  databaseURL: "https://pharmacy-system-9def6-default-rtdb.firebaseio.com", // قم بتغيير هذا
-  projectId: "pharmacy-system-9def6", // قم بتغيير هذا
-  storageBucket: "pharmacy-system-9def6.appspot.com", // قم بتغيير هذا
-  messagingSenderId: "630855008414", // قم بتغيير هذا
-  appId: "1:630855008414:web:b464bcb81c8a2091d0fb8f", // قم بتغيير هذا
-  measurementId: "G-LC5NDKP6QZ" // قم بتغيير هذا
-};
+            let expiringProductsCount = 0;
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+            for (const productCode in products) {
+                const product = products[productCode];
+                if (product.batches) {
+                    for (const batchId in product.batches) {
+                        const batch = product.batches[batchId];
+                        const expiryDate = new Date(batch.expiryDate);
+                        expiryDate.setHours(0, 0, 0, 0); // لإزالة الوقت
 
-// ================ متغيرات النظام ================
-let currentProduct = null;
-let codeReader = new ZXing.BrowserMultiFormatReader();
-let cameraActive = false;
+                        const diffTime = expiryDate - today;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-// ================ وظائف المسح الضوئي ================
-async function toggleCamera() {
-  if (cameraActive) {
-    await stopScanner();
-  } else {
-    await startScanner();
-  }
-}
+                        let alertMessage = '';
+                        let alertType = '';
 
-async function startScanner() {
-  const manualEntry = document.getElementById('manualEntry');
-  const scannerContainer = document.getElementById('cameraScanner');
-  const resultMessage = document.getElementById('resultMessage');
-  
-  if (manualEntry) manualEntry.style.display = 'none';
-  if (scannerContainer) scannerContainer.style.display = 'block';
-  if (resultMessage) resultMessage.textContent = t('productManagement.preparingScanner'); // الترجمة هنا
+                        if (diffDays < 0) {
+                            alertMessage = i18next.t('productManagement.alerts.batchExpired', {
+                                productName: product.name || productCode,
+                                batchNumber: batch.batchNumber || batchId,
+                                expiryDate: batch.expiryDate
+                            });
+                            alertType = 'danger';
+                            expiringProductsCount++;
+                        } else if (diffDays <= 30) { // تنبيه لمدة شهر
+                            alertMessage = i18next.t('productManagement.alerts.batchExpiringSoon', {
+                                productName: product.name || productCode,
+                                batchNumber: batch.batchNumber || batchId,
+                                expiryDate: batch.expiryDate,
+                                count: diffDays
+                            });
+                            alertType = 'warning';
+                            expiringProductsCount++;
+                        }
 
-  try {
-    await codeReader.decodeFromVideoDevice(
-      undefined, 
-      'scannerVideo',
-      (result, err) => {
-        if (result) {
-          const code = result.text;
-          stopScanner();
-          processScannedCode(code);
+                        if (alertMessage) {
+                            showAlert(alertMessage, alertType);
+                        }
+                    }
+                }
+            }
+            if (expiringProductsCount === 0) {
+                 showAlert(i18next.t('productManagement.alerts.noExpiringProducts'), 'success'); // رسالة إيجابية
+            }
+
+        } catch (error) {
+            console.error("Error checking expiry dates:", error);
+            showAlert(i18next.t('productManagement.database.expiryCheckError'), 'danger');
         }
+    }
+
+    // ================ وظائف المسح الضوئي ================
+    async function toggleCamera() {
+      if (cameraActive) {
+        await stopScanner();
+      } else {
+        await startScanner();
+      }
+    }
+    
+    async function startScanner() {
+      document.getElementById('manualEntry').style.display = 'none';
+      const scannerContainer = document.getElementById('cameraScanner');
+      scannerContainer.style.display = 'block';
+      document.getElementById('resultMessage').textContent = i18next.t('productManagement.scanner.initializing'); // ترجمة
+      
+      try {
+        await codeReader.decodeFromVideoDevice(
+          undefined, 
+          'scannerVideo',
+          (result, err) => {
+            if (result) {
+              const code = result.text;
+              stopScanner();
+              processScannedCode(code);
+            }
+            
+            if (err && !(err instanceof ZXing.NotFoundException)) {
+              console.error(err);
+              showAlert(i18next.t('productManagement.scanner.error') + err.message, 'danger'); // ترجمة
+              stopScanner();
+            }
+          }
+        );
         
-        if (err && !(err instanceof ZXing.NotFoundException)) {
-          console.error(err);
-          showAlert(t('productManagement.scannerError', {error: err.message}), 'danger'); // الترجمة هنا
-          stopScanner();
+        cameraActive = true;
+        document.getElementById('resultMessage').textContent = i18next.t('productManagement.scanner.scanningInstruction'); // ترجمة
+      } catch (err) {
+        console.error(err);
+        showAlert(i18next.t('productManagement.scanner.cameraAccessError') + err.message, 'danger'); // ترجمة
+        scannerContainer.style.display = 'none';
+      }
+    }
+    
+    function stopScanner() {
+      if (codeReader && cameraActive) {
+        codeReader.reset();
+        cameraActive = false;
+      }
+      document.getElementById('cameraScanner').style.display = 'none';
+      document.getElementById('resultMessage').textContent = '';
+    }
+    
+    // ================ وظائف إدارة المنتجات ================
+    async function processScannedCode(code) {
+      showAlert(i18next.t('productManagement.search.searching') + ` ${code}...`, 'info'); // ترجمة
+      currentProduct = { code: code };
+      
+      try {
+        const snapshot = await database.ref('products/' + code).once('value');
+        if (snapshot.exists()) {
+          const productData = snapshot.val();
+          showProductInfo(productData);
+          showAlert(i18next.t('productManagement.search.found'), 'success'); // ترجمة
+        } else {
+          showAddProductForm(code);
+          showAlert(i18next.t('productManagement.search.newProductPrompt'), 'warning'); // ترجمة
+        }
+      } catch (error) {
+        showAlert(i18next.t('productManagement.database.connectionError'), 'danger'); // ترجمة
+        console.error(error);
+      }
+    }
+    
+    function showManualEntry() {
+      stopScanner();
+      document.getElementById('manualEntry').style.display = 'block';
+      document.getElementById('productCodeInput').focus();
+    }
+    
+    async function searchProduct() {
+      const code = document.getElementById('productCodeInput').value.trim();
+      if (!code) {
+        showAlert(i18next.t('productManagement.search.enterCode'), 'warning'); // ترجمة
+        return;
+      }
+      
+      try {
+        showAlert(i18next.t('productManagement.search.searching') + ` ${code}...`, 'info'); // ترجمة
+        const snapshot = await database.ref('products/' + code).once('value');
+        
+        if (snapshot.exists()) {
+          const productData = snapshot.val();
+          currentProduct = { code: code, ...productData };
+          showProductInfo(currentProduct);
+          showAlert(i18next.t('productManagement.search.found'), 'success'); // ترجمة
+        } else {
+          currentProduct = { code: code };
+          showAddProductForm(code);
+          showAlert(i18next.t('productManagement.search.newProductPrompt'), 'warning'); // ترجمة
+        }
+      } catch (error) {
+        showAlert(i18next.t('productManagement.database.connectionError'), 'danger'); // ترجمة
+        console.error(error);
+      }
+    }
+    
+    // ================ عرض وتعديل المنتجات ================
+    function showProductInfo(product) {
+      // حساب الكمية الإجمالية
+      let totalQuantity = 0;
+      if (product.batches) {
+        totalQuantity = Object.values(product.batches).reduce((sum, batch) => sum + (parseFloat(batch.quantity) || 0), 0);
+      }
+      
+      document.getElementById('modalTitle').textContent = product.name || i18next.t('productManagement.productInfo.title'); // ترجمة
+      document.getElementById('infoCode').textContent = product.code;
+      document.getElementById('infoName').textContent = product.name || i18next.t('productManagement.productInfo.undefined'); // ترجمة
+      document.getElementById('infoTotalQuantity').textContent = totalQuantity;
+      document.getElementById('infoPrice').textContent = product.price ? `${parseFloat(product.price).toFixed(2)} ${i18next.t('productManagement.currency')}` : i18next.t('productManagement.productInfo.undefined'); // ترجمة
+      document.getElementById('infoCost').textContent = product.cost ? `${parseFloat(product.cost).toFixed(2)} ${i18next.t('productManagement.currency')}` : i18next.t('productManagement.productInfo.undefined'); // ترجمة
+      document.getElementById('infoDate').textContent = product.date || i18next.t('productManagement.productInfo.undefined'); // ترجمة
+      
+      const imageContainer = document.getElementById('productImageContainer');
+      imageContainer.innerHTML = product.image ? 
+        `<img src="${product.image}" alt="${i18next.t('productManagement.productInfo.productImageAlt')}" class="product-image">` : // ترجمة
+        `<p>${i18next.t('productManagement.productInfo.noImage')}</p>`; // ترجمة
+      
+      // عرض الدُفعات
+      const batchesContainer = document.getElementById('batchesContainer');
+      batchesContainer.innerHTML = '';
+      
+      if (!product.batches || Object.keys(product.batches).length === 0) {
+        batchesContainer.innerHTML = `<p>${i18next.t('productManagement.productInfo.noBatches')}</p>`; // ترجمة
+      } else {
+        // تحويل الدُفعات إلى مصفوفة وترتيبها حسب تاريخ الصلاحية (الأقرب أولاً)
+        const batchesArray = Object.entries(product.batches).map(([batchId, batch]) => ({
+          id: batchId,
+          ...batch
+        }));
+        
+        batchesArray.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+        
+        batchesArray.forEach(batch => {
+          const batchCard = document.createElement('div');
+          batchCard.className = 'batch-card';
+          
+          const today = new Date();
+          const expiryDate = new Date(batch.expiryDate);
+          const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+          
+          let expiryStatus = '';
+          if (diffDays < 0) {
+            expiryStatus = `<span class="expired">(${i18next.t('productManagement.batch.expired')})</span>`; // ترجمة
+          } else if (diffDays <= 30) {
+            expiryStatus = `<span class="expiring-soon">(${i18next.t('productManagement.batch.expiringSoon', { count: diffDays })})</span>`; // ترجمة
+          }
+          
+          batchCard.innerHTML = `
+            <div class="batch-header">
+              <div>
+                <strong>${i18next.t('productManagement.batch.batchLabel')}: ${batch.batchNumber || batch.id}</strong>
+                <p>${i18next.t('productManagement.batch.quantity')}: ${batch.quantity} - ${i18next.t('productManagement.batch.expiryDate')}: ${batch.expiryDate} ${expiryStatus}</p>
+              </div>
+              <div class="batch-actions">
+                <button class="batch-btn btn-warning" onclick="editBatch('${batch.id}')">
+                  <i class="fas fa-edit"></i> ${i18next.t('productManagement.batch.edit')}
+                </button>
+                <button class="batch-btn btn-danger" onclick="deleteBatch('${batch.id}')">
+                  <i class="fas fa-trash"></i> ${i18next.t('productManagement.batch.delete')}
+                </button>
+              </div>
+            </div>
+          `;
+          
+          batchesContainer.appendChild(batchCard);
+        });
+      }
+      
+      const actions = document.getElementById('modalActions');
+      // تحديث الأزرار لتستخدم i18next.t()
+      let buttonsHTML = `
+        <button class="btn btn-warning" onclick="showEditForm()">
+          <i class="fas fa-edit"></i> ${i18next.t('productManagement.buttons.editProduct')}
+        </button>
+        <button class="btn btn-info" onclick="showAddBatchForm()">
+          <i class="fas fa-plus"></i> ${i18next.t('productManagement.buttons.addBatch')}
+        </button>
+        <button class="btn btn-danger" onclick="deleteProduct()">
+          <i class="fas fa-trash"></i> ${i18next.t('productManagement.buttons.deleteProduct')}
+        </button>
+      `;
+      
+      actions.innerHTML = buttonsHTML;
+      document.getElementById('productInfo').style.display = 'block';
+      document.getElementById('productForm').style.display = 'none';
+      document.getElementById('productModal').style.display = 'block';
+      currentProduct = product;
+    }
+    
+    function showEditForm() {
+      // ملء حقول التعديل بالبيانات الحالية
+      document.getElementById('editName').value = currentProduct.name || '';
+      document.getElementById('editPrice').value = currentProduct.price || '';
+      document.getElementById('editCost').value = currentProduct.cost || '';
+      document.getElementById('editDate').value = currentProduct.date || new Date().toISOString().split('T')[0];
+      
+      document.getElementById('productInfo').style.display = 'none';
+      document.getElementById('productForm').style.display = 'block';
+      
+      const actions = document.getElementById('modalActions');
+      actions.innerHTML = `
+        <button class="btn btn-success" onclick="saveProduct()">
+          <i class="fas fa-save"></i> ${i18next.t('productManagement.buttons.saveProduct')}
+        </button>
+        <button class="btn btn-secondary" onclick="cancelEdit()">
+          <i class="fas fa-times"></i> ${i18next.t('productManagement.buttons.cancel')}
+        </button>
+      `;
+    }
+    
+    function showAddBatchForm() {
+      // إخفاء معلومات المنتج وإظهار حقول إضافة دفعة
+      document.getElementById('productInfo').style.display = 'none';
+      document.getElementById('productForm').style.display = 'block';
+      
+      // مسح حقول الدفعة لأجل الإدخال الجديد
+      document.getElementById('batchNumber').value = '';
+      document.getElementById('batchQuantity').value = '';
+      document.getElementById('batchExpiry').value = '';
+      
+      // إخفاء حقول معلومات المنتج عند إضافة دفعة فقط
+      document.getElementById('editName').style.display = 'none';
+      document.getElementById('editPrice').style.display = 'none';
+      document.getElementById('editCost').style.display = 'none';
+      document.getElementById('editDate').style.display = 'none';
+      document.getElementById('editImage').style.display = 'none';
+      
+      // إظهار حقول الدفعة
+      document.getElementById('batchNumber').style.display = 'block';
+      document.getElementById('batchQuantity').style.display = 'block';
+      document.getElementById('batchExpiry').style.display = 'block';
+      
+      // تحديث عنوان النموذج
+      document.getElementById('modalTitle').textContent = i18next.t('productManagement.batch.addNewBatch');
+      
+      const actions = document.getElementById('modalActions');
+      actions.innerHTML = `
+        <button class="btn btn-success" onclick="saveBatch()">
+          <i class="fas fa-plus"></i> ${i18next.t('productManagement.buttons.addBatch')}
+        </button>
+        <button class="btn btn-secondary" onclick="cancelEdit()">
+          <i class="fas fa-times"></i> ${i18next.t('productManagement.buttons.cancel')}
+        </button>
+      `;
+    }
+
+    function showAddProductForm(code) {
+      document.getElementById('modalTitle').textContent = i18next.t('productManagement.buttons.addNewProduct'); // ترجمة
+      document.getElementById('infoCode').textContent = code; // عرض الكود هنا حتى لو لم يتم حفظه بعد
+      
+      // إخفاء معلومات المنتج وإظهار حقول الإدخال
+      document.getElementById('productInfo').style.display = 'none';
+      document.getElementById('productForm').style.display = 'block';
+      
+      // إظهار كل الحقول عند إضافة منتج جديد
+      document.getElementById('editName').style.display = 'block';
+      document.getElementById('editPrice').style.display = 'block';
+      document.getElementById('editCost').style.display = 'block';
+      document.getElementById('editDate').style.display = 'block';
+      document.getElementById('editImage').style.display = 'block';
+      document.getElementById('batchNumber').style.display = 'block';
+      document.getElementById('batchQuantity').style.display = 'block';
+      document.getElementById('batchExpiry').style.display = 'block';
+
+      // مسح الحقول
+      document.getElementById('editName').value = '';
+      document.getElementById('editPrice').value = '';
+      document.getElementById('editCost').value = '';
+      document.getElementById('editDate').value = new Date().toISOString().split('T')[0]; // تاريخ اليوم
+      document.getElementById('batchNumber').value = '';
+      document.getElementById('batchQuantity').value = '';
+      document.getElementById('batchExpiry').value = '';
+
+      const actions = document.getElementById('modalActions');
+      actions.innerHTML = `
+        <button class="btn btn-success" onclick="saveProduct(true)">
+          <i class="fas fa-save"></i> ${i18next.t('productManagement.buttons.saveProduct')}
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal()">
+          <i class="fas fa-times"></i> ${i18next.t('productManagement.buttons.cancel')}
+        </button>
+      `;
+      document.getElementById('productModal').style.display = 'block';
+    }
+    
+    function cancelEdit() {
+      if (currentProduct && currentProduct.name) {
+        showProductInfo(currentProduct);
+      } else {
+        closeModal();
+      }
+    }
+
+    async function saveProduct(isNewProduct = false) {
+      const code = currentProduct.code;
+      const name = document.getElementById('editName').value.trim();
+      const price = parseFloat(document.getElementById('editPrice').value);
+      const cost = parseFloat(document.getElementById('editCost').value);
+      const date = document.getElementById('editDate').value;
+      const imageFile = document.getElementById('editImage').files[0];
+
+      if (!name || isNaN(price) || isNaN(cost) || !date) {
+        showAlert(i18next.t('productManagement.alerts.fillAllFields'), 'danger'); // ترجمة
+        return;
+      }
+
+      let imageUrl = currentProduct.image || ''; // احتفاظ بالصورة القديمة إذا لم يتم تحميل جديد
+
+      if (imageFile) {
+        try {
+          showAlert(i18next.t('productManagement.alerts.uploadingImage'), 'info'); // ترجمة
+          const storageRef = firebase.storage().ref(`product_images/${code}/${imageFile.name}`);
+          await storageRef.put(imageFile);
+          imageUrl = await storageRef.getDownloadURL();
+          showAlert(i18next.t('productManagement.alerts.imageUploaded'), 'success'); // ترجمة
+        } catch (error) {
+          showAlert(i18next.t('productManagement.alerts.imageUploadError') + error.message, 'danger'); // ترجمة
+          console.error("Error uploading image:", error);
+          return; // لا تكمل الحفظ إذا فشل تحميل الصورة
         }
       }
-    );
-    
-    cameraActive = true;
-    if (resultMessage) resultMessage.textContent = t('productManagement.scanningMessage'); // الترجمة هنا
-  } catch (err) {
-    console.error(err);
-    showAlert(t('productManagement.cameraError', {error: err.message}), 'danger'); // الترجمة هنا
-    if (scannerContainer) scannerContainer.style.display = 'none';
-  }
-}
 
-function stopScanner() {
-  if (codeReader && cameraActive) {
-    codeReader.reset();
-    cameraActive = false;
-  }
-  const scannerContainer = document.getElementById('cameraScanner');
-  const resultMessage = document.getElementById('resultMessage');
-  if (scannerContainer) scannerContainer.style.display = 'none';
-  if (resultMessage) resultMessage.textContent = '';
-}
+      const productData = {
+        name: name,
+        price: price,
+        cost: cost,
+        date: date,
+        image: imageUrl
+      };
 
-// ================ وظائف إدارة المنتجات ================
-async function processScannedCode(code) {
-  showAlert(t('productManagement.searchingProduct', {code}), 'info'); // الترجمة هنا
-  currentProduct = { code: code };
-  
-  try {
-    const snapshot = await database.ref('products/' + code).once('value');
-    if (snapshot.exists()) {
-      const productData = snapshot.val();
-      showProductInfo(productData);
-      showAlert(t('productManagement.productFound'), 'success'); // الترجمة هنا
-    } else {
-      showAddProductForm(code);
-      showAlert(t('productManagement.newProductWarning'), 'warning'); // الترجمة هنا
+      try {
+        await database.ref('products/' + code).update(productData);
+        showAlert(i18next.t('productManagement.alerts.productSaved'), 'success'); // ترجمة
+        
+        // إذا كان منتج جديد، احفظ الدفعة الأولى معه
+        if (isNewProduct) {
+          await saveBatch(true); // حفظ الدفعة الأولى عند إضافة منتج جديد
+        }
+
+        // تحديث currentProduct وعرض المعلومات
+        const snapshot = await database.ref('products/' + code).once('value');
+        currentProduct = { code: code, ...snapshot.val() };
+        showProductInfo(currentProduct);
+
+      } catch (error) {
+        showAlert(i18next.t('productManagement.database.saveError') + error.message, 'danger'); // ترجمة
+        console.error("Error saving product:", error);
+      }
     }
-  } catch (error) {
-    showAlert(t('productManagement.databaseError'), 'danger'); // الترجمة هنا
-    console.error(error);
-  }
-}
 
-function showManualEntry() {
-  stopScanner();
-  const manualEntry = document.getElementById('manualEntry');
-  const productCodeInput = document.getElementById('productCodeInput');
-  
-  if (manualEntry) manualEntry.style.display = 'block';
-  if (productCodeInput) {
-    productCodeInput.placeholder = t('productManagement.placeholders.enterProductCode'); // الترجمة هنا
-    productCodeInput.focus();
-  }
-}
+    async function saveBatch(isNewProductFlow = false) {
+      const code = currentProduct.code;
+      const batchNumber = document.getElementById('batchNumber').value.trim();
+      const quantity = parseInt(document.getElementById('batchQuantity').value);
+      const expiryDate = document.getElementById('batchExpiry').value;
 
-async function searchProduct() {
-  const productCodeInput = document.getElementById('productCodeInput');
-  if (!productCodeInput) return;
-  
-  const code = productCodeInput.value.trim();
-  if (!code) {
-    showAlert(t('productManagement.enterProductCodeWarning'), 'warning'); // الترجمة هنا
-    return;
-  }
-  
-  try {
-    showAlert(t('productManagement.searchingProduct', {code}), 'info'); // الترجمة هنا
-    const snapshot = await database.ref('products/' + code).once('value');
-    if (snapshot.exists()) {
-      const productData = snapshot.val();
-      showProductInfo(productData);
-      showAlert(t('productManagement.productFound'), 'success');
-    } else {
-      showAddProductForm(code);
-      showAlert(t('productManagement.newProductWarning'), 'warning');
+      if (isNaN(quantity) || quantity <= 0 || !expiryDate) {
+        showAlert(i18next.t('productManagement.alerts.fillBatchFields'), 'danger'); // ترجمة
+        return;
+      }
+
+      const batchId = batchNumber || database.ref().child('products').child(code).child('batches').push().key; // استخدم key إذا لم يتم تحديد رقم الدفعة
+
+      const batchData = {
+        batchNumber: batchNumber,
+        quantity: quantity,
+        expiryDate: expiryDate
+      };
+
+      try {
+        await database.ref('products/' + code + '/batches/' + batchId).set(batchData);
+        showAlert(i18next.t('productManagement.alerts.batchSaved'), 'success'); // ترجمة
+        
+        // تحديث currentProduct وعرض المعلومات
+        const snapshot = await database.ref('products/' + code).once('value');
+        currentProduct = { code: code, ...snapshot.val() };
+        
+        if (!isNewProductFlow) { // لا تغلق المودال إذا كان جزءًا من تدفق إضافة منتج جديد
+          showProductInfo(currentProduct);
+        } else {
+          // إذا كان أول دفعة لمنتج جديد، فستغلق الشاشة بعد الحفظ الرئيسي
+        }
+
+      } catch (error) {
+        showAlert(i18next.t('productManagement.database.saveBatchError') + error.message, 'danger'); // ترجمة
+        console.error("Error saving batch:", error);
+      }
     }
-  } catch (error) {
-    showAlert(t('productManagement.databaseError'), 'danger');
-    console.error(error);
-  }
-}
 
-// وظائف عرض المنتج (هنا ستحتاج لتطبيق الترجمة على النصوص التي يتم إنشاؤها ديناميكيًا)
-function showProductInfo(productData) {
-  const productModal = document.getElementById('productModal');
-  const infoCode = document.getElementById('infoCode');
-  const infoName = document.getElementById('infoName');
-  const infoTotalQuantity = document.getElementById('infoTotalQuantity');
-  const infoPrice = document.getElementById('infoPrice');
-  const infoCost = document.getElementById('infoCost');
-  const infoDate = document.getElementById('infoDate');
-  const productImageContainer = document.getElementById('productImageContainer');
-  const batchesContainer = document.getElementById('batchesContainer');
-  const modalActions = document.getElementById('modalActions');
-  const productInfoSection = document.getElementById('productInfo');
-  const productFormSection = document.getElementById('productForm');
+    async function editBatch(batchId) {
+      const batch = currentProduct.batches[batchId];
+      if (!batch) {
+        showAlert(i18next.t('productManagement.alerts.batchNotFound'), 'danger'); // ترجمة
+        return;
+      }
 
-  if (productModal) productModal.style.display = 'block';
-  if (productInfoSection) productInfoSection.style.display = 'block';
-  if (productFormSection) productFormSection.style.display = 'none';
+      // إخفاء معلومات المنتج وإظهار حقول إضافة دفعة
+      document.getElementById('productInfo').style.display = 'none';
+      document.getElementById('productForm').style.display = 'block';
+      
+      // إخفاء حقول معلومات المنتج عند تعديل دفعة فقط
+      document.getElementById('editName').style.display = 'none';
+      document.getElementById('editPrice').style.display = 'none';
+      document.getElementById('editCost').style.display = 'none';
+      document.getElementById('editDate').style.display = 'none';
+      document.getElementById('editImage').style.display = 'none';
 
-  currentProduct = productData;
-  currentProduct.code = productData.code; // تأكد من وجود الكود في البيانات
+      // ملء حقول الدفعة ببيانات الدفعة المختارة
+      document.getElementById('batchNumber').value = batch.batchNumber || '';
+      document.getElementById('batchQuantity').value = batch.quantity;
+      document.getElementById('batchExpiry').value = batch.expiryDate;
 
-  if (infoCode) infoCode.textContent = currentProduct.code;
-  if (infoName) infoName.textContent = currentProduct.name;
-  if (infoTotalQuantity) infoTotalQuantity.textContent = currentProduct.totalQuantity || 0;
-  if (infoPrice) infoPrice.textContent = `${currentProduct.price || 0} ${t('products.currency')}`; // المفتاح "currency" موجود تحت "products"
-  if (infoCost) infoCost.textContent = `${currentProduct.cost || 0} ${t('products.currency')}`; // المفتاح "currency" موجود تحت "products"
-  if (infoDate) infoDate.textContent = currentProduct.date;
-
-  // عرض صورة المنتج
-  if (productImageContainer) {
-    productImageContainer.innerHTML = '';
-    if (currentProduct.imageUrl) {
-      const img = document.createElement('img');
-      img.src = currentProduct.imageUrl;
-      img.alt = t('productManagement.productInfo.productImageAlt', {name: currentProduct.name}); // نص بديل مترجم
-      img.className = 'product-image';
-      productImageContainer.appendChild(img);
+      // إظهار حقول الدفعة
+      document.getElementById('batchNumber').style.display = 'block';
+      document.getElementById('batchQuantity').style.display = 'block';
+      document.getElementById('batchExpiry').style.display = 'block';
+      
+      // تحديث عنوان النموذج
+      document.getElementById('modalTitle').textContent = i18next.t('productManagement.batch.editBatch'); // ترجمة
+      
+      const actions = document.getElementById('modalActions');
+      actions.innerHTML = `
+        <button class="btn btn-success" onclick="updateBatch('${batchId}')">
+          <i class="fas fa-save"></i> ${i18next.t('productManagement.buttons.saveChanges')}
+        </button>
+        <button class="btn btn-secondary" onclick="cancelEdit()">
+          <i class="fas fa-times"></i> ${i18next.t('productManagement.buttons.cancel')}
+        </button>
+      `;
     }
-  }
 
-  // عرض الدفعات المتاحة
-  if (batchesContainer) {
-    batchesContainer.innerHTML = '';
-    if (currentProduct.batches && Object.keys(currentProduct.batches).length > 0) {
-      Object.keys(currentProduct.batches).forEach(batchId => {
-        const batch = currentProduct.batches[batchId];
-        const batchCard = document.createElement('div');
-        batchCard.className = 'batch-card';
-        batchCard.innerHTML = `
-          <div class="batch-header">
-            <strong>${t('productManagement.batch.batchNumber')}: ${batch.batchNumber || t('productManagement.batch.notSpecified')}</strong>
-            <div class="batch-actions">
-              <button class="batch-btn btn-warning" onclick="editBatch('${batchId}')">${t('productManagement.buttons.edit')}</button>
-              <button class="batch-btn btn-danger" onclick="deleteBatch('${batchId}')">${t('productManagement.buttons.delete')}</button>
-            </div>
-          </div>
-          <p>${t('productManagement.batch.quantity')}: ${batch.quantity}</p>
-          <p>${t('productManagement.batch.expiryDate')}: <span class="${getExpiryClass(batch.expiryDate)}">${batch.expiryDate}</span></p>
-        `;
-        batchesContainer.appendChild(batchCard);
-      });
-    } else {
-      batchesContainer.innerHTML = `<p>${t('productManagement.productInfo.noBatchesAvailable')}</p>`; // نص مترجم
+    async function updateBatch(batchId) {
+      const code = currentProduct.code;
+      const batchNumber = document.getElementById('batchNumber').value.trim();
+      const quantity = parseInt(document.getElementById('batchQuantity').value);
+      const expiryDate = document.getElementById('batchExpiry').value;
+
+      if (isNaN(quantity) || quantity <= 0 || !expiryDate) {
+        showAlert(i18next.t('productManagement.alerts.fillBatchFields'), 'danger'); // ترجمة
+        return;
+      }
+
+      const batchData = {
+        batchNumber: batchNumber,
+        quantity: quantity,
+        expiryDate: expiryDate
+      };
+
+      try {
+        await database.ref('products/' + code + '/batches/' + batchId).update(batchData);
+        showAlert(i18next.t('productManagement.alerts.batchUpdated'), 'success'); // ترجمة
+
+        // تحديث currentProduct وعرض المعلومات
+        const snapshot = await database.ref('products/' + code).once('value');
+        currentProduct = { code: code, ...snapshot.val() };
+        showProductInfo(currentProduct);
+      } catch (error) {
+        showAlert(i18next.t('productManagement.database.updateBatchError') + error.message, 'danger'); // ترجمة
+        console.error("Error updating batch:", error);
+      }
     }
-  }
 
-  // ملء أزرار الإجراءات في المودال
-  if (modalActions) {
-    modalActions.innerHTML = `
-      <button class="btn btn-success" onclick="saveProduct()">${t('productManagement.buttons.save')}</button>
-      <button class="btn btn-info" onclick="showEditProductForm()">${t('productManagement.buttons.editProductDetails')}</button>
-      <button class="btn btn-danger" onclick="deleteProduct()">${t('productManagement.buttons.deleteProduct')}</button>
-      <button class="btn btn-secondary" onclick="closeModal()">${t('productManagement.buttons.close')}</button>
-    `;
-  }
-}
+    async function deleteBatch(batchId) {
+      if (!confirm(i18next.t('productManagement.alerts.confirmDeleteBatch'))) { // ترجمة
+        return;
+      }
+      const code = currentProduct.code;
+      try {
+        await database.ref('products/' + code + '/batches/' + batchId).remove();
+        showAlert(i18next.t('productManagement.alerts.batchDeleted'), 'success'); // ترجمة
 
-function showAddProductForm(code) {
-  const productModal = document.getElementById('productModal');
-  const modalTitle = document.getElementById('modalTitle');
-  const productInfoSection = document.getElementById('productInfo');
-  const productFormSection = document.getElementById('productForm');
-  const modalActions = document.getElementById('modalActions');
-
-  if (productModal) productModal.style.display = 'block';
-  if (productInfoSection) productInfoSection.style.display = 'none';
-  if (productFormSection) productFormSection.style.display = 'block';
-  if (modalTitle) modalTitle.textContent = t('productManagement.addProduct.title'); // ترجمة العنوان
-
-  // تعيين القيم الافتراضية
-  document.getElementById('editName').value = '';
-  document.getElementById('editPrice').value = '';
-  document.getElementById('editCost').value = '';
-  document.getElementById('editDate').valueAsDate = new Date();
-  document.getElementById('editImage').value = '';
-  document.getElementById('batchNumber').value = '';
-  document.getElementById('batchQuantity').value = '';
-  document.getElementById('batchExpiry').valueAsDate = new Date();
-
-  // ملء أزرار الإجراءات في المودال
-  if (modalActions) {
-    modalActions.innerHTML = `
-      <button class="btn btn-success" onclick="addProduct('${code}')">${t('productManagement.buttons.addProduct')}</button>
-      <button class="btn btn-secondary" onclick="closeModal()">${t('productManagement.buttons.cancel')}</button>
-    `;
-  }
-}
-
-function showEditProductForm() {
-  const productInfoSection = document.getElementById('productInfo');
-  const productFormSection = document.getElementById('productForm');
-  const modalActions = document.getElementById('modalActions');
-  const modalTitle = document.getElementById('modalTitle');
-
-  if (productInfoSection) productInfoSection.style.display = 'none';
-  if (productFormSection) productFormSection.style.display = 'block';
-  if (modalTitle) modalTitle.textContent = t('productManagement.editProduct.title'); // ترجمة العنوان
-
-  // ملء الحقول بقيم المنتج الحالي
-  document.getElementById('editName').value = currentProduct.name;
-  document.getElementById('editPrice').value = currentProduct.price;
-  document.getElementById('editCost').value = currentProduct.cost;
-  document.getElementById('editDate').value = currentProduct.date;
-
-  // إخفاء حقول الدفعة الجديدة عند التعديل
-  document.getElementById('batchNumber').parentElement.style.display = 'none';
-  document.getElementById('batchQuantity').parentElement.style.display = 'none';
-  document.getElementById('batchExpiry').parentElement.style.display = 'none';
-  document.querySelector('h3[data-i18n="productManagement.batch.addNewBatch"]').style.display = 'none'; // إخفاء العنوان
-
-  if (modalActions) {
-    modalActions.innerHTML = `
-      <button class="btn btn-success" onclick="updateProductDetails()">${t('productManagement.buttons.update')}</button>
-      <button class="btn btn-secondary" onclick="showProductInfo(currentProduct)">${t('productManagement.buttons.cancel')}</button>
-    `;
-  }
-}
-
-
-// وظيفة showAlert (مُحدّثة)
-function showAlert(message, type) {
-  const alertsContainer = document.getElementById('alertsContainer');
-  if (!alertsContainer) return;
-
-  const alertDiv = document.createElement('div');
-  alertDiv.className = `alert alert-${type}`;
-  alertDiv.textContent = message;
-
-  const closeButton = document.createElement('span');
-  closeButton.innerHTML = '&times;';
-  closeButton.style.cursor = 'pointer';
-  closeButton.style.marginLeft = '10px';
-  closeButton.onclick = () => alertDiv.remove();
-  alertDiv.appendChild(closeButton);
-
-  alertsContainer.prepend(alertDiv); // أضف كأول عنصر
-
-  // إزالة التنبيه تلقائياً بعد 5 ثوانٍ
-  setTimeout(() => {
-    alertDiv.remove();
-  }, 5000);
-}
-
-// وظيفة closeModal (مُحدّثة)
-function closeModal() {
-  const productModal = document.getElementById('productModal');
-  if (productModal) {
-    productModal.style.display = 'none';
-  }
-  // تأكد من إعادة تعيين الحالة بعد إغلاق المودال
-  currentProduct = null;
-  // أظهر حقول الدفعة الجديدة مرة أخرى إذا تم إخفائها سابقاً
-  document.getElementById('batchNumber').parentElement.style.display = 'block';
-  document.getElementById('batchQuantity').parentElement.style.display = 'block';
-  document.getElementById('batchExpiry').parentElement.style.display = 'block';
-  const addNewBatchHeader = document.querySelector('h3[data-i18n="productManagement.batch.addNewBatch"]');
-  if (addNewBatchHeader) {
-      addNewBatchHeader.style.display = 'block';
-  }
-}
-
-// وظيفة getExpiryClass (مُحدّثة)
-function getExpiryClass(expiryDateString) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // لإزالة الوقت للمقارنة السليمة
-
-    const expiryDate = new Date(expiryDateString);
-    expiryDate.setHours(0, 0, 0, 0); // لإزالة الوقت للمقارنة السليمة
-
-    // الفرق بالأيام بين تاريخ انتهاء الصلاحية واليوم
-    const diffTime = expiryDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 0) {
-        return 'expired'; // انتهت الصلاحية
-    } else if (diffDays <= 30) { // خلال 30 يومًا
-        return 'expiring-soon'; // توشك على الانتهاء
+        // تحديث currentProduct وعرض المعلومات
+        const snapshot = await database.ref('products/' + code).once('value');
+        currentProduct = { code: code, ...snapshot.val() };
+        if (currentProduct.batches && Object.keys(currentProduct.batches).length > 0) {
+          showProductInfo(currentProduct);
+        } else {
+          // إذا لم يتبق أي دفعات، اعرض معلومات المنتج بدون دفعات
+          showProductInfo(currentProduct);
+        }
+      } catch (error) {
+        showAlert(i18next.t('productManagement.database.deleteBatchError') + error.message, 'danger'); // ترجمة
+        console.error("Error deleting batch:", error);
+      }
     }
-    return ''; // لم تنتهِ بعد
-}
 
+    async function deleteProduct() {
+      if (!confirm(i18next.t('productManagement.alerts.confirmDeleteProduct'))) { // ترجمة
+        return;
+      }
+      const code = currentProduct.code;
+      try {
+        await database.ref('products/' + code).remove();
+        showAlert(i18next.t('productManagement.alerts.productDeleted'), 'success'); // ترجمة
+        closeModal();
+      } catch (error) {
+        showAlert(i18next.t('productManagement.database.deleteProductError') + error.message, 'danger'); // ترجمة
+        console.error("Error deleting product:", error);
+      }
+    }
 
-// Placeholder functions for Firebase operations (لجعل الكود قابلاً للتشغيل)
-// ستحتاج لملء هذه الوظائف بالمنطق الخاص بك للتعامل مع Firebase
+    function closeModal() {
+      document.getElementById('productModal').style.display = 'none';
+      stopScanner(); // أوقف الماسح إذا كان نشطاً
+      document.getElementById('productCodeInput').value = ''; // مسح حقل الإدخال
+      document.getElementById('manualEntry').style.display = 'none'; // إخفاء الإدخال اليدوي
+    }
 
-async function saveProduct() {
-    showAlert(t('productManagement.notImplemented', { func: 'saveProduct' }), 'info');
-    // هنا يجب أن تقوم بحفظ المنتج الحالي (CurrentProduct) إلى Firebase
-    // ثم تقوم بتحديث الواجهة أو إغلاق المودال
-    closeModal();
-}
+    // ================ وظائف التنبيهات ================
+    function showAlert(message, type) {
+      const alertsContainer = document.getElementById('alertsContainer');
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.textContent = message;
+      
+      const closeButton = document.createElement('span');
+      closeButton.textContent = '×';
+      closeButton.style.marginLeft = '10px';
+      closeButton.style.cursor = 'pointer';
+      closeButton.onclick = () => alertDiv.remove();
+      alertDiv.appendChild(closeButton);
 
-async function updateProductDetails() {
-    showAlert(t('productManagement.notImplemented', { func: 'updateProductDetails' }), 'info');
-    // هنا يجب أن تقوم بتحديث تفاصيل المنتج في Firebase
-    // بناءً على القيم في حقول 'editName', 'editPrice', 'editCost', 'editDate', 'editImage'
-    closeModal();
-}
-
-async function deleteProduct() {
-    showAlert(t('productManagement.notImplemented', { func: 'deleteProduct' }), 'info');
-    // هنا يجب أن تقوم بحذف المنتج من Firebase
-    // ثم تقوم بإعادة تحميل الصفحة أو تحديث القائمة
-    closeModal();
-}
-
-async function addProduct(code) {
-    showAlert(t('productManagement.notImplemented', { func: 'addProduct' }), 'info');
-    // هنا يجب أن تقوم بإنشاء منتج جديد في Firebase باستخدام الـ code
-    // وتفاصيل المنتج من حقول 'editName', 'editPrice', 'editCost', 'editDate', 'editImage'
-    // والدفعة الجديدة من 'batchNumber', 'batchQuantity', 'batchExpiry'
-    closeModal();
-}
-
-async function editBatch(batchId) {
-    showAlert(t('productManagement.notImplemented', { func: 'editBatch', id: batchId }), 'info');
-    // هنا تفتح نموذجاً لتعديل الدفعة المحددة (batchId)
-}
-
-async function deleteBatch(batchId) {
-    showAlert(t('productManagement.notImplemented', { func: 'deleteBatch', id: batchId }), 'info');
-    // هنا تقوم بحذف الدفعة المحددة (batchId) من المنتج الحالي في Firebase
-    // ثم تقوم بتحديث عرض الدفعات
-}
-
-</script>
+      alertsContainer.prepend(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 5000); // إزالة التنبيه بعد 5 ثوانٍ
+    }
+  </script>
 </body>
 </html>
