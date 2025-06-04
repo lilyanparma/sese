@@ -398,20 +398,18 @@
   </header>
   
   <div class="control-buttons">
-    <button class="btn btn-primary" onclick="toggleCamera()">
-      <i class="fas fa-camera"></i> <span data-i18n="buttons.scanBarcode">مسح الباركود</span>
+    <button class="btn btn-primary" id="scanBarcodeBtn">
+      <i class="fas fa-camera"></i> <span data-i18n="productManagement.buttons.scanBarcode">مسح الباركود</span>
     </button>
-    <button class="btn btn-secondary" onclick="showManualEntry()">
-      <i class="fas fa-keyboard"></i> <span data-i18n="buttons.manualEntry">إدخال يدوي</span>
+    <button class="btn btn-secondary" id="manualEntryBtn">
+      <i class="fas fa-keyboard"></i> <span data-i18n="productManagement.buttons.manualEntry">إدخال يدوي</span>
     </button>
-    <button class="btn btn-info" onclick="changeLanguage('ar')">العربية</button>
-    <button class="btn btn-info" onclick="changeLanguage('fr')">Français</button>
-  </div>
+    </div>
   
   <div class="input-section" id="manualEntry" style="display: none;">
-    <input type="text" id="productCodeInput" class="input-field" data-i18n-placeholder="placeholders.enterProductCode" placeholder="أدخل رقم المنتج">
-    <button class="btn btn-success" onclick="searchProduct()">
-      <i class="fas fa-search"></i> <span data-i18n="buttons.search">بحث</span>
+    <input type="text" id="productCodeInput" class="input-field" data-i18n-placeholder="productManagement.placeholders.enterProductCode" placeholder="أدخل رقم المنتج">
+    <button class="btn btn-success" id="searchProductBtn">
+      <i class="fas fa-search"></i> <span data-i18n="productManagement.buttons.search">بحث</span>
     </button>
   </div>
   
@@ -421,7 +419,7 @@
       <div class="scanner-frame"></div>
       <div class="scanner-instruction">
         <i class="fas fa-barcode fa-3x"></i>
-        <p data-i18n="scanner.instruction">وجه الكاميرا نحو الباركود</p>
+        <p data-i18n="productManagement.scanner.instruction">وجه الكاميرا نحو الباركود</p>
       </div>
     </div>
   </div>
@@ -430,54 +428,53 @@
   
   <div class="modal" id="productModal">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <h2 id="modalTitle" data-i18n="productInfo.title">معلومات المنتج</h2>
+      <span class="close-btn" id="closeModalBtn">&times;</span> <h2 id="modalTitle" data-i18n="productManagement.productInfo.title">معلومات المنتج</h2>
       
       <div id="productInfo">
         <table class="product-info">
           <tr>
-            <td class="info-label" data-i18n="productInfo.code">رقم المنتج:</td>
+            <td class="info-label" data-i18n="productManagement.productInfo.code">رقم المنتج:</td>
             <td id="infoCode"></td>
           </tr>
           <tr>
-            <td class="info-label" data-i18n="productInfo.name">اسم المنتج:</td>
+            <td class="info-label" data-i18n="productManagement.productInfo.name">اسم المنتج:</td>
             <td id="infoName"></td>
           </tr>
           <tr>
-            <td class="info-label" data-i18n="productInfo.totalQuantity">إجمالي الكمية:</td>
+            <td class="info-label" data-i18n="productManagement.productInfo.totalQuantity">إجمالي الكمية:</td>
             <td id="infoTotalQuantity"></td>
           </tr>
           <tr>
-            <td class="info-label" data-i18n="productInfo.price">سعر البيع:</td>
+            <td class="info-label" data-i18n="productManagement.productInfo.price">سعر البيع:</td>
             <td id="infoPrice"></td>
           </tr>
           <tr>
-            <td class="info-label" data-i18n="productInfo.cost">سعر الشراء:</td>
+            <td class="info-label" data-i18n="productManagement.productInfo.cost">سعر الشراء:</td>
             <td id="infoCost"></td>
           </tr>
           <tr>
-            <td class="info-label" data-i18n="productInfo.date">تاريخ الإضافة:</td>
+            <td class="info-label" data-i18n="productManagement.productInfo.date">تاريخ الإضافة:</td>
             <td id="infoDate"></td>
           </tr>
         </table>
         
         <div id="productImageContainer"></div>
         
-        <h3 style="margin: 20px 0 10px;" data-i18n="productInfo.availableBatches">الدُفعات المتاحة</h3>
+        <h3 style="margin: 20px 0 10px;" data-i18n="productManagement.productInfo.availableBatches">الدُفعات المتاحة</h3>
         <div id="batchesContainer"></div>
       </div>
       
       <div id="productForm" style="display: none;">
-        <input type="text" id="editName" class="input-field" data-i18n-placeholder="placeholders.productName" placeholder="اسم المنتج" required>
-        <input type="number" id="editPrice" class="input-field" data-i18n-placeholder="placeholders.sellingPrice" placeholder="سعر البيع" min="0" step="0.01" required>
-        <input type="number" id="editCost" class="input-field" data-i18n-placeholder="placeholders.purchasePrice" placeholder="سعر الشراء" min="0" step="0.01" required>
+        <input type="text" id="editName" class="input-field" data-i18n-placeholder="productManagement.placeholders.productName" placeholder="اسم المنتج" required>
+        <input type="number" id="editPrice" class="input-field" data-i18n-placeholder="productManagement.placeholders.sellingPrice" placeholder="سعر البيع" min="0" step="0.01" required>
+        <input type="number" id="editCost" class="input-field" data-i18n-placeholder="productManagement.placeholders.purchasePrice" placeholder="سعر الشراء" min="0" step="0.01" required>
         <input type="date" id="editDate" class="input-field" required>
         <input type="file" id="editImage" class="input-field" accept="image/*">
         
-        <h3 style="margin: 20px 0 10px;" data-i18n="batch.addNewBatch">إضافة دفعة جديدة</h3>
-        <input type="text" id="batchNumber" class="input-field" data-i18n-placeholder="placeholders.batchNumberOptional" placeholder="رقم الدفعة (اختياري)">
-        <input type="number" id="batchQuantity" class="input-field" data-i18n-placeholder="placeholders.quantity" placeholder="الكمية" min="1" required>
-        <input type="date" id="batchExpiry" class="input-field" data-i18n-placeholder="placeholders.expiryDate" placeholder="تاريخ انتهاء الصلاحية" required>
+        <h3 style="margin: 20px 0 10px;" data-i18n="productManagement.batch.addNewBatch">إضافة دفعة جديدة</h3>
+        <input type="text" id="batchNumber" class="input-field" data-i18n-placeholder="productManagement.placeholders.batchNumberOptional" placeholder="رقم الدفعة (اختياري)">
+        <input type="number" id="batchQuantity" class="input-field" data-i18n-placeholder="productManagement.placeholders.quantity" placeholder="الكمية" min="1" required>
+        <input type="date" id="batchExpiry" class="input-field" data-i18n-placeholder="productManagement.placeholders.expiryDate" placeholder="تاريخ انتهاء الصلاحية" required>
       </div>
       
       <div class="modal-actions" id="modalActions">
@@ -526,7 +523,9 @@ async function initI18n() {
   }
 }
 
-// دالة تغيير اللغة
+// دالة تغيير اللغة (تم حذفها لأن الأزرار حذفت من هذه الصفحة)
+// إذا كنت تستدعي هذه الدالة من مكان آخر، احتفظ بها
+/*
 async function changeLanguage(lng) {
   try {
     if (!i18nextConfig.supportedLngs.includes(lng)) {
@@ -543,7 +542,7 @@ async function changeLanguage(lng) {
     // إعادة تحميل البيانات أو العناصر التي تحتاج تحديث
     refreshTranslatedContent();
     
-    showAlert(t('languageChanged', {lang: lng === 'ar' ? 'العربية' : 'Français'}), 'info');
+    showAlert(t('productManagement.languageChanged', {lang: lng === 'ar' ? 'العربية' : 'Français'}), 'info');
     
     return true;
   } catch (error) {
@@ -551,6 +550,7 @@ async function changeLanguage(lng) {
     return false;
   }
 }
+*/
 
 // دالة مساعدة للترجمة مع معالجة الأخطاء
 function t(key, options = {}) {
@@ -568,31 +568,51 @@ function refreshTranslatedContent() {
   // ترجمة النصوص ذات سمة data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    // لترجمة الـ placeholder, نستخدم data-i18n-placeholder
-    if (el.hasAttribute('data-i18n-placeholder')) {
-        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
-    } else {
-        el.textContent = t(key);
-    }
+    el.textContent = t(key);
+  });
+
+  // ترجمة الـ placeholder
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
   });
 
   // ترجمة عنوان الصفحة
-  document.title = t('siteTitle'); // تأكد من وجود "siteTitle" في ملفات الترجمة
-
-  // تحديث placeholders يدوياً إذا لم تتم تغطيتها بـ data-i18n-placeholder
-  // هذا الجزء قد لا يكون ضرورياً إذا استخدمت data-i18n-placeholder بشكل شامل
-  const productCodeInput = document.getElementById('productCodeInput');
-  if (productCodeInput && !productCodeInput.hasAttribute('data-i18n-placeholder')) {
-    productCodeInput.placeholder = t('placeholders.enterProductCode');
-  }
+  document.title = t('productManagement.siteTitle'); // الآن تحت productManagement
 
   // تحديث أي نصوص أخرى غير موجودة كـ data-i18n
-  // مثال: إذا كان لديك عنصر لا يمكنك إضافة data-i18n إليه بسهولة
-  // document.getElementById('someElement').textContent = t('someOtherKey');
+  // هذا الجزء قد لا يكون ضرورياً إذا استخدمت data-i18n-placeholder و data-i18n بشكل شامل
 }
 
+// ================ ربط معالجات الأحداث (Event Listeners) للأزرار ================
 // تشغيل التهيئة عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', initI18n);
+document.addEventListener('DOMContentLoaded', () => {
+    initI18n(); // قم بتهيئة i18n أولاً
+
+    // ربط معالجات الأحداث (Event Listeners) للأزرار
+    const manualEntryBtn = document.getElementById('manualEntryBtn');
+    if (manualEntryBtn) {
+        manualEntryBtn.addEventListener('click', showManualEntry);
+    }
+
+    const scanBarcodeBtn = document.getElementById('scanBarcodeBtn');
+    if (scanBarcodeBtn) {
+        scanBarcodeBtn.addEventListener('click', toggleCamera);
+    }
+
+    const searchProductBtn = document.getElementById('searchProductBtn');
+    if (searchProductBtn) {
+        searchProductBtn.addEventListener('click', searchProduct);
+    }
+
+    const closeModalBtn = document.getElementById('closeModalBtn'); // استخدام الـ id الجديد
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+    }
+
+    // ... هنا يمكنك إضافة ربط لأي أزرار أخرى تستخدم onclick في HTML
+});
+
 
 // ================ تهيئة Firebase (هذا الجزء هو نفسه) ================
 const firebaseConfig = {
@@ -631,7 +651,7 @@ async function startScanner() {
   
   if (manualEntry) manualEntry.style.display = 'none';
   if (scannerContainer) scannerContainer.style.display = 'block';
-  if (resultMessage) resultMessage.textContent = t('preparingScanner'); // الترجمة هنا
+  if (resultMessage) resultMessage.textContent = t('productManagement.preparingScanner'); // الترجمة هنا
 
   try {
     await codeReader.decodeFromVideoDevice(
@@ -646,17 +666,17 @@ async function startScanner() {
         
         if (err && !(err instanceof ZXing.NotFoundException)) {
           console.error(err);
-          showAlert(t('scannerError', {error: err.message}), 'danger'); // الترجمة هنا
+          showAlert(t('productManagement.scannerError', {error: err.message}), 'danger'); // الترجمة هنا
           stopScanner();
         }
       }
     );
     
     cameraActive = true;
-    if (resultMessage) resultMessage.textContent = t('scanningMessage'); // الترجمة هنا
+    if (resultMessage) resultMessage.textContent = t('productManagement.scanningMessage'); // الترجمة هنا
   } catch (err) {
     console.error(err);
-    showAlert(t('cameraError', {error: err.message}), 'danger'); // الترجمة هنا
+    showAlert(t('productManagement.cameraError', {error: err.message}), 'danger'); // الترجمة هنا
     if (scannerContainer) scannerContainer.style.display = 'none';
   }
 }
@@ -674,7 +694,7 @@ function stopScanner() {
 
 // ================ وظائف إدارة المنتجات ================
 async function processScannedCode(code) {
-  showAlert(t('searchingProduct', {code}), 'info'); // الترجمة هنا
+  showAlert(t('productManagement.searchingProduct', {code}), 'info'); // الترجمة هنا
   currentProduct = { code: code };
   
   try {
@@ -682,13 +702,13 @@ async function processScannedCode(code) {
     if (snapshot.exists()) {
       const productData = snapshot.val();
       showProductInfo(productData);
-      showAlert(t('productFound'), 'success'); // الترجمة هنا
+      showAlert(t('productManagement.productFound'), 'success'); // الترجمة هنا
     } else {
       showAddProductForm(code);
-      showAlert(t('newProductWarning'), 'warning'); // الترجمة هنا
+      showAlert(t('productManagement.newProductWarning'), 'warning'); // الترجمة هنا
     }
   } catch (error) {
-    showAlert(t('databaseError'), 'danger'); // الترجمة هنا
+    showAlert(t('productManagement.databaseError'), 'danger'); // الترجمة هنا
     console.error(error);
   }
 }
@@ -700,7 +720,7 @@ function showManualEntry() {
   
   if (manualEntry) manualEntry.style.display = 'block';
   if (productCodeInput) {
-    productCodeInput.placeholder = t('placeholders.enterProductCode'); // الترجمة هنا
+    productCodeInput.placeholder = t('productManagement.placeholders.enterProductCode'); // الترجمة هنا
     productCodeInput.focus();
   }
 }
@@ -711,24 +731,23 @@ async function searchProduct() {
   
   const code = productCodeInput.value.trim();
   if (!code) {
-    showAlert(t('enterProductCodeWarning'), 'warning'); // الترجمة هنا
+    showAlert(t('productManagement.enterProductCodeWarning'), 'warning'); // الترجمة هنا
     return;
   }
   
   try {
-    showAlert(t('searchingProduct', {code}), 'info'); // الترجمة هنا
+    showAlert(t('productManagement.searchingProduct', {code}), 'info'); // الترجمة هنا
     const snapshot = await database.ref('products/' + code).once('value');
-    // ... بقية الكود (كما هو) ...
     if (snapshot.exists()) {
       const productData = snapshot.val();
       showProductInfo(productData);
-      showAlert(t('productFound'), 'success');
+      showAlert(t('productManagement.productFound'), 'success');
     } else {
       showAddProductForm(code);
-      showAlert(t('newProductWarning'), 'warning');
+      showAlert(t('productManagement.newProductWarning'), 'warning');
     }
   } catch (error) {
-    showAlert(t('databaseError'), 'danger');
+    showAlert(t('productManagement.databaseError'), 'danger');
     console.error(error);
   }
 }
@@ -758,8 +777,8 @@ function showProductInfo(productData) {
   if (infoCode) infoCode.textContent = currentProduct.code;
   if (infoName) infoName.textContent = currentProduct.name;
   if (infoTotalQuantity) infoTotalQuantity.textContent = currentProduct.totalQuantity || 0;
-  if (infoPrice) infoPrice.textContent = `${currentProduct.price || 0} ${t('currency')}`; // أضف مفتاح الترجمة للعملة
-  if (infoCost) infoCost.textContent = `${currentProduct.cost || 0} ${t('currency')}`;
+  if (infoPrice) infoPrice.textContent = `${currentProduct.price || 0} ${t('products.currency')}`; // المفتاح "currency" موجود تحت "products"
+  if (infoCost) infoCost.textContent = `${currentProduct.cost || 0} ${t('products.currency')}`; // المفتاح "currency" موجود تحت "products"
   if (infoDate) infoDate.textContent = currentProduct.date;
 
   // عرض صورة المنتج
@@ -768,7 +787,7 @@ function showProductInfo(productData) {
     if (currentProduct.imageUrl) {
       const img = document.createElement('img');
       img.src = currentProduct.imageUrl;
-      img.alt = t('productImageAlt', {name: currentProduct.name}); // نص بديل مترجم
+      img.alt = t('productManagement.productInfo.productImageAlt', {name: currentProduct.name}); // نص بديل مترجم
       img.className = 'product-image';
       productImageContainer.appendChild(img);
     }
@@ -784,29 +803,29 @@ function showProductInfo(productData) {
         batchCard.className = 'batch-card';
         batchCard.innerHTML = `
           <div class="batch-header">
-            <strong>${t('batch.batchNumber')}: ${batch.batchNumber || t('batch.notSpecified')}</strong>
+            <strong>${t('productManagement.batch.batchNumber')}: ${batch.batchNumber || t('productManagement.batch.notSpecified')}</strong>
             <div class="batch-actions">
-              <button class="batch-btn btn-warning" onclick="editBatch('${batchId}')">${t('buttons.edit')}</button>
-              <button class="batch-btn btn-danger" onclick="deleteBatch('${batchId}')">${t('buttons.delete')}</button>
+              <button class="batch-btn btn-warning" onclick="editBatch('${batchId}')">${t('productManagement.buttons.edit')}</button>
+              <button class="batch-btn btn-danger" onclick="deleteBatch('${batchId}')">${t('productManagement.buttons.delete')}</button>
             </div>
           </div>
-          <p>${t('batch.quantity')}: ${batch.quantity}</p>
-          <p>${t('batch.expiryDate')}: <span class="${getExpiryClass(batch.expiryDate)}">${batch.expiryDate}</span></p>
+          <p>${t('productManagement.batch.quantity')}: ${batch.quantity}</p>
+          <p>${t('productManagement.batch.expiryDate')}: <span class="${getExpiryClass(batch.expiryDate)}">${batch.expiryDate}</span></p>
         `;
         batchesContainer.appendChild(batchCard);
       });
     } else {
-      batchesContainer.innerHTML = `<p>${t('productInfo.noBatchesAvailable')}</p>`; // نص مترجم
+      batchesContainer.innerHTML = `<p>${t('productManagement.productInfo.noBatchesAvailable')}</p>`; // نص مترجم
     }
   }
 
   // ملء أزرار الإجراءات في المودال
   if (modalActions) {
     modalActions.innerHTML = `
-      <button class="btn btn-success" onclick="saveProduct()">${t('buttons.save')}</button>
-      <button class="btn btn-info" onclick="showEditProductForm()">${t('buttons.editProductDetails')}</button>
-      <button class="btn btn-danger" onclick="deleteProduct()">${t('buttons.deleteProduct')}</button>
-      <button class="btn btn-secondary" onclick="closeModal()">${t('buttons.close')}</button>
+      <button class="btn btn-success" onclick="saveProduct()">${t('productManagement.buttons.save')}</button>
+      <button class="btn btn-info" onclick="showEditProductForm()">${t('productManagement.buttons.editProductDetails')}</button>
+      <button class="btn btn-danger" onclick="deleteProduct()">${t('productManagement.buttons.deleteProduct')}</button>
+      <button class="btn btn-secondary" onclick="closeModal()">${t('productManagement.buttons.close')}</button>
     `;
   }
 }
@@ -821,7 +840,7 @@ function showAddProductForm(code) {
   if (productModal) productModal.style.display = 'block';
   if (productInfoSection) productInfoSection.style.display = 'none';
   if (productFormSection) productFormSection.style.display = 'block';
-  if (modalTitle) modalTitle.textContent = t('addProduct.title'); // ترجمة العنوان
+  if (modalTitle) modalTitle.textContent = t('productManagement.addProduct.title'); // ترجمة العنوان
 
   // تعيين القيم الافتراضية
   document.getElementById('editName').value = '';
@@ -836,8 +855,8 @@ function showAddProductForm(code) {
   // ملء أزرار الإجراءات في المودال
   if (modalActions) {
     modalActions.innerHTML = `
-      <button class="btn btn-success" onclick="addProduct('${code}')">${t('buttons.addProduct')}</button>
-      <button class="btn btn-secondary" onclick="closeModal()">${t('buttons.cancel')}</button>
+      <button class="btn btn-success" onclick="addProduct('${code}')">${t('productManagement.buttons.addProduct')}</button>
+      <button class="btn btn-secondary" onclick="closeModal()">${t('productManagement.buttons.cancel')}</button>
     `;
   }
 }
@@ -850,7 +869,7 @@ function showEditProductForm() {
 
   if (productInfoSection) productInfoSection.style.display = 'none';
   if (productFormSection) productFormSection.style.display = 'block';
-  if (modalTitle) modalTitle.textContent = t('editProduct.title'); // ترجمة العنوان
+  if (modalTitle) modalTitle.textContent = t('productManagement.editProduct.title'); // ترجمة العنوان
 
   // ملء الحقول بقيم المنتج الحالي
   document.getElementById('editName').value = currentProduct.name;
@@ -862,20 +881,16 @@ function showEditProductForm() {
   document.getElementById('batchNumber').parentElement.style.display = 'none';
   document.getElementById('batchQuantity').parentElement.style.display = 'none';
   document.getElementById('batchExpiry').parentElement.style.display = 'none';
-  document.querySelector('h3[data-i18n="batch.addNewBatch"]').style.display = 'none'; // إخفاء العنوان
+  document.querySelector('h3[data-i18n="productManagement.batch.addNewBatch"]').style.display = 'none'; // إخفاء العنوان
 
   if (modalActions) {
     modalActions.innerHTML = `
-      <button class="btn btn-success" onclick="updateProductDetails()">${t('buttons.update')}</button>
-      <button class="btn btn-secondary" onclick="showProductInfo(currentProduct)">${t('buttons.cancel')}</button>
+      <button class="btn btn-success" onclick="updateProductDetails()">${t('productManagement.buttons.update')}</button>
+      <button class="btn btn-secondary" onclick="showProductInfo(currentProduct)">${t('productManagement.buttons.cancel')}</button>
     `;
   }
 }
 
-
-// ... (بقية وظائف Firebase وإدارة المنتج، مثل saveProduct, updateProductDetails, deleteProduct, addBatch, editBatch, deleteBatch, showAlert, closeModal, getExpiryClass - يجب أن تقوم بتطبيق الترجمة عليها باستخدام t() عند عرض النصوص) ...
-
-// هذا الجزء يمثل نهاية الكود الذي قدمته، وسأكمل الوظائف الناقصة (لضمان عمل الـ t() فيها) وأيضاً سأضيف ملفات الـ JSON.
 
 // وظيفة showAlert (مُحدّثة)
 function showAlert(message, type) {
@@ -913,7 +928,7 @@ function closeModal() {
   document.getElementById('batchNumber').parentElement.style.display = 'block';
   document.getElementById('batchQuantity').parentElement.style.display = 'block';
   document.getElementById('batchExpiry').parentElement.style.display = 'block';
-  const addNewBatchHeader = document.querySelector('h3[data-i18n="batch.addNewBatch"]');
+  const addNewBatchHeader = document.querySelector('h3[data-i18n="productManagement.batch.addNewBatch"]');
   if (addNewBatchHeader) {
       addNewBatchHeader.style.display = 'block';
   }
@@ -944,28 +959,28 @@ function getExpiryClass(expiryDateString) {
 // ستحتاج لملء هذه الوظائف بالمنطق الخاص بك للتعامل مع Firebase
 
 async function saveProduct() {
-    showAlert(t('notImplemented', { func: 'saveProduct' }), 'info');
+    showAlert(t('productManagement.notImplemented', { func: 'saveProduct' }), 'info');
     // هنا يجب أن تقوم بحفظ المنتج الحالي (CurrentProduct) إلى Firebase
     // ثم تقوم بتحديث الواجهة أو إغلاق المودال
     closeModal();
 }
 
 async function updateProductDetails() {
-    showAlert(t('notImplemented', { func: 'updateProductDetails' }), 'info');
+    showAlert(t('productManagement.notImplemented', { func: 'updateProductDetails' }), 'info');
     // هنا يجب أن تقوم بتحديث تفاصيل المنتج في Firebase
     // بناءً على القيم في حقول 'editName', 'editPrice', 'editCost', 'editDate', 'editImage'
     closeModal();
 }
 
 async function deleteProduct() {
-    showAlert(t('notImplemented', { func: 'deleteProduct' }), 'info');
+    showAlert(t('productManagement.notImplemented', { func: 'deleteProduct' }), 'info');
     // هنا يجب أن تقوم بحذف المنتج من Firebase
     // ثم تقوم بإعادة تحميل الصفحة أو تحديث القائمة
     closeModal();
 }
 
 async function addProduct(code) {
-    showAlert(t('notImplemented', { func: 'addProduct' }), 'info');
+    showAlert(t('productManagement.notImplemented', { func: 'addProduct' }), 'info');
     // هنا يجب أن تقوم بإنشاء منتج جديد في Firebase باستخدام الـ code
     // وتفاصيل المنتج من حقول 'editName', 'editPrice', 'editCost', 'editDate', 'editImage'
     // والدفعة الجديدة من 'batchNumber', 'batchQuantity', 'batchExpiry'
@@ -973,12 +988,12 @@ async function addProduct(code) {
 }
 
 async function editBatch(batchId) {
-    showAlert(t('notImplemented', { func: 'editBatch', id: batchId }), 'info');
+    showAlert(t('productManagement.notImplemented', { func: 'editBatch', id: batchId }), 'info');
     // هنا تفتح نموذجاً لتعديل الدفعة المحددة (batchId)
 }
 
 async function deleteBatch(batchId) {
-    showAlert(t('notImplemented', { func: 'deleteBatch', id: batchId }), 'info');
+    showAlert(t('productManagement.notImplemented', { func: 'deleteBatch', id: batchId }), 'info');
     // هنا تقوم بحذف الدفعة المحددة (batchId) من المنتج الحالي في Firebase
     // ثم تقوم بتحديث عرض الدفعات
 }
