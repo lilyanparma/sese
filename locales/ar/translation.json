@@ -58,7 +58,8 @@
     "currency": "د.ج",
     "backToTop": "العودة للأعلى"
   },
-  "productManagement": {  <-- **هنا أضفنا المفتاح الرئيسي الجديد**
+  "productManagement": {
+    "siteTitle": "إدارة المنتجات - نظام الدُفعات",
     "title": "إدارة المنتجات بنظام الدُفعات",
     "subtitle": "نظام مسح الباركود وإدارة المخزون حسب تواريخ الصلاحية",
     "buttons": {
@@ -167,6 +168,7 @@
     "deleteProductError": "حدث خطأ أثناء حذف المنتج: {{error}}",
     "batchExpiredWarning": "تحذير: الدفعة {{batch}} من المنتج {{product}} منتهية الصلاحية",
     "batchExpiringWarning": "تنبيه: الدفعة {{batch}} من المنتج {{product}} ستنتهي خلال {{days}} يوم",
-    "unknown": "غير معروفة"
+    "unknown": "غير معروفة",
+    "languageChanged": "تم تغيير اللغة إلى {{lang}}."
   }
 }
