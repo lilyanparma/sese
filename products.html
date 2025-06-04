@@ -515,14 +515,14 @@ const i18nextConfig = {
 // دالة لتحميل ملفات الترجمة
 async function loadTranslations(lang) {
   try {
-    const response = await fetch(`/locales/${lang}/translation.json`);
+    // استخدم مسارًا نسبيًا (بدون / في البداية)
+    const response = await fetch(`locales/${lang}/translation.json`);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const translations = await response.json();
     i18n.addResourceBundle(lang, 'translation', translations);
     return translations;
   } catch (error) {
     console.error(`Failed to load ${lang} translations:`, error);
-    // العودة للغة الافتراضية إذا فشل تحميل اللغة المطلوبة
     if (lang !== i18nextConfig.fallbackLng) {
       return loadTranslations(i18nextConfig.fallbackLng);
     }
