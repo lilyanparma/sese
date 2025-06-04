@@ -1,0 +1,95 @@
+{
+  "pageTitles": {
+    "smartSaleSystem": "Système de vente intelligent"
+  },
+  "headers": {
+    "mainTitle": "Système de vente intelligent"
+  },
+  "buttons": {
+    "searchProduct": "Rechercher un produit",
+    "scan": "Scanner",
+    "stopCamera": "Arrêter la caméra",
+    "addDiscount": "Ajouter une réduction",
+    "applyDiscount": "Appliquer la réduction",
+    "confirmSale": "Confirmer la vente",
+    "returnProduct": "Retourner le produit",
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "placeholders": {
+    "enterBarcode": "Entrez le code-barres..."
+  },
+  "scanner": {
+    "instruction": "Dirigez la caméra vers le code-barres"
+  },
+  "productInfo": {
+    "name": "Nom du produit",
+    "stock": "Stock",
+    "expiry": "Date d'expiration"
+  },
+  "general": {
+    "currency": "MAD",
+    "pieces": "pièces",
+    "notSpecified": "Non spécifié",
+    "noReasonGiven": "Aucune raison mentionnée",
+    "pharmacyName": "Paramedical Lilian Rose"
+  },
+  "productStatus": {
+    "outOfStock": "En rupture de stock",
+    "expired": "Expiré",
+    "expiringIn": "Expire dans {{days}} jours"
+  },
+  "discount": {
+    "percentage": "Pourcentage",
+    "fixedAmount": "Montant fixe",
+    "discountPercentage": "Pourcentage de réduction",
+    "discountAmount": "Montant de la réduction",
+    "reasonOptional": "Raison de la réduction (optionnelle)",
+    "reasonExample": "Exemple: promotion saisonnière, défaut mineur..."
+  },
+  "payment": {
+    "cash": "En espèces",
+    "card": "Carte bancaire",
+    "transfer": "Virement",
+    "finalPrice": "Prix final"
+  },
+  "messages": {
+    "startingCamera": "Démarrage de la caméra...",
+    "cameraStarted": "Caméra démarrée avec succès",
+    "searchingProduct": "Recherche du produit...",
+    "productFound": "Produit trouvé",
+    "discountApplied": "Réduction appliquée avec succès",
+    "discountRemoved": "Réduction supprimée",
+    "invoiceSaved": "Facture enregistrée avec succès",
+    "processingReturn": "Traitement du retour..."
+  },
+  "errors": {
+    "scannerError": "Erreur de scan",
+    "cameraError": "Erreur de caméra",
+    "cameraFailed": "Échec du démarrage de la caméra",
+    "enterBarcode": "Veuillez entrer un code-barres",
+    "productNotFound": "Produit introuvable dans le système",
+    "databaseError": "Erreur de base de données",
+    "searchError": "Erreur lors de la recherche du produit",
+    "invalidDiscountPercent": "Le pourcentage de réduction doit être entre 0 et 100",
+    "invalidDiscountAmount": "Le montant de la réduction doit être positif",
+    "discountReasonRequired": "Une réduction de plus de 20% nécessite une raison",
+    "invalidFinalPrice": "Le prix final ne peut pas être négatif",
+    "noStock": "⚠️ Impossible de finaliser la vente - Stock épuisé!",
+    "expiredProduct": "⚠️ Impossible de vendre un produit expiré!",
+    "updateStockError": "Erreur de mise à jour du stock",
+    "updateStockFailed": "Échec de la mise à jour du stock",
+    "noProductSelected": "Aucun produit sélectionné pour le retour",
+    "saveInvoiceError": "Erreur d'enregistrement de la facture",
+    "returnError": "Erreur lors du retour",
+    "returnFailed": "Échec du traitement du retour"
+  },
+  "return": {
+    "confirmTitle": "Confirmation de retour",
+    "confirmText": "Êtes-vous sûr de vouloir retourner ce produit?",
+    "confirmReturnText": "Êtes-vous sûr de vouloir retourner le produit: {{productName}}?",
+    "reasonPlaceholder": "Raison du retour (optionnelle)",
+    "successTitle": "Retour effectué avec succès",
+    "successText": "Le produit {{productName}} a été retourné pour {{price}} {{currency}}"
+  }
+}
