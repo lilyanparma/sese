@@ -373,7 +373,6 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    
   </style>
 </head>
 <body>
@@ -472,7 +471,6 @@
     }, function(err, t) {
       if (err) console.error('i18next initialization error:', err);
       updateContent();
-      updateLanguageButton();
       initFirebase();
     });
 
@@ -491,35 +489,6 @@
     document.querySelectorAll('[data-i18n-title]').forEach(element => {
       const key = element.getAttribute('data-i18n-title');
       element.title = i18next.t(key);
-    });
-  }
-
-  // تحديث زر اللغة
-  function updateLanguageButton() {
-    const langBtn = document.querySelector('.language-btn');
-    const langText = document.getElementById('currentLanguage');
-    
-    if (i18next.language === 'ar') {
-      langText.textContent = 'AR';
-      langBtn.innerHTML = '<span id="currentLanguage">AR</span>';
-    } else {
-      langText.textContent = 'EN';
-      langBtn.innerHTML = '<span id="currentLanguage">EN</span>';
-    }
-  }
-
-  // تبديل اللغة
-  function switchLanguage() {
-    const newLang = i18next.language === 'ar' ? 'en' : 'ar';
-    i18next.changeLanguage(newLang, (err, t) => {
-      if (err) return console.error('Error changing language:', err);
-      updateContent();
-      updateLanguageButton();
-      
-      // إعادة تطبيق الفلاتر لتحديث النصوص الديناميكية
-      if (Object.keys(allProducts).length > 0) {
-        applyFilters();
-      }
     });
   }
 
