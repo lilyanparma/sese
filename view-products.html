@@ -476,23 +476,33 @@
   let currentLanguage = 'ar';
 
   // تهيئة i18next
-  function initI18n() {
-    i18next
-      .use(i18nextHttpBackend)
-      .use(i18nextBrowserLanguageDetector)
-      .init({
-        fallbackLng: 'ar',
-        debug: false,
-        ns: ['products'],
-        defaultNS: 'products',
-        backend: {
-          loadPath: 'locales/{{lng}}/{{ns}}.json'
+  i18next
+  .use(i18nextHttpBackend)
+  .use(i18nextBrowserLanguageDetector)
+  .init({
+    fallbackLng: 'ar',
+    debug: true, // تفعيل وضع التصحيح
+    ns: ['products'],
+    defaultNS: 'products',
+    backend: {
+      loadPath: 'locales/{{lng}}/{{ns}}.json',
+      parse: function(data) {
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          console.error('Failed to parse JSON:', e);
+          return {};
         }
-      }, function(err, t) {
-        if (err) console.error('i18next initialization error:', err);
-        updatePageLanguage();
-      });
-  }
+      }
+    }
+  }, function(err, t) {
+    if (err) {
+      console.error('i18next initialization error:', err);
+      // عرض رسالة للمستخدم
+      alert('حدث خطأ في تحميل الترجمة، سيتم تحميل النسخة الافتراضية');
+    }
+    updateContent();
+  });
 
   // تحديث لغة الصفحة
   function updatePageLanguage() {
