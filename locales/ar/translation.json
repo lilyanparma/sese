@@ -1,171 +1,246 @@
 {
-  "siteTitle": "باراميديكال ليليان روز",
-  "menu": {
-    "home": "الصفحة الرئيسية",
-    "products": "المنتجات",
-    "viewProducts": "عرض المنتجات",
-    "sellProducts": "بيع المنتجات",
-    "services": "خدمات إضافية",
-    "profits": "الأرباح والحسابات"
-  },
-  "main": {
-    "title": "الرئيسية - رسوميات المبيعات"
-  },
-  "footer": {
-    "copyright": "جميع الحقوق محفوظة © 2025 ليليان روز"
-  },
-  "pageTitles": {
-    "productManagement": "إدارة المنتجات - نظام الدُفعات"
-  },
-  "productManagement": {
-    "title": "إدارة المنتجات بنظام الدُفعات",
-    "subtitle": "نظام مسح الباركود وإدارة المخزون حسب تواريخ الصلاحية"
-  },
-  "products": {
-    "title": "نظام إدارة الصيدلية",
-    "pageTitle": "قائمة المنتجات",
-    "productList": "قائمة المنتجات ({{count}})",
-    "filteredProductList": "المنتجات المطابقة ({{count}} من {{total}})",
-    "searchPlaceholder": "ابحث عن منتج بالاسم...",
-    "gridViewTitle": "عرض شبكي",
-    "listViewTitle": "عرض قائمة",
-    "gridView": "عرض شبكي",
-    "listView": "عرض قائمة",
-    "stockStatus": "حالة المخزون:",
-    "all": "الكل",
-    "inStock": "متوفر",
-    "lowStock": "مخزون منخفض",
-    "outOfStock": "نفذ من المخزون",
-    "expiryStatus": "حالة الصلاحية:",
-    "valid": "ساري",
-    "expiringSoon": "ينتهي قريباً",
-    "expired": "منتهي الصلاحية",
-    "sortBy": "ترتيب حسب:",
-    "nameAsc": "الاسم (أ-ي)",
-    "nameDesc": "الاسم (ي-أ)",
-    "priceAsc": "السعر (منخفض-مرتفع)",
-    "priceDesc": "السعر (مرتفع-منخفض)",
-    "expiryAsc": "الصلاحية (قريب-بعيد)",
-    "expiryDesc": "الصلاحية (بعيد-قريب)",
-    "loading": "جاري تحميل المنتجات...",
-    "noProducts": "لا توجد منتجات للعرض",
-    "noResults": "لا توجد نتائج",
-    "noName": "بدون اسم",
-    "productImage": "صورة المنتج",
-    "price": "السعر:",
-    "totalQuantity": "الكمية الإجمالية:",
-    "productNumber": "رقم المنتج:",
-    "batches": "الدفعات",
-    "batchNumber": "رقم الدفعة:",
-    "quantity": "الكمية:",
-    "expiry": "الصلاحية:",
-    "expiringIn": "تنتهي خلال {{days}} يوم",
-    "notSpecified": "غير محدد",
-    "invalidDate": "تاريخ غير صالح",
-    "currency": "د.ج",
-    "backToTop": "العودة للأعلى"
-  },
-  "buttons": {
-    "scanBarcode": "مسح الباركود",
-    "manualEntry": "إدخال يدوي",
-    "search": "بحث",
-    "editProduct": "تعديل المنتج",
-    "addBatch": "إضافة دفعة",
-    "deleteProduct": "حذف المنتج",
-    "save": "حفظ",
-    "cancel": "إلغاء",
-    "saveChanges": "حفظ التعديلات",
-    "saveBatch": "حفظ الدفعة"
-  },
-  "placeholders": {
-    "enterProductCode": "أدخل رقم المنتج",
-    "productName": "اسم المنتج",
-    "sellingPrice": "سعر البيع",
-    "purchasePrice": "سعر الشراء",
-    "batchNumberOptional": "رقم الدفعة (اختياري)",
-    "quantity": "الكمية",
-    "expiryDate": "تاريخ انتهاء الصلاحية"
-  },
-  "scanner": {
-    "preparing": "جاري تحضير الماسح...",
-    "scanning": "جاري المسح... ضع الباركود أمام الكاميرا",
-    "instruction": "وجه الكاميرا نحو الباركود"
-  },
-  "productInfo": {
-    "title": "معلومات المنتج",
-    "addNewProduct": "إضافة منتج جديد",
-    "editProduct": "تعديل المنتج",
-    "availableBatches": "الدُفعات المتاحة",
-    "code": "رقم المنتج:",
-    "name": "اسم المنتج:",
-    "totalQuantity": "إجمالي الكمية:",
-    "price": "سعر البيع:",
-    "cost": "سعر الشراء:",
-    "date": "تاريخ الإضافة:"
-  },
-  "batch": {
-    "addNewBatch": "إضافة دفعة جديدة",
-    "batch": "الدفعة",
-    "expiryDate": "تاريخ انتهاء الصلاحية",
-    "noBatches": "لا توجد دفعات لهذا المنتج",
-    "expired": "منتهي الصلاحية",
-    "expiringSoon": "سينتهي خلال {{days}} يوم",
-    "enterNewQuantity": "أدخل الكمية الجديدة:"
-  },
-  "general": {
-    "notSpecified": "غير محدد",
-    "productImage": "صورة المنتج",
-    "noImage": "لا توجد صورة للمنتج",
-    "currentImage": "الصورة الحالية:",
-    "currentProductImage": "صورة المنتج الحالية",
-    "selectNewImage": "لتغيير الصورة، اختر صورة جديدة:",
-    "noCurrentImage": "لا توجد صورة حالية للمنتج",
-    "unknown": "غير معروفة",
-    "quantity": "الكمية"
-  },
-  "messages": {
-    "searchingProduct": "جارٍ البحث عن المنتج {{code}}...",
-    "productFound": "تم العثور على المنتج",
-    "newProduct": "منتج جديد، يرجى إدخال البيانات",
-    "productAddedSuccess": "تم إضافة المنتج والدفعة الأولى بنجاح!",
-    "productUpdatedSuccess": "تم تحديث المنتج بنجاح!",
-    "batchAddedSuccess": "تمت إضافة الدفعة الجديدة بنجاح!",
-    "batchUpdatedSuccess": "تم تحديث كمية الدفعة بنجاح!",
-    "batchDeletedSuccess": "تم حذف الدفعة بنجاح!",
-    "productDeletedSuccess": "تم حذف المنتج وكل دفعاته بنجاح!",
-    "uploadingImage": "جاري رفع صورة المنتج إلى Imgur...",
-    "updatingImage": "جاري تحديث صورة المنتج في Imgur..."
-  },
-  "warnings": {
-    "outOfStock": "تحذير: نفذ المخزون من هذا المنتج!",
-    "lowStock": "تحذير: المخزون منخفض ({{quantity}} قطع متبقية فقط)",
-    "batchExpired": "تحذير: الدفعة {{batch}} من المنتج {{product}} منتهية الصلاحية",
-    "batchExpiringSoon": "تنبيه: الدفعة {{batch}} من المنتج {{product}} ستنتهي خلال {{days}} يوم"
-  },
-  "errors": {
-    "enterProductCode": "الرجاء إدخال رقم المنتج",
-    "enterProductName": "الرجاء إدخال اسم المنتج",
-    "validSellingPrice": "الرجاء إدخال سعر بيع صحيح",
-    "validPurchasePrice": "الرجاء إدخال سعر شراء صحيح",
-    "validDate": "الرجاء إدخال تاريخ صحيح",
-    "validBatchQuantity": "الرجاء إدخال كمية صحيحة للدفعة",
-    "enterExpiryDate": "الرجاء إدخال تاريخ صلاحية للدفعة",
-    "validPositiveNumber": "الرجاء إدخال رقم صحيح موجب",
-    "scannerError": "حدث خطأ في الماسح: {{error}}",
-    "cameraError": "تعذر تشغيل الكاميرا: {{error}}",
-    "databaseError": "حدث خطأ في الاتصال بقاعدة البيانات",
-    "saveProductError": "حدث خطأ أثناء حفظ المنتج: {{error}}",
-    "updateProductError": "حدث خطأ أثناء تحديث المنتج: {{error}}",
-    "addBatchError": "حدث خطأ أثناء إضافة الدفعة: {{error}}",
-    "updateBatchError": "حدث خطأ أثناء تحديث الدفعة: {{error}}",
-    "deleteBatchError": "حدث خطأ أثناء حذف الدفعة: {{error}}",
-    "deleteProductError": "حدث خطأ أثناء حذف المنتج: {{error}}",
-    "imageUploadFailed": "فشل رفع الصورة",
-    "imageUploadError": "حدث خطأ أثناء رفع الصورة: {{error}}",
-    "imageUpdateError": "حدث خطأ أثناء تحديث الصورة: {{error}}"
-  },
-  "confirm": {
-    "deleteBatch": "هل أنت متأكد من حذف هذه الدفعة؟ لا يمكن التراجع عن هذه العملية.",
-    "deleteProduct": "هل أنت متأكد من حذف هذا المنتج؟ سيتم حذف جميع الدُفعات التابعة له."
-  }
+    "siteInfo": {
+        "title": "باراميديكال ليليان روز",
+        "footer": {
+            "copyright": "جميع الحقوق محفوظة © 2025 ليليان روز"
+        }
+    },
+    "menu": {
+        "home": "الصفحة الرئيسية",
+        "products": "المنتجات",
+        "viewProducts": "عرض المنتجات",
+        "sellProducts": "بيع المنتجات",
+        "services": "خدمات إضافية",
+        "profits": "الأرباح والحسابات"
+    },
+    "pageTitles": {
+        "productManagement": "إدارة المنتجات - نظام الدُفعات",
+        "smartSaleSystem": "نظام البيع الذكي"
+    },
+    "pages": {
+        "main": {
+            "title": "الرئيسية - رسوميات المبيعات"
+        },
+        "productManagement": {
+            "title": "إدارة المنتجات بنظام الدُفعات",
+            "subtitle": "نظام مسح الباركود وإدارة المخزون حسب تواريخ الصلاحية"
+        },
+        "products": {
+            "title": "نظام إدارة الصيدلية",
+            "pageTitle": "قائمة المنتجات",
+            "productList": "قائمة المنتجات ({{count}})",
+            "filteredProductList": "المنتجات المطابقة ({{count}} من {{total}})",
+            "searchPlaceholder": "ابحث عن منتج بالاسم...",
+            "viewModes": {
+                "grid": "عرض شبكي",
+                "list": "عرض قائمة"
+            },
+            "stockStatus": {
+                "all": "الكل",
+                "inStock": "متوفر",
+                "lowStock": "مخزون منخفض",
+                "outOfStock": "نفذ من المخزون"
+            },
+            "expiryStatus": {
+                "valid": "ساري",
+                "expiringSoon": "ينتهي قريباً",
+                "expired": "منتهي الصلاحية"
+            },
+            "sorting": {
+                "nameAsc": "الاسم (أ-ي)",
+                "nameDesc": "الاسم (ي-أ)",
+                "priceAsc": "السعر (منخفض-مرتفع)",
+                "priceDesc": "السعر (مرتفع-منخفض)",
+                "expiryAsc": "الصلاحية (قريب-بعيد)",
+                "expiryDesc": "الصلاحية (بعيد-قريب)"
+            },
+            "labels": {
+                "loading": "جاري تحميل المنتجات...",
+                "noProducts": "لا توجد منتجات للعرض",
+                "noResults": "لا توجد نتائج",
+                "noName": "بدون اسم",
+                "productImage": "صورة المنتج",
+                "price": "السعر:",
+                "totalQuantity": "الكمية الإجمالية:",
+                "productNumber": "رقم المنتج:",
+                "batches": "الدفعات",
+                "batchNumber": "رقم الدفعة:",
+                "quantity": "الكمية:",
+                "expiry": "الصلاحية:",
+                "expiringIn": "تنتهي خلال {{days}} يوم",
+                "notSpecified": "غير محدد",
+                "invalidDate": "تاريخ غير صالح",
+                "currency": "د.ج",
+                "backToTop": "العودة للأعلى"
+            }
+        },
+        "smartSaleSystem": {
+            "title": "نظام البيع الذكي"
+        }
+    },
+    "buttons": {
+        "scanBarcode": "مسح الباركود",
+        "manualEntry": "إدخال يدوي",
+        "search": "بحث",
+        "editProduct": "تعديل المنتج",
+        "addBatch": "إضافة دفعة",
+        "deleteProduct": "حذف المنتج",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "saveChanges": "حفظ التعديلات",
+        "saveBatch": "حفظ الدفعة",
+        "searchProduct": "بحث عن منتج",
+        "scan": "مسح",
+        "stopCamera": "إيقاف الكاميرا",
+        "addDiscount": "إضافة خصم",
+        "applyDiscount": "تطبيق الخصم",
+        "confirmSale": "تأكيد البيع",
+        "returnProduct": "إرجاع المنتج",
+        "confirm": "تأكيد"
+    },
+    "placeholders": {
+        "enterProductCode": "أدخل رقم المنتج",
+        "productName": "اسم المنتج",
+        "sellingPrice": "سعر البيع",
+        "purchasePrice": "سعر الشراء",
+        "batchNumberOptional": "رقم الدفعة (اختياري)",
+        "quantity": "الكمية",
+        "expiryDate": "تاريخ انتهاء الصلاحية",
+        "enterBarcode": "ادخل رقم الباركود..."
+    },
+    "scanner": {
+        "preparing": "جاري تحضير الماسح...",
+        "scanning": "جاري المسح... ضع الباركود أمام الكاميرا",
+        "instruction": "وجه الكاميرا نحو الباركود"
+    },
+    "productInfo": {
+        "title": "معلومات المنتج",
+        "addNewProduct": "إضافة منتج جديد",
+        "editProduct": "تعديل المنتج",
+        "availableBatches": "الدُفعات المتاحة",
+        "code": "رقم المنتج:",
+        "name": "اسم المنتج",
+        "stock": "المخزون",
+        "totalQuantity": "إجمالي الكمية:",
+        "price": "سعر البيع:",
+        "cost": "سعر الشراء:",
+        "date": "تاريخ الإضافة:",
+        "expiry": "تاريخ الصلاحية"
+    },
+    "batch": {
+        "addNewBatch": "إضافة دفعة جديدة",
+        "batch": "الدفعة",
+        "expiryDate": "تاريخ انتهاء الصلاحية",
+        "noBatches": "لا توجد دفعات لهذا المنتج",
+        "expired": "منتهي الصلاحية",
+        "expiringSoon": "سينتهي خلال {{days}} يوم",
+        "enterNewQuantity": "أدخل الكمية الجديدة:"
+    },
+    "general": {
+        "currency": "ر.س",
+        "pieces": "قطع",
+        "notSpecified": "غير محدد",
+        "productImage": "صورة المنتج",
+        "noImage": "لا توجد صورة للمنتج",
+        "currentImage": "الصورة الحالية:",
+        "selectNewImage": "لتغيير الصورة، اختر صورة جديدة:",
+        "unknown": "غير معروفة",
+        "quantity": "الكمية",
+        "noReasonGiven": "لا يوجد سبب مذكور",
+        "pharmacyName": "باراميديكال ليليان روز"
+    },
+    "productStatus": {
+        "outOfStock": "انتهى المخزون",
+        "expired": "منتهي الصلاحية",
+        "expiringIn": "متبقي {{days}} يوم"
+    },
+    "discount": {
+        "percentage": "نسبة مئوية",
+        "fixedAmount": "خصم بالدرهم",
+        "discountPercentage": "نسبة الخصم",
+        "discountAmount": "مبلغ الخصم",
+        "reasonOptional": "سبب الخصم (اختياري)",
+        "reasonExample": "مثال: خصم موسمي، عيب بسيط..."
+    },
+    "payment": {
+        "cash": "نقداً",
+        "card": "بطاقة بنكية",
+        "transfer": "تحويل",
+        "finalPrice": "السعر النهائي"
+    },
+    "messages": {
+        "searchingProduct": "جارٍ البحث عن المنتج {{code}}...",
+        "productFound": "تم العثور على المنتج",
+        "newProduct": "منتج جديد، يرجى إدخال البيانات",
+        "productAddedSuccess": "تم إضافة المنتج والدفعة الأولى بنجاح!",
+        "productUpdatedSuccess": "تم تحديث المنتج بنجاح!",
+        "batchAddedSuccess": "تمت إضافة الدفعة الجديدة بنجاح!",
+        "batchUpdatedSuccess": "تم تحديث كمية الدفعة بنجاح!",
+        "batchDeletedSuccess": "تم حذف الدفعة بنجاح!",
+        "productDeletedSuccess": "تم حذف المنتج وكل دفعاته بنجاح!",
+        "uploadingImage": "جاري رفع صورة المنتج إلى Imgur...",
+        "updatingImage": "جاري تحديث صورة المنتج في Imgur...",
+        "startingCamera": "جارٍ تشغيل الكاميرا...",
+        "cameraStarted": "تم تشغيل الكاميرا بنجاح",
+        "discountApplied": "تم تطبيق الخصم بنجاح",
+        "discountRemoved": "تم إلغاء الخصم",
+        "invoiceSaved": "تم حفظ الفاتورة بنجاح",
+        "processingReturn": "جارٍ معالجة طلب الإرجاع..."
+    },
+    "warnings": {
+        "outOfStock": "تحذير: نفذ المخزون من هذا المنتج!",
+        "lowStock": "تحذير: المخزون منخفض ({{quantity}} قطع متبقية فقط)",
+        "batchExpired": "تحذير: الدفعة {{batch}} من المنتج {{product}} منتهية الصلاحية",
+        "batchExpiringSoon": "تنبيه: الدفعة {{batch}} من المنتج {{product}} ستنتهي خلال {{days}} يوم"
+    },
+    "errors": {
+        "enterProductCode": "الرجاء إدخال رقم المنتج",
+        "enterProductName": "الرجاء إدخال اسم المنتج",
+        "validSellingPrice": "الرجاء إدخال سعر بيع صحيح",
+        "validPurchasePrice": "الرجاء إدخال سعر شراء صحيح",
+        "validDate": "الرجاء إدخال تاريخ صحيح",
+        "validBatchQuantity": "الرجاء إدخال كمية صحيحة للدفعة",
+        "enterExpiryDate": "الرجاء إدخال تاريخ صلاحية للدفعة",
+        "validPositiveNumber": "الرجاء إدخال رقم صحيح موجب",
+        "scannerError": "حدث خطأ في المسح",
+        "cameraError": "خطأ الكاميرا",
+        "cameraFailed": "فشل تشغيل الكاميرا",
+        "databaseError": "خطأ في قاعدة البيانات",
+        "saveProductError": "حدث خطأ أثناء حفظ المنتج: {{error}}",
+        "updateProductError": "حدث خطأ أثناء تحديث المنتج: {{error}}",
+        "addBatchError": "حدث خطأ أثناء إضافة الدفعة: {{error}}",
+        "updateBatchError": "حدث خطأ أثناء تحديث الدفعة: {{error}}",
+        "deleteBatchError": "حدث خطأ أثناء حذف الدفعة: {{error}}",
+        "deleteProductError": "حدث خطأ أثناء حذف المنتج: {{error}}",
+        "imageUploadFailed": "فشل رفع الصورة",
+        "imageUploadError": "حدث خطأ أثناء رفع الصورة: {{error}}",
+        "imageUpdateError": "حدث خطأ أثناء تحديث الصورة: {{error}}",
+        "enterBarcode": "يرجى إدخال باركود المنتج",
+        "productNotFound": "المنتج غير موجود في النظام",
+        "searchError": "حدث خطأ أثناء البحث عن المنتج",
+        "invalidDiscountPercent": "نسبة الخصم يجب أن تكون بين 0 و 100",
+        "invalidDiscountAmount": "قيمة الخصم يجب أن تكون موجبة",
+        "discountReasonRequired": "الخصم أكثر من 20% يطلب إدخال السبب",
+        "invalidFinalPrice": "لا يمكن أن يكون السعر النهائي أقل من الصفر",
+        "noStock": "⚠️ لا يمكن إتمام البيع - انتهى المخزون!",
+        "expiredProduct": "⚠️ لا يمكن بيع منتج منتهي الصلاحية!",
+        "updateStockError": "خطأ في تحديث المخزون",
+        "updateStockFailed": "حدث خطأ أثناء تحديث المخزون",
+        "noProductSelected": "لا يوجد منتج مختار للإرجاع",
+        "saveInvoiceError": "خطأ في حفظ الفاتورة",
+        "returnError": "حدث خطأ أثناء الإرجاع",
+        "returnFailed": "حدث خطأ أثناء معالجة الإرجاع"
+    },
+    "confirm": {
+        "deleteBatch": "هل أنت متأكد من حذف هذه الدفعة؟ لا يمكن التراجع عن هذه العملية.",
+        "deleteProduct": "هل أنت متأكد من حذف هذا المنتج؟ سيتم حذف جميع الدُفعات التابعة له."
+    },
+    "return": {
+        "confirmTitle": "تأكيد إرجاع المنتج",
+        "confirmText": "هل أنت متأكد من إرجاع هذا المنتج؟",
+        "confirmReturnText": "هل أنت متأكد من إرجاع المنتج: {{productName}}؟",
+        "reasonPlaceholder": "سبب الإرجاع (اختياري)",
+        "successTitle": "تم الإرجاع بنجاح",
+        "successText": "تم إرجاع {{productName}} بقيمة {{price}} {{currency}}"
+    }
 }
