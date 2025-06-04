@@ -511,23 +511,58 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
- // تهيئة i18next للترجمة
-    i18next
-      .use(i18nextHttpBackend)
-      .use(i18nextBrowserLanguageDetector)
-      .init({
-        fallbackLng: 'ar',
-        debug: false,
-        ns: ['translation'],
-        defaultNS: 'translation',
-        backend: {
-          loadPath: '/locales/{{lng}}/{{ns}}.json'
-        }
-      }, function(err, t) {
-        // تهيئة الترجمة عند تحميل الصفحة
-        updateContent();
-      });
+ i18next
+  .use(i18nextHttpBackend)              // تحميل ملفات الترجمة من السيرفر (من ملفات JSON)
+  .use(i18nextBrowserLanguageDetector) // اكتشاف لغة المتصفح تلقائياً
+  .init({
+    fallbackLng: 'ar',
+    debug: false,
+    ns: ['translation'],
+    defaultNS: 'translation',
+    backend: {
+      loadPath: '/locales/{{lng}}/{{ns}}.json'
+    }
+  }, function(err, t) {
+    updateContent();
+  });
 
+// استبدال جزء التهيئة الحالي بهذا الكود
+i18next
+  .use(i18nextHttpBackend)
+  .use(i18nextBrowserLanguageDetector)
+  .init({
+    fallbackLng: 'ar',
+    debug: false,
+    ns: ['translation'],
+    defaultNS: 'translation',
+    backend: {
+      loadPath: '/locales/{{lng}}/{{ns}}.json'
+    },
+    detection: {
+      order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+      caches: ['cookie']
+    }
+  }, function(err, t) {
+    if (err) return console.error(err);
+    updateContent();
+  });
+
+function updateContent() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = i18next.t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = i18next.t(el.getAttribute('data-i18n-placeholder'));
+  });
+}
+
+// تغيير اللغة
+function changeLanguage(lang) {
+  i18next.changeLanguage(lang, (err, t) => {
+    if (err) return console.error(err);
+    updateContent();
+  });
+}
 
 // متغيرات النظام
 let currentProduct = null;
