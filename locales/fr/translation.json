@@ -58,7 +58,7 @@
     "currency": "DA",
     "backToTop": "Retour en haut"
    },
-  "preparingScanner": "Préparation du scanner...", {
+  "preparingScanner": "Préparation du scanner..." {
   "scanningMessage": "Scan en cours... Placez le code-barres devant la caméra",
   "scannerError": "Erreur du scanner: {{error}}",
   "cameraError": "Impossible de démarrer la caméra: {{error}}",
