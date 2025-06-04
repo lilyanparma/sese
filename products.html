@@ -511,26 +511,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-i18next
-  .use(i18nextHttpBackend)
-  .use(i18nextBrowserLanguageDetector)
-  .init({
-    fallbackLng: 'ar',
-    debug: true, // مؤقتاً لرؤية تفاصيل التحميل
-    ns: ['translation'],
-    defaultNS: 'translation',
-    backend: {
-      loadPath: 'locales/{{lng}}/{{ns}}.json' // بدون / في البداية
-    }
-  }, function(err, t) {
-    if (err) return console.error(err);
-    updateContent();
-  });
-
-// استبدال جزء التهيئة الحالي بهذا الكود
-i18next
-  .use(i18nextHttpBackend)
-  .use(i18nextBrowserLanguageDetector)
+ i18next
+  .use(i18nextHttpBackend)              // تحميل ملفات الترجمة من السيرفر (من ملفات JSON)
+  .use(i18nextBrowserLanguageDetector) // اكتشاف لغة المتصفح تلقائياً
   .init({
     fallbackLng: 'ar',
     debug: false,
@@ -538,23 +521,123 @@ i18next
     defaultNS: 'translation',
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json'
-    },
-    detection: {
-      order: ['querystring', 'cookie', 'localStorage', 'navigator'],
-      caches: ['cookie']
     }
   }, function(err, t) {
-    if (err) return console.error(err);
     updateContent();
   });
 
-function updateContent() {
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    el.textContent = i18next.t(el.getAttribute('data-i18n'));
-  });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    el.placeholder = i18next.t(el.getAttribute('data-i18n-placeholder'));
-  });
+// استبدال جزء التهيئة الحالي بهذا الكود
+// تهيئة i18next مع تحسينات
+const i18nextConfig = {
+  lng: document.documentElement.lang || 'ar', // تأخذ اللغة من عنصر html
+  fallbackLng: 'ar', // اللغة الافتراضية في حالة عدم توفر اللغة المطلوبة
+  supportedLngs: ['ar', 'fr'], // اللغات المدعومة في التطبيق
+  debug: false, // وضع التصحيح (يفضل إيقافه في الإنتاج)
+  interpolation: {
+    escapeValue: false, // لا نحتاج إلى تهريب القيم لأننا نتعامل مع HTML آمن
+    formatSeparator: ',', // فاصل التنسيق
+  },
+  resources: {
+    ar: {
+      translation: {} // سيتم تحميله من ملف خارجي
+    },
+    fr: {
+      translation: {} // سيتم تحميله من ملف خارجي
+    }
+  },
+  backend: {
+    loadPath: '/locales/{{lng}}/translation.json', // مسار ملفات الترجمة
+  },
+  detection: {
+    order: ['htmlTag'], // اكتشاف اللغة من وسم html فقط
+    caches: [], // لا نستخدم التخزين المؤقت للغة
+  },
+  react: {
+    useSuspense: false // لا نستخدم Suspense (غير ضروري في هذا السياق)
+  }
+};
+
+// دالة لتحميل الترجمات بشكل متزامن
+async function loadTranslations(lang) {
+  try {
+    const response = await fetch(`/locales/${lang}/translation.json`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const translations = await response.json();
+    i18next.addResourceBundle(lang, 'translation', translations);
+    return translations;
+  } catch (error) {
+    console.error(`Failed to load ${lang} translations:`, error);
+    // في حالة الفشل، نعود إلى اللغة الافتراضية
+    if (lang !== i18nextConfig.fallbackLng) {
+      return loadTranslations(i18nextConfig.fallbackLng);
+    }
+    return {};
+  }
+}
+
+// تهيئة i18next مع معالجة الأخطاء
+async function initializeI18n() {
+  try {
+    await i18next.init(i18nextConfig);
+    
+    // تحميل الترجمات للغة الحالية
+    const currentLang = i18next.language;
+    await loadTranslations(currentLang);
+    
+    // إضافة مستمع لتغير اللغة
+    i18next.on('languageChanged', (lng) => {
+      console.log(`Language changed to ${lng}`);
+      // هنا يمكنك إضافة أي كود تحتاج تنفيذه عند تغيير اللغة
+    });
+    
+    return i18next;
+  } catch (error) {
+    console.error('Failed to initialize i18next:', error);
+    // نعود إلى اللغة الافتراضية في حالة الخطأ
+    i18next.changeLanguage(i18nextConfig.fallbackLng);
+    return i18next;
+  }
+}
+
+// استدعاء التهيئة
+initializeI18n().then(() => {
+  console.log('i18next initialized successfully');
+  // هنا يمكنك بدء تطبيقك بعد التأكد من تهيئة i18next
+}).catch(error => {
+  console.error('Failed to initialize i18next:', error);
+});
+
+// دالة مساعدة للترجمة مع معالجة الأخطاء
+function t(key, options = {}) {
+  try {
+    return i18next.t(key, options);
+  } catch (error) {
+    console.error(`Translation error for key "${key}":`, error);
+    return key; // نعيد المفتاح نفسه في حالة الخطأ
+  }
+}
+
+// دالة لتغيير اللغة
+async function changeLanguage(lng) {
+  try {
+    if (!i18nextConfig.supportedLngs.includes(lng)) {
+      throw new Error(`Language ${lng} is not supported`);
+    }
+    
+    await loadTranslations(lng);
+    await i18next.changeLanguage(lng);
+    
+    // تحديث لغة المستند
+    document.documentElement.lang = lng;
+    document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
+    
+    return true;
+  } catch (error) {
+    console.error(`Failed to change language to ${lng}:`, error);
+    return false;
+  }
 }
 
 // تغيير اللغة
