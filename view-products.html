@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="pageTitleText">قائمة المنتجات - Lilyan Rose</title>
+  <title data-i18n="products.title">قائمة المنتجات - Lilyan Rose</title>
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,11 +11,11 @@
   <!-- خط Tajawal -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   
-  <!-- i18next -->
-  <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js"></script>
-  <script src="https://unpkg.com/i18next-http-backend/i18nextHttpBackend.js"></script>
-  <script src="https://unpkg.com/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.js"></script>
-  
+  <!-- مكتبة i18next -->
+  <script src="https://unpkg.com/i18next@21.6.10/dist/umd/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@1.4.1/i18nextHttpBackend.min.js"></script>
+  <script src="https://unpkg.com/i18next-browser-languagedetector@6.1.3/i18nextBrowserLanguageDetector.min.js"></script>
+
   <style>
     :root {
       --primary: #ff66b2;
@@ -130,31 +130,6 @@
       display: flex;
       align-items: center;
       gap: 5px;
-    }
-    
-    .batches-section {
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-    }
-
-    .batch-item {
-      border-left: 3px solid #4CAF50;
-    }
-
-    .batch-item .expired-badge {
-      background-color: var(--danger);
-      color: white;
-      padding: 2px 5px;
-      border-radius: 3px;
-      font-size: 0.8em;
-    }
-
-    .batch-item .expiring-soon-badge {
-      background-color: var(--warning);
-      color: var(--dark);
-      padding: 2px 5px;
-      border-radius: 3px;
-      font-size: 0.8em;
     }
     
     .view-btn:hover {
@@ -304,6 +279,35 @@
       min-width: 150px;
     }
     
+    /* أقسام الدفعات */
+    .batches-section {
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin-top: 15px;
+    }
+    
+    .batch-item {
+      margin-bottom: 8px;
+      padding: 8px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      border-left: 3px solid var(--success);
+    }
+    
+    .batch-item.expired {
+      border-left-color: var(--danger);
+    }
+    
+    .batch-item.expiring-soon {
+      border-left-color: var(--warning);
+    }
+    
+    .batch-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
     /* زر العودة لأعلى */
     .back-to-top {
       position: fixed;
@@ -369,37 +373,60 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    /* RTL/LTR direction based on language */
-    body[dir="rtl"] {
-      text-align: right;
+    
+    /* زر الترجمة */
+    .language-switcher {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
     }
     
-    body[dir="ltr"] {
-      text-align: left;
+    .language-btn {
+      background: white;
+      border: 1px solid var(--light-gray);
+      border-radius: 20px;
+      padding: 8px 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     
-    body[dir="ltr"] .back-to-top {
-      left: auto;
-      right: 20px;
+    .language-btn:hover {
+      background: #f5f5f5;
+    }
+    
+    .language-flag {
+      width: 20px;
+      height: 15px;
     }
   </style>
 </head>
 <body>
 
-<h1 id="pageTitle" data-i18n="products.title">قائمة المنتجات</h1>
+<!-- زر تبديل اللغة -->
+<div class="language-switcher">
+  <button class="language-btn" onclick="switchLanguage()">
+    <span id="currentLanguage">EN</span>
+  </button>
+</div>
+
+<h1 id="pageTitle" data-i18n="products.pageTitle">قائمة المنتجات</h1>
 
 <div class="controls-container">
   <div class="search-container">
-    <input type="text" id="searchProductInput" placeholder="" aria-label="بحث عن المنتجات" data-i18n-placeholder="products.searchPlaceholder">
+    <input type="text" id="searchProductInput" placeholder="ابحث عن منتج بالاسم..." aria-label="بحث عن المنتجات" data-i18n-placeholder="products.searchPlaceholder">
   </div>
   
   <div class="view-controls">
-    <button id="gridViewBtn" class="view-btn active" title="" data-i18n="[title]products.gridView">
+    <button id="gridViewBtn" class="view-btn active" title="عرض شبكة" data-i18n-title="products.gridViewTitle">
       <i class="fas fa-th"></i>
       <span data-i18n="products.gridView">عرض شبكة</span>
     </button>
-    <button id="listViewBtn" class="view-btn" title="" data-i18n="[title]products.listView">
+    <button id="listViewBtn" class="view-btn" title="عرض قائمة" data-i18n-title="products.listViewTitle">
       <i class="fas fa-list"></i>
       <span data-i18n="products.listView">عرض قائمة</span>
     </button>
@@ -444,7 +471,7 @@
   <div id="noProducts" data-i18n="products.loading">جارٍ تحميل المنتجات...</div>
 </div>
 
-<button class="back-to-top" title="" data-i18n="[title]products.backToTop">
+<button class="back-to-top" title="العودة لأعلى" data-i18n-title="products.backToTop">
   <i class="fas fa-arrow-up"></i>
 </button>
 
@@ -454,113 +481,117 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
 <script>
-  // تهيئة Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDRtJBPOjpfXXfsaDo98E_NTT7KWzz8gj4",
-    authDomain: "pharmacy-system-9def6.firebaseapp.com",
-    databaseURL: "https://pharmacy-system-9def6-default-rtdb.firebaseio.com",
-    projectId: "pharmacy-system-9def6",
-    storageBucket: "pharmacy-system-9def6.appspot.com",
-    messagingSenderId: "630855008414",
-    appId: "1:630855008414:web:b464bcb81c8a2091d0fb8f",
-    measurementId: "G-LC5NDKP6QZ"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
-  // متغيرات النظام
-  let allProducts = {};
-  let debounceTimer;
-  let currentLanguage = 'ar';
-
+  // =============================================
+  // إعدادات الترجمة الدولية
+  // =============================================
+  
   // تهيئة i18next
   i18next
-  .use(i18nextHttpBackend)
-  .use(i18nextBrowserLanguageDetector)
-  .init({
-    fallbackLng: 'ar',
-    debug: true, // تفعيل وضع التصحيح
-    ns: ['products'],
-    defaultNS: 'products',
-    backend: {
-      loadPath: 'locales/{{lng}}/{{ns}}.json',
-      parse: function(data) {
-        try {
-          return JSON.parse(data);
-        } catch (e) {
-          console.error('Failed to parse JSON:', e);
-          return {};
-        }
+    .use(i18nextHttpBackend)
+    .use(i18nextBrowserLanguageDetector)
+    .init({
+      fallbackLng: 'ar',
+      debug: false,
+      ns: ['translation'],
+      defaultNS: 'translation',
+      backend: {
+        loadPath: 'locales/{{lng}}/{{ns}}.json'
+      },
+      detection: {
+        order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+        caches: ['localStorage', 'cookie'],
+        lookupQuerystring: 'lng',
+        lookupCookie: 'i18next',
+        lookupLocalStorage: 'i18nextLng',
+        convertDetectedLanguage: (lng) => lng === 'fr' ? 'fr' : 'ar'
       }
-    }
-  }, function(err, t) {
-    if (err) {
-      console.error('i18next initialization error:', err);
-      // عرض رسالة للمستخدم
-      alert('حدث خطأ في تحميل الترجمة، سيتم تحميل النسخة الافتراضية');
-    }
-    updateContent();
-  });
+    }, function(err, t) {
+      if (err) console.error('i18next initialization error:', err);
+      updateContent();
+      updateLanguageButton();
+      initFirebase();
+    });
 
-  // تحديث لغة الصفحة
-  function updatePageLanguage() {
-    currentLanguage = i18next.language;
-    document.documentElement.lang = currentLanguage;
-    document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
-    i18next.changeLanguage(currentLanguage, () => {
-      // ترجمة العناصر
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        el.textContent = i18next.t(key);
-      });
+  // تحديث المحتوى بناءً على اللغة
+  function updateContent() {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+      const key = element.getAttribute('data-i18n');
+      element.innerHTML = i18next.t(key);
+    });
+    
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+      const key = element.getAttribute('data-i18n-placeholder');
+      element.placeholder = i18next.t(key);
+    });
+    
+    document.querySelectorAll('[data-i18n-title]').forEach(element => {
+      const key = element.getAttribute('data-i18n-title');
+      element.title = i18next.t(key);
+    });
+  }
+
+  // تحديث زر اللغة
+  function updateLanguageButton() {
+    const langBtn = document.querySelector('.language-btn');
+    const langText = document.getElementById('currentLanguage');
+    
+    if (i18next.language === 'ar') {
+      langText.textContent = 'AR';
+      langBtn.innerHTML = '<span id="currentLanguage">AR</span>';
+    } else {
+      langText.textContent = 'EN';
+      langBtn.innerHTML = '<span id="currentLanguage">EN</span>';
+    }
+  }
+
+  // تبديل اللغة
+  function switchLanguage() {
+    const newLang = i18next.language === 'ar' ? 'en' : 'ar';
+    i18next.changeLanguage(newLang, (err, t) => {
+      if (err) return console.error('Error changing language:', err);
+      updateContent();
+      updateLanguageButton();
       
-      // ترجمة عناصر placeholder
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        el.placeholder = i18next.t(key);
-      });
-      
-      // ترجمة عناصر title
-      document.querySelectorAll('[data-i18n-title]').forEach(el => {
-        const key = el.getAttribute('data-i18n-title');
-        el.title = i18next.t(key);
-      });
-      
-      // ترجمة خيارات select
-      document.querySelectorAll('select option').forEach(option => {
-        if (option.hasAttribute('data-i18n')) {
-          option.textContent = i18next.t(option.getAttribute('data-i18n'));
-        }
-      });
-      
-      // إعادة تطبيق الفلاتر لتحديث المحتوى المترجم
+      // إعادة تطبيق الفلاتر لتحديث النصوص الديناميكية
       if (Object.keys(allProducts).length > 0) {
         applyFilters();
       }
     });
   }
 
-  // عند تحميل الصفحة
-  document.addEventListener('DOMContentLoaded', function() {
-    initI18n();
-    initProducts();
+  // =============================================
+  // إعدادات Firebase ونظام المنتجات
+  // =============================================
+
+  let allProducts = {};
+  let debounceTimer;
+  let currentView = 'grid';
+
+  // تهيئة Firebase
+  function initFirebase() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRtJBPOjpfXXfsaDo98E_NTT7KWzz8gj4",
+      authDomain: "pharmacy-system-9def6.firebaseapp.com",
+      databaseURL: "https://pharmacy-system-9def6-default-rtdb.firebaseio.com",
+      projectId: "pharmacy-system-9def6",
+      storageBucket: "pharmacy-system-9def6.appspot.com",
+      messagingSenderId: "630855008414",
+      appId: "1:630855008414:web:b464bcb81c8a2091d0fb8f",
+      measurementId: "G-LC5NDKP6QZ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    initProducts(database);
     setupEventListeners();
-    
-    // استمع لتغييرات اللغة من الصفحة الرئيسية
-    window.addEventListener('languageChanged', function(e) {
-      i18next.changeLanguage(e.detail.language, () => {
-        updatePageLanguage();
-      });
-    });
-  });
+  }
 
   // تهيئة نظام المنتجات
-  function initProducts() {
+  function initProducts(database) {
     document.getElementById('productsContainer').innerHTML = '<div class="loading-spinner"></div>';
     
-    // استمع للتحديثات في قاعدة البيانات
     database.ref('products').on('value', function(snapshot) {
       allProducts = snapshot.val() || {};
       displayProducts(allProducts);
@@ -580,15 +611,19 @@
 
     // التحكم في طريقة العرض
     document.getElementById('gridViewBtn').addEventListener('click', function() {
+      currentView = 'grid';
       document.getElementById('productsContainer').classList.remove('list-view');
       this.classList.add('active');
       document.getElementById('listViewBtn').classList.remove('active');
+      applyFilters();
     });
 
     document.getElementById('listViewBtn').addEventListener('click', function() {
+      currentView = 'list';
       document.getElementById('productsContainer').classList.add('list-view');
       this.classList.add('active');
       document.getElementById('gridViewBtn').classList.remove('active');
+      applyFilters();
     });
 
     // الفلاتر والترتيب
@@ -617,7 +652,6 @@
     const expiryStatus = document.getElementById('expiryFilter').value;
     const sortBy = document.getElementById('sortBy').value;
     
-    // فرز المنتجات حسب الاختيار
     const sortedProducts = sortProducts(allProducts, sortBy);
     
     let visibleCount = 0;
@@ -625,17 +659,20 @@
     const fragment = document.createDocumentFragment();
     const gridContainer = document.createElement('div');
     gridContainer.className = 'products-grid';
+    
+    if (currentView === 'list') {
+      gridContainer.classList.add('list-view');
+    }
+    
     fragment.appendChild(gridContainer);
     
     sortedProducts.forEach(([key, product]) => {
         let matches = true;
         
-        // فلترة حسب البحث (بالاسم فقط)
         if (searchTerm && !(product.name || '').toLowerCase().includes(searchTerm)) {
             matches = false;
         }
         
-        // حساب الكمية الإجمالية من الدفعات
         let totalQuantity = 0;
         if (product.batches) {
             totalQuantity = Object.values(product.batches).reduce((sum, batch) => sum + (parseFloat(batch.quantity) || 0), 0);
@@ -643,16 +680,14 @@
             totalQuantity = parseFloat(product.quantity) || 0;
         }
         
-        // فلترة حسب حالة المخزون
         if (stockStatus === 'inStock' && totalQuantity <= 0) {
             matches = false;
-        } else if (stockStatus === 'lowStock' && totalQuantity > 5) {
+        } else if (stockStatus === 'lowStock' && (totalQuantity > 5 || totalQuantity <= 0)) {
             matches = false;
         } else if (stockStatus === 'outOfStock' && totalQuantity > 0) {
             matches = false;
         }
         
-        // فلترة حسب الصلاحية (تفحص كل الدفعات)
         if (expiryStatus === 'expired') {
             if (!product.batches || !Object.values(product.batches).some(batch => isProductExpired(batch.expiryDate))) {
                 matches = false;
@@ -669,23 +704,19 @@
         
         if (matches) {
             visibleCount++;
-            const card = createProductCard(key, product);
+            const card = createProductCard(key, product, currentView);
             gridContainer.appendChild(card);
         }
     });
     
-    // عرض رسالة إذا لم توجد نتائج
     if (visibleCount === 0) {
-        const noProductsDiv = document.createElement('div');
-        noProductsDiv.id = 'noProducts';
-        noProductsDiv.setAttribute('data-i18n', 'products.noResults');
-        noProductsDiv.textContent = i18next.t('products.noResults');
-        container.innerHTML = '';
-        container.appendChild(noProductsDiv);
+        container.innerHTML = `<div id="noProducts">${i18next.t('products.noResults')}</div>`;
     } else {
         container.innerHTML = '';
         container.appendChild(fragment);
     }
+    
+    updateProductCount(visibleCount);
   }
 
   // دالة لعرض المنتجات
@@ -694,61 +725,57 @@
     const sortBy = document.getElementById('sortBy').value;
     const sortedProducts = sortProducts(products, sortBy);
     
-    // إذا لم يكن هناك منتجات
     if (!products || Object.keys(products).length === 0) {
-      const noProductsDiv = document.createElement('div');
-      noProductsDiv.id = 'noProducts';
-      noProductsDiv.setAttribute('data-i18n', 'products.noProducts');
-      noProductsDiv.textContent = i18next.t('products.noProducts');
-      container.innerHTML = '';
-      container.appendChild(noProductsDiv);
+      container.innerHTML = `<div id="noProducts">${i18next.t('products.noProducts')}</div>`;
       return;
     }
 
-    // إنشاء عنصر grid container
     const fragment = document.createDocumentFragment();
     const gridContainer = document.createElement('div');
     gridContainer.className = 'products-grid';
+    
+    if (currentView === 'list') {
+      gridContainer.classList.add('list-view');
+    }
+    
     fragment.appendChild(gridContainer);
 
-    // إضافة المنتجات
     sortedProducts.forEach(([key, product]) => {
-      const card = createProductCard(key, product);
+      const card = createProductCard(key, product, currentView);
       gridContainer.appendChild(card);
     });
 
     container.innerHTML = '';
     container.appendChild(fragment);
+    
+    updateProductCount(Object.keys(products).length);
   }
 
-  function createProductCard(key, product) {
+  function createProductCard(key, product, viewType = 'grid') {
     const card = document.createElement('div');
-    card.className = 'product-card visible';
+    card.className = `product-card visible ${viewType === 'list' ? 'list-card' : ''}`;
     card.dataset.id = key;
     card.dataset.name = (product.name || '').toLowerCase();
     
-    // رأس البطاقة
     const header = document.createElement('div');
     header.className = 'product-header';
     header.textContent = product.name || i18next.t('products.noName');
     
-    // معلومات المنتج
     const info = document.createElement('div');
     info.className = 'product-info';
     
-    // صورة المنتج
     const imageHtml = product.image 
       ? `<div class="info-image-container">
           <img src="placeholder.jpg" data-src="${product.image}" alt="${i18next.t('products.productImage')}" loading="lazy" class="product-image">
         </div>`
       : "";
     
-    // حساب الكمية الإجمالية
     let totalQuantity = 0;
     let batchesHtml = '';
+    let hasExpiredBatches = false;
+    let hasExpiringSoonBatches = false;
     
     if (product.batches) {
-        // تحويل الدفعات إلى مصفوفة وترتيبها حسب الصلاحية (FEFO)
         const batchesArray = Object.entries(product.batches).map(([batchId, batch]) => ({
             id: batchId,
             ...batch
@@ -756,20 +783,25 @@
         
         totalQuantity = batchesArray.reduce((sum, batch) => sum + (parseFloat(batch.quantity) || 0), 0);
         
-        // إنشاء HTML للدفعات
         batchesHtml = `
-            <div class="batches-section" style="margin-top: 15px;">
+            <div class="batches-section">
                 <h4 style="margin-bottom: 10px; color: var(--secondary);">${i18next.t('products.batches')}:</h4>
                 ${batchesArray.map(batch => {
                     const expiryInfo = getExpiryInfo(batch.expiryDate);
+                    const batchClass = expiryInfo.isExpired ? 'expired' : 
+                                      expiryInfo.isExpiringSoon ? 'expiring-soon' : '';
+                    
+                    if (expiryInfo.isExpired) hasExpiredBatches = true;
+                    if (expiryInfo.isExpiringSoon) hasExpiringSoonBatches = true;
+                    
                     return `
-                        <div class="batch-item" style="margin-bottom: 8px; padding: 8px; background: #f9f9f9; border-radius: 5px;">
-                            <div style="display: flex; justify-content: space-between;">
+                        <div class="batch-item ${batchClass}" style="margin-bottom: 8px;">
+                            <div class="batch-header">
                                 <span><strong>${i18next.t('products.batchNumber')}:</strong> ${batch.batchNumber || batch.id}</span>
                                 <span><strong>${i18next.t('products.quantity')}:</strong> ${batch.quantity}</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                                <span><strong>${i18next.t('products.expiryDate')}:</strong> ${formatDate(batch.expiryDate)}</span>
+                            <div class="batch-footer" style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                <span><strong>${i18next.t('products.expiry')}:</strong> ${formatDate(batch.expiryDate)}</span>
                                 ${expiryInfo.badge || ''}
                             </div>
                         </div>
@@ -779,11 +811,9 @@
         `;
     }
     
-    // حالة المخزون بناءً على الكمية الإجمالية
     const stockStatus = getStockStatus(totalQuantity);
     const stockBadge = stockStatus.badge ? `<span class="badge ${stockStatus.class}">${i18next.t(stockStatus.badgeKey)}</span>` : '';
     
-    // معلومات المنتج
     info.innerHTML = `
       ${imageHtml}
       <p><strong>${i18next.t('products.price')}:</strong> ${product.price ? parseFloat(product.price).toFixed(2) + ' ' + i18next.t('products.currency') : i18next.t('products.notSpecified')}</p>
@@ -792,10 +822,6 @@
       ${batchesHtml}
     `;
 
-    // إضافة تنبيهات للمنتجات الحرجة
-    const hasExpiredBatches = product.batches && Object.values(product.batches).some(batch => isProductExpired(batch.expiryDate));
-    const hasExpiringSoonBatches = product.batches && Object.values(product.batches).some(batch => isProductExpiringSoon(batch.expiryDate));
-    
     if (hasExpiredBatches || stockStatus.class === 'out-of-stock-badge') {
       card.style.borderLeft = '4px solid var(--danger)';
     } else if (hasExpiringSoonBatches || stockStatus.class === 'low-stock-badge') {
@@ -805,7 +831,6 @@
     card.appendChild(header);
     card.appendChild(info);
     
-    // تحميل الصور عند الظهور
     if (product.image) {
       const img = card.querySelector('.product-image');
       const imageObserver = new IntersectionObserver((entries) => {
@@ -822,73 +847,97 @@
     return card;
   }
 
-  // دالة الترتيب
   function sortProducts(products, sortOption) {
     return Object.entries(products).sort((a, b) => {
       const productA = a[1];
       const productB = b[1];
       
       switch(sortOption) {
-        case 'name-asc': 
-          return currentLanguage === 'ar' ? 
-            (productA.name || '').localeCompare(productB.name || '', 'ar') :
-            (productA.name || '').localeCompare(productB.name || '', 'en');
-        case 'name-desc': 
-          return currentLanguage === 'ar' ? 
-            (productB.name || '').localeCompare(productA.name || '', 'ar') :
-            (productB.name || '').localeCompare(productA.name || '', 'en');
+        case 'name-asc': return (productA.name || '').localeCompare(productB.name || '', i18next.language === 'ar' ? 'ar' : 'en');
+        case 'name-desc': return (productB.name || '').localeCompare(productA.name || '', i18next.language === 'ar' ? 'ar' : 'en');
         case 'price-asc': return (parseFloat(productA.price) || 0) - (parseFloat(productB.price) || 0);
         case 'price-desc': return (parseFloat(productB.price) || 0) - (parseFloat(productA.price) || 0);
-        case 'expiry-asc': return new Date(productA.expiryDate || '9999-12-31') - new Date(productB.expiryDate || '9999-12-31');
-        case 'expiry-desc': return new Date(productB.expiryDate || '9999-12-31') - new Date(productA.expiryDate || '9999-12-31');
+        case 'expiry-asc': 
+          return getEarliestExpiryDate(productA) - getEarliestExpiryDate(productB);
+        case 'expiry-desc': 
+          return getEarliestExpiryDate(productB) - getEarliestExpiryDate(productA);
         default: return 0;
       }
     });
   }
 
-  // دالة تحديث عدد المنتجات المعروضة
-  function updateProductCount() {
-    const count = Object.keys(allProducts).length;
+  function getEarliestExpiryDate(product) {
+    if (!product.batches) {
+      return new Date(product.expiryDate || '9999-12-31');
+    }
+    
+    const dates = Object.values(product.batches).map(batch => new Date(batch.expiryDate || '9999-12-31'));
+    return Math.min(...dates);
+  }
+
+  function updateProductCount(count = null) {
+    const totalCount = Object.keys(allProducts).length;
+    const displayCount = count !== null ? count : totalCount;
     const title = document.getElementById('pageTitle');
+    
     if (title) {
-      title.textContent = i18next.t('products.titleWithCount', { count });
+      if (displayCount === totalCount) {
+        title.textContent = i18next.t('products.productList', { count: totalCount });
+      } else {
+        title.textContent = i18next.t('products.filteredProductList', { count: displayCount, total: totalCount });
+      }
     }
   }
 
-  // دالة تنسيق التاريخ
   function formatDate(dateString) {
     if (!dateString) return i18next.t('products.notSpecified');
     const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return i18next.t('products.invalidDate');
+    }
+    
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString(currentLanguage === 'ar' ? 'ar-EG' : 'en-GB', options);
+    return date.toLocaleDateString(i18next.language === 'ar' ? 'ar-EG' : 'en-GB', options);
   }
 
-  // دالة التحقق من صلاحية المنتج
   function getExpiryInfo(expiryDate) {
-    if (!expiryDate) return { badge: '', isExpired: false };
+    if (!expiryDate) return { badge: '', isExpired: false, isExpiringSoon: false };
     
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const expiry = new Date(expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+    
+    if (isNaN(expiry.getTime())) {
+      return { 
+        badge: `<span class="badge expired-badge">${i18next.t('products.invalidDate')}</span>`, 
+        isExpired: true, 
+        isExpiringSoon: false 
+      };
+    }
+    
     const diffTime = expiry - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays < 0) {
       return {
         badge: `<span class="badge expired-badge">${i18next.t('products.expired')}</span>`,
-        isExpired: true
+        isExpired: true,
+        isExpiringSoon: false
       };
     } 
     else if (diffDays <= 30) {
       return {
         badge: `<span class="badge expiring-soon-badge">${i18next.t('products.expiringIn', { days: diffDays })}</span>`,
-        isExpired: false
+        isExpired: false,
+        isExpiringSoon: true
       };
     }
     
-    return { badge: '', isExpired: false };
+    return { badge: '', isExpired: false, isExpiringSoon: false };
   }
 
-  // دالة التحقق من حالة المخزون
   function getStockStatus(quantity) {
     quantity = parseFloat(quantity) || 0;
     
@@ -907,22 +956,28 @@
     return { badgeKey: '', class: '' };
   }
 
-  // التحقق إذا كان المنتج منتهي الصلاحية
   function isProductExpired(expiryDate) {
     if (!expiryDate) return false;
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const expiry = new Date(expiryDate);
+    expiry.setHours(0, 0, 0, 0);
     return expiry < today;
   }
 
-  // التحقق إذا كان المنتج على وشك الانتهاء
   function isProductExpiringSoon(expiryDate) {
     if (!expiryDate) return false;
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const expiry = new Date(expiryDate);
+    expiry.setHours(0, 0, 0, 0);
+    
+    if (expiry <= today) return false;
+    
     const monthLater = new Date();
     monthLater.setMonth(monthLater.getMonth() + 1);
-    return expiry > today && expiry <= monthLater;
+    monthLater.setHours(0, 0, 0, 0);
+    return expiry <= monthLater;
   }
 </script>
 </body>
