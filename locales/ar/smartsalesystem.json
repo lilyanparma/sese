@@ -1,0 +1,95 @@
+{
+  "pageTitles": {
+    "smartSaleSystem": "نظام البيع الذكي"
+  },
+  "headers": {
+    "mainTitle": "نظام البيع الذكي"
+  },
+  "buttons": {
+    "searchProduct": "بحث عن منتج",
+    "scan": "مسح",
+    "stopCamera": "إيقاف الكاميرا",
+    "addDiscount": "إضافة خصم",
+    "applyDiscount": "تطبيق الخصم",
+    "confirmSale": "تأكيد البيع",
+    "returnProduct": "إرجاع المنتج",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء"
+  },
+  "placeholders": {
+    "enterBarcode": "ادخل رقم الباركود..."
+  },
+  "scanner": {
+    "instruction": "وجه الكاميرا نحو الباركود"
+  },
+  "productInfo": {
+    "name": "اسم المنتج",
+    "stock": "المخزون",
+    "expiry": "تاريخ الصلاحية"
+  },
+  "general": {
+    "currency": "ر.س",
+    "pieces": "قطع",
+    "notSpecified": "غير محدد",
+    "noReasonGiven": "لا يوجد سبب مذكور",
+    "pharmacyName": "باراميديكال ليليان روز"
+  },
+  "productStatus": {
+    "outOfStock": "انتهى المخزون",
+    "expired": "منتهي الصلاحية",
+    "expiringIn": "متبقي {{days}} يوم"
+  },
+  "discount": {
+    "percentage": "نسبة مئوية",
+    "fixedAmount": "خصم بالدرهم",
+    "discountPercentage": "نسبة الخصم",
+    "discountAmount": "مبلغ الخصم",
+    "reasonOptional": "سبب الخصم (اختياري)",
+    "reasonExample": "مثال: خصم موسمي، عيب بسيط..."
+  },
+  "payment": {
+    "cash": "نقداً",
+    "card": "بطاقة بنكية",
+    "transfer": "تحويل",
+    "finalPrice": "السعر النهائي"
+  },
+  "messages": {
+    "startingCamera": "جارٍ تشغيل الكاميرا...",
+    "cameraStarted": "تم تشغيل الكاميرا بنجاح",
+    "searchingProduct": "جارٍ البحث عن المنتج...",
+    "productFound": "تم العثور على المنتج",
+    "discountApplied": "تم تطبيق الخصم بنجاح",
+    "discountRemoved": "تم إلغاء الخصم",
+    "invoiceSaved": "تم حفظ الفاتورة بنجاح",
+    "processingReturn": "جارٍ معالجة طلب الإرجاع..."
+  },
+  "errors": {
+    "scannerError": "حدث خطأ في المسح",
+    "cameraError": "خطأ الكاميرا",
+    "cameraFailed": "فشل تشغيل الكاميرا",
+    "enterBarcode": "يرجى إدخال باركود المنتج",
+    "productNotFound": "المنتج غير موجود في النظام",
+    "databaseError": "خطأ في قاعدة البيانات",
+    "searchError": "حدث خطأ أثناء البحث عن المنتج",
+    "invalidDiscountPercent": "نسبة الخصم يجب أن تكون بين 0 و 100",
+    "invalidDiscountAmount": "قيمة الخصم يجب أن تكون موجبة",
+    "discountReasonRequired": "الخصم أكثر من 20% يطلب إدخال السبب",
+    "invalidFinalPrice": "لا يمكن أن يكون السعر النهائي أقل من الصفر",
+    "noStock": "⚠️ لا يمكن إتمام البيع - انتهى المخزون!",
+    "expiredProduct": "⚠️ لا يمكن بيع منتج منتهي الصلاحية!",
+    "updateStockError": "خطأ في تحديث المخزون",
+    "updateStockFailed": "حدث خطأ أثناء تحديث المخزون",
+    "noProductSelected": "لا يوجد منتج مختار للإرجاع",
+    "saveInvoiceError": "خطأ في حفظ الفاتورة",
+    "returnError": "حدث خطأ أثناء الإرجاع",
+    "returnFailed": "حدث خطأ أثناء معالجة الإرجاع"
+  },
+  "return": {
+    "confirmTitle": "تأكيد إرجاع المنتج",
+    "confirmText": "هل أنت متأكد من إرجاع هذا المنتج؟",
+    "confirmReturnText": "هل أنت متأكد من إرجاع المنتج: {{productName}}؟",
+    "reasonPlaceholder": "سبب الإرجاع (اختياري)",
+    "successTitle": "تم الإرجاع بنجاح",
+    "successText": "تم إرجاع {{productName}} بقيمة {{price}} {{currency}}"
+  }
+}
