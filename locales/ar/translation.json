@@ -74,7 +74,12 @@
       "cancel": "إلغاء",
       "addProduct": "إضافة منتج",
       "editProductDetails": "تعديل تفاصيل المنتج",
-      "deleteProduct": "حذف المنتج"
+      "deleteProduct": "حذف المنتج",
+      "editProduct": "تعديل المنتج",
+      "addBatch": "إضافة دفعة",
+      "saveProduct": "حفظ المنتج",
+      "addNewProduct": "إضافة منتج جديد",
+      "saveChanges": "حفظ التعديلات"
     },
     "placeholders": {
       "enterProductCode": "أدخل رقم المنتج",
@@ -86,26 +91,39 @@
       "expiryDate": "تاريخ انتهاء الصلاحية"
     },
     "scanner": {
-      "instruction": "وجه الكاميرا نحو الباركود"
+      "instruction": "وجه الكاميرا نحو الباركود",
+      "initializing": "جاري تحضير الماسح...",
+      "scanningInstruction": "جاري المسح... ضع الباركود أمام الكاميرا",
+      "error": "حدث خطأ في الماسح: ",
+      "cameraAccessError": "تعذر تشغيل الكاميرا: "
     },
     "productInfo": {
       "title": "معلومات المنتج",
-      "code": "رقم المنتج",
-      "name": "اسم المنتج",
-      "totalQuantity": "إجمالي الكمية",
-      "price": "سعر البيع",
-      "cost": "سعر الشراء",
-      "date": "تاريخ الإضافة",
+      "code": "رقم المنتج:",
+      "name": "اسم المنتج:",
+      "totalQuantity": "إجمالي الكمية:",
+      "price": "سعر البيع:",
+      "cost": "سعر الشراء:",
+      "date": "تاريخ الإضافة:",
       "availableBatches": "الدُفعات المتاحة",
       "noBatchesAvailable": "لا توجد دفعات متاحة لهذا المنتج.",
-      "productImageAlt": "صورة {{name}}"
+      "productImageAlt": "صورة {{name}}",
+      "undefined": "غير محدد",
+      "noImage": "لا توجد صورة للمنتج",
+      "noBatches": "لا توجد دفعات لهذا المنتج"
     },
     "batch": {
       "addNewBatch": "إضافة دفعة جديدة",
       "batchNumber": "رقم الدفعة",
       "notSpecified": "غير محدد",
       "quantity": "الكمية",
-      "expiryDate": "تاريخ الصلاحية"
+      "expiryDate": "تاريخ الصلاحية",
+      "batchLabel": "الدفعة",
+      "expired": "منتهي الصلاحية",
+      "expiringSoon": "سينتهي خلال {{count}} يوم",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "editBatch": "تعديل الدفعة"
     },
     "addProduct": {
       "title": "إضافة منتج جديد"
@@ -169,6 +187,35 @@
     "batchExpiredWarning": "تحذير: الدفعة {{batch}} من المنتج {{product}} منتهية الصلاحية",
     "batchExpiringWarning": "تنبيه: الدفعة {{batch}} من المنتج {{product}} ستنتهي خلال {{days}} يوم",
     "unknown": "غير معروفة",
-    "languageChanged": "تم تغيير اللغة إلى {{lang}}."
+    "languageChanged": "تم تغيير اللغة إلى {{lang}}.",
+    "currency": "د.ج",
+    "alerts": {
+      "fillAllFields": "الرجاء ملء جميع الحقول المطلوبة للمنتج.",
+      "uploadingImage": "جاري تحميل الصورة...",
+      "imageUploaded": "تم تحميل الصورة بنجاح.",
+      "imageUploadError": "خطأ في تحميل الصورة: ",
+      "productSaved": "تم حفظ المنتج بنجاح.",
+      "fillBatchFields": "الرجاء ملء جميع حقول الدفعة المطلوبة (الكمية وتاريخ الصلاحية).",
+      "batchSaved": "تم حفظ الدفعة بنجاح.",
+      "batchNotFound": "لم يتم العثور على الدفعة.",
+      "batchUpdated": "تم تحديث الدفعة بنجاح.",
+      "batchDeleted": "تم حذف الدفعة بنجاح.",
+      "productDeleted": "تم حذف المنتج بنجاح.",
+      "confirmDeleteBatch": "هل أنت متأكد أنك تريد حذف هذه الدفعة؟",
+      "confirmDeleteProduct": "هل أنت متأكد أنك تريد حذف هذا المنتج وكل دفعاته؟",
+      "batchExpired": "المنتج {{productName}} (الدفعة {{batchNumber}}) منتهي الصلاحية بتاريخ {{expiryDate}}.",
+      "batchExpiringSoon": "المنتج {{productName}} (الدفعة {{batchNumber}}) سينتهي خلال {{count}} يوم(أيام) بتاريخ {{expiryDate}}.",
+      "noExpiringProducts": "لا توجد منتجات منتهية الصلاحية أو على وشك الانتهاء.",
+      "expiryCheckError": "حدث خطأ أثناء فحص تواريخ الصلاحية."
+    },
+    "database": {
+      "connectionError": "حدث خطأ في الاتصال بقاعدة البيانات",
+      "saveError": "خطأ في حفظ المنتج: ",
+      "saveBatchError": "خطأ في حفظ الدفعة: ",
+      "updateBatchError": "خطأ في تحديث الدفعة: ",
+      "deleteBatchError": "خطأ في حذف الدفعة: ",
+      "deleteProductError": "خطأ في حذف المنتج: ",
+      "expiryCheckError": "خطأ في فحص تواريخ الصلاحية من قاعدة البيانات."
+    }
   }
 }
