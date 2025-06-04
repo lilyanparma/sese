@@ -74,7 +74,13 @@
       "cancel": "Annuler",
       "addProduct": "Ajouter un produit",
       "editProductDetails": "Modifier les détails du produit",
-      "deleteProduct": "Supprimer le produit"
+      "deleteProduct": "Supprimer le produit",
+      "editProduct": "Modifier le produit",
+      "addBatch": "Ajouter un lot",
+      "deleteProduct": "Supprimer le produit",
+      "saveProduct": "Enregistrer le produit",
+      "addNewProduct": "Ajouter un nouveau produit",
+      "saveChanges": "Enregistrer les modifications"
     },
     "placeholders": {
       "enterProductCode": "Entrez le code du produit",
@@ -86,7 +92,11 @@
       "expiryDate": "Date d'expiration"
     },
     "scanner": {
-      "instruction": "Dirigez la caméra vers le code-barres"
+      "instruction": "Dirigez la caméra vers le code-barres",
+      "initializing": "Préparation du scanner...",
+      "scanningInstruction": "Scan en cours... placez le code-barres devant la caméra",
+      "error": "Erreur du scanner : ",
+      "cameraAccessError": "Impossible d'activer la caméra : "
     },
     "productInfo": {
       "title": "Informations sur le produit",
@@ -98,14 +108,23 @@
       "date": "Date d'ajout",
       "availableBatches": "Lots disponibles",
       "noBatchesAvailable": "Aucun lot disponible pour ce produit.",
-      "productImageAlt": "Image {{name}}"
+      "productImageAlt": "Image {{name}}",
+      "undefined": "Non défini",
+      "noImage": "Pas d'image pour ce produit",
+      "noBatches": "Aucun lot pour ce produit"
     },
     "batch": {
       "addNewBatch": "Ajouter un nouveau lot",
       "batchNumber": "Numéro de lot",
       "notSpecified": "Non spécifié",
       "quantity": "Quantité",
-      "expiryDate": "Date d'expiration"
+      "expiryDate": "Date d'expiration",
+      "batchLabel": "Lot",
+      "expired": "Périmé",
+      "expiringSoon": "Expire dans {{count}} jour(s)",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "editBatch": "Modifier le lot"
     },
     "addProduct": {
       "title": "Ajouter un nouveau produit"
@@ -169,6 +188,35 @@
     "batchExpiredWarning": "Avertissement : Le lot {{batch}} du produit {{product}} est périmé",
     "batchExpiringWarning": "Alerte : Le lot {{batch}} du produit {{product}} expirera dans {{days}} jours",
     "unknown": "Inconnu",
-    "languageChanged": "Langue changée en {{lang}}."
+    "languageChanged": "Langue changée en {{lang}}.",
+    "currency": "SAR",
+    "alerts": {
+      "fillAllFields": "Veuillez remplir tous les champs obligatoires du produit.",
+      "uploadingImage": "Téléchargement de l'image...",
+      "imageUploaded": "Image téléchargée avec succès.",
+      "imageUploadError": "Erreur de téléchargement d'image : ",
+      "productSaved": "Produit enregistré avec succès.",
+      "fillBatchFields": "Veuillez remplir tous les champs de lot obligatoires (quantité et date de péremption).",
+      "batchSaved": "Lot enregistré avec succès.",
+      "batchNotFound": "Lot non trouvé.",
+      "batchUpdated": "Lot mis à jour avec succès.",
+      "batchDeleted": "Lot supprimé avec succès.",
+      "productDeleted": "Produit supprimé avec succès.",
+      "confirmDeleteBatch": "Êtes-vous sûr de vouloir supprimer ce lot ?",
+      "confirmDeleteProduct": "Êtes-vous sûr de vouloir supprimer ce produit et tous ses lots ?",
+      "batchExpired": "Le produit {{productName}} (lot {{batchNumber}}) est périmé le {{expiryDate}}.",
+      "batchExpiringSoon": "Le produit {{productName}} (lot {{batchNumber}}) expirera dans {{count}} jour(s) le {{expiryDate}}.",
+      "noExpiringProducts": "Aucun produit périmé ou proche de la péremption.",
+      "expiryCheckError": "Une erreur s'est produite lors de la vérification des dates de péremption."
+    },
+    "database": {
+      "connectionError": "Erreur de connexion à la base de données",
+      "saveError": "Erreur lors de l'enregistrement du produit : ",
+      "saveBatchError": "Erreur lors de l'enregistrement du lot : ",
+      "updateBatchError": "Erreur lors de la mise à jour du lot : ",
+      "deleteBatchError": "Erreur lors de la suppression du lot : ",
+      "deleteProductError": "Erreur lors de la suppression du produit : ",
+      "expiryCheckError": "Erreur lors de la vérification des dates de péremption depuis la base de données."
+    }
   }
 }
