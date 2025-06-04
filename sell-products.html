@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام البيع الذكي</title>
+    <title data-i18n="pageTitles.smartSaleSystem">نظام البيع الذكي</title>
     <!-- مكتبة ZXing لمسح الباركود -->
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <!-- Font Awesome للأيقونات -->
@@ -13,7 +13,12 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
-    <style>
+    <!-- مكتبة i18next للترجمة -->
+    <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js"></script>
+    <script src="https://unpkg.com/i18next-http-backend/i18nextHttpBackend.js"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.js"></script>
+    
+   <style>
         :root {
             --primary: #4361ee;
             --primary-dark: #3a56d4;
@@ -779,13 +784,13 @@
         <!-- حاوية جديدة للرأس بتأثير ثلاثي الأبعاد -->
         <div class="header-container">
             <div class="header">
-                <h1><i class="fas fa-cash-register"></i> نظام البيع الذكي</h1>
+                <h1><i class="fas fa-cash-register"></i> <span data-i18n="headers.mainTitle">نظام البيع الذكي</span></h1>
             </div>
         </div>
         
         <div class="search-container">
             <button id="searchToggle" class="search-toggle">
-                <i class="fas fa-search"></i> بحث عن منتج
+                <i class="fas fa-search"></i> <span data-i18n="buttons.searchProduct">بحث عن منتج</span>
             </button>
             
             <div id="searchWrapper" class="search-wrapper">
@@ -793,12 +798,13 @@
                     type="text" 
                     id="barcodeInput" 
                     class="search-input" 
+                    data-i18n-placeholder="placeholders.enterBarcode"
                     placeholder="ادخل رقم الباركود..."
                     autocomplete="off"
                 >
                 <div class="search-actions">
                     <button id="cameraBtn" class="btn btn-primary" style="border-radius: 0 50px 50px 0;">
-                        <i class="fas fa-camera"></i> مسح
+                        <i class="fas fa-camera"></i> <span data-i18n="buttons.scan">مسح</span>
                     </button>
                 </div>
             </div>
@@ -810,7 +816,7 @@
                 <div class="scanner-frame"></div>
                 <div class="scanner-instruction">
                     <i class="fas fa-barcode fa-3x"></i>
-                    <p>وجه الكاميرا نحو الباركود</p>
+                    <p data-i18n="scanner.instruction">وجه الكاميرا نحو الباركود</p>
                 </div>
             </div>
         </div>
@@ -820,87 +826,87 @@
                 <img id="productImage" class="product-image" src="" alt="صورة المنتج">
                 <div class="product-info">
                     <h2 id="productName" class="product-title">
-                        <i class="fas fa-tag"></i> اسم المنتج
+                        <i class="fas fa-tag"></i> <span data-i18n="productInfo.name">اسم المنتج</span>
                     </h2>
                     <div id="basePrice" class="product-price">
-                        <i class="fas fa-tags"></i> 50.00 ر.س
+                        <i class="fas fa-tags"></i> <span class="price-value">50.00</span> <span data-i18n="general.currency">ر.س</span>
                     </div>
                     <div id="productQuantity" class="product-stock">
-                        <i class="fas fa-boxes"></i> المخزون: 10 قطع
+                        <i class="fas fa-boxes"></i> <span data-i18n="productInfo.stock">المخزون</span>: <span class="stock-value">10</span> <span data-i18n="general.pieces">قطع</span>
                     </div>
                     <div id="productExpiry" class="product-expiry">
-                        <i class="fas fa-calendar-alt"></i> تاريخ الصلاحية: غير محدد
+                        <i class="fas fa-calendar-alt"></i> <span data-i18n="productInfo.expiry">تاريخ الصلاحية</span>: <span class="expiry-value">غير محدد</span>
                     </div>
                 </div>
             </div>
             
             <button id="applyDiscount" class="btn btn-outline">
-                <i class="fas fa-percentage"></i> إضافة خصم
+                <i class="fas fa-percentage"></i> <span data-i18n="buttons.addDiscount">إضافة خصم</span>
             </button>
             
             <div id="discountSection" class="discount-section">
                 <div class="discount-type">
                     <div id="percentDiscountBtn" class="discount-type-btn active">
-                        <i class="fas fa-percent"></i> نسبة مئوية
+                        <i class="fas fa-percent"></i> <span data-i18n="discount.percentage">نسبة مئوية</span>
                     </div>
                     <div id="fixedDiscountBtn" class="discount-type-btn">
-                        <i class="fas fa-money-bill-wave"></i> خصم بالدرهم
+                        <i class="fas fa-money-bill-wave"></i> <span data-i18n="discount.fixedAmount">خصم بالدرهم</span>
                     </div>
                 </div>
                 
                 <div id="percentDiscountGroup" class="form-group">
                     <label for="discountPercent" class="form-label">
-                        <i class="fas fa-percent"></i> نسبة الخصم
+                        <i class="fas fa-percent"></i> <span data-i18n="discount.discountPercentage">نسبة الخصم</span>
                     </label>
                     <input type="number" id="discountPercent" class="form-control" min="0" max="100" placeholder="10">
                 </div>
                 
                 <div id="fixedDiscountGroup" class="form-group" style="display: none;">
                     <label for="discountAmount" class="form-label">
-                        <i class="fas fa-money-bill-wave"></i> مبلغ الخصم (MAD)
+                        <i class="fas fa-money-bill-wave"></i> <span data-i18n="discount.discountAmount">مبلغ الخصم</span> (<span data-i18n="general.currency">ر.س</span>)
                     </label>
                     <input type="number" id="discountAmount" class="form-control" min="0" placeholder="5.00">
                 </div>
                 
                 <div class="form-group">
                     <label for="reasonInput" class="form-label">
-                        <i class="fas fa-comment-alt"></i> سبب الخصم (اختياري)
+                        <i class="fas fa-comment-alt"></i> <span data-i18n="discount.reasonOptional">سبب الخصم (اختياري)</span>
                     </label>
-                    <input type="text" id="reasonInput" class="form-control" placeholder="مثال: خصم موسمي، عيب بسيط...">
+                    <input type="text" id="reasonInput" class="form-control" data-i18n-placeholder="discount.reasonExample" placeholder="مثال: خصم موسمي، عيب بسيط...">
                 </div>
                 <button id="confirmDiscount" class="btn btn-primary">
-                    <i class="fas fa-check-circle"></i> تطبيق الخصم
+                    <i class="fas fa-check-circle"></i> <span data-i18n="buttons.applyDiscount">تطبيق الخصم</span>
                 </button>
             </div>
             
             <div class="payment-methods">
                 <div id="cashPayment" class="payment-method active">
                     <i class="fas fa-money-bill-wave"></i>
-                    نقداً
+                    <span data-i18n="payment.cash">نقداً</span>
                 </div>
                 <div id="cardPayment" class="payment-method">
                     <i class="fas fa-credit-card"></i>
-                    بطاقة بنكية
+                    <span data-i18n="payment.card">بطاقة بنكية</span>
                 </div>
                 <div id="transferPayment" class="payment-method">
                     <i class="fas fa-exchange-alt"></i>
-                    تحويل
+                    <span data-i18n="payment.transfer">تحويل</span>
                 </div>
             </div>
             
             <div class="final-price">
                 <div class="final-price-label">
-                    <i class="fas fa-receipt"></i> السعر النهائي
+                    <i class="fas fa-receipt"></i> <span data-i18n="payment.finalPrice">السعر النهائي</span>
                 </div>
-                <div id="finalPriceValue" class="final-price-value">50.00 MAD</div>
+                <div id="finalPriceValue" class="final-price-value">50.00 <span data-i18n="general.currency">ر.س</span></div>
             </div>
             
             <div class="action-buttons">
                 <button id="sellBtn" class="btn btn-success">
-                    <i class="fas fa-cash-register"></i> تأكيد البيع
+                    <i class="fas fa-cash-register"></i> <span data-i18n="buttons.confirmSale">تأكيد البيع</span>
                 </button>
                 <button id="returnBtn" class="btn btn-danger">
-                    <i class="fas fa-undo-alt"></i> إرجاع المنتج
+                    <i class="fas fa-undo-alt"></i> <span data-i18n="buttons.returnProduct">إرجاع المنتج</span>
                 </button>
             </div>
         </div>
@@ -912,12 +918,12 @@
     <!-- نافذة تأكيد الإرجاع -->
     <div id="returnConfirmModal" class="modal-overlay">
         <div class="confirmation-modal">
-            <h3><i class="fas fa-undo-alt"></i> تأكيد إرجاع المنتج</h3>
-            <p id="returnConfirmText">هل أنت متأكد من إرجاع هذا المنتج؟</p>
-            <input type="text" id="returnReasonInput" class="reason-input" placeholder="سبب الإرجاع (اختياري)">
+            <h3><i class="fas fa-undo-alt"></i> <span data-i18n="return.confirmTitle">تأكيد إرجاع المنتج</span></h3>
+            <p id="returnConfirmText" data-i18n="return.confirmText">هل أنت متأكد من إرجاع هذا المنتج؟</p>
+            <input type="text" id="returnReasonInput" class="reason-input" data-i18n-placeholder="return.reasonPlaceholder" placeholder="سبب الإرجاع (اختياري)">
             <div class="modal-actions">
-                <button id="confirmReturnBtn" class="confirm-btn"><i class="fas fa-check"></i> تأكيد</button>
-                <button id="cancelReturnBtn" class="cancel-btn"><i class="fas fa-times"></i> إلغاء</button>
+                <button id="confirmReturnBtn" class="confirm-btn"><i class="fas fa-check"></i> <span data-i18n="buttons.confirm">تأكيد</span></button>
+                <button id="cancelReturnBtn" class="cancel-btn"><i class="fas fa-times"></i> <span data-i18n="buttons.cancel">إلغاء</span></button>
             </div>
         </div>
     </div>
@@ -925,7 +931,7 @@
     <!-- إشعار الإرجاع الناجح -->
     <div id="returnSuccessNotice" class="return-success-notice">
         <i class="fas fa-check-circle"></i>
-        <h3>تم الإرجاع بنجاح</h3>
+        <h3 data-i18n="return.successTitle">تم الإرجاع بنجاح</h3>
         <p id="returnSuccessText"></p>
     </div>
 
@@ -933,585 +939,640 @@
     <div id="toast" class="toast"></div>
     
     <script>
-        // 1. تهيئة Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDRtJBPOjpfXXfsaDo98E_NTT7KWzz8gj4",
-            authDomain: "pharmacy-system-9def6.firebaseapp.com",
-            databaseURL: "https://pharmacy-system-9def6-default-rtdb.firebaseio.com",
-            projectId: "pharmacy-system-9def6",
-            storageBucket: "pharmacy-system-9def6.appspot.com",
-            messagingSenderId: "630855008414",
-            appId: "1:630855008414:web:b464bcb81c8a2091d0fb8f",
-            measurementId: "G-LC5NDKP6QZ"
-        };
+        // 1. تهيئة i18next للترجمة
+        i18next
+            .use(i18nextHttpBackend)
+            .use(i18nextBrowserLanguageDetector)
+            .init({
+                fallbackLng: 'ar',
+                debug: false,
+                ns: ['translation'],
+                defaultNS: 'translation',
+                backend: {
+                    loadPath: 'locales/{{lng}}/{{ns}}.json'
+                },
+                detection: {
+                    order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+                    caches: ['localStorage', 'cookie'],
+                    lookupQuerystring: 'lng',
+                    lookupCookie: 'i18next',
+                    lookupLocalStorage: 'i18nextLng',
+                    convertDetectedLanguage: (lng) => lng === 'fr' ? 'fr' : 'ar'
+                }
+            }, function(err, t) {
+                if (err) console.error('i18next initialization error:', err);
+                updateContent();
+                initializeSystem();
+            });
         
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        // تحديث المحتوى بناءً على اللغة المحددة
+        function updateContent() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                element.innerHTML = i18next.t(key);
+            });
+            
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                element.setAttribute('placeholder', i18next.t(key));
+            });
+        }
         
-        // 2. تهيئة النظام
-        const codeReader = new ZXing.BrowserMultiFormatReader();
-        let cameraActive = false;
-        let currentProduct = null;
-        let paymentMethod = 'cash';
-        let invoiceCounter = 1;
-        const pharmacyName = "Lilyan Rose";
+        // تحديث المحتوى عند تغيير اللغة
+        i18next.on('languageChanged', () => {
+            updateContent();
+        });
         
-        // 3. عناصر واجهة المستخدم
-        const elements = {
-            searchToggle: document.getElementById('searchToggle'),
-            searchWrapper: document.getElementById('searchWrapper'),
-            barcodeInput: document.getElementById('barcodeInput'),
-            cameraBtn: document.getElementById('cameraBtn'),
-            cameraScanner: document.getElementById('cameraScanner'),
-            productDetails: document.getElementById('productDetails'),
-            productImage: document.getElementById('productImage'),
-            productName: document.getElementById('productName'),
-            basePrice: document.getElementById('basePrice'),
-            productQuantity: document.getElementById('productQuantity'),
-            productExpiry: document.getElementById('productExpiry'),
-            applyDiscount: document.getElementById('applyDiscount'),
-            discountSection: document.getElementById('discountSection'),
-            percentDiscountBtn: document.getElementById('percentDiscountBtn'),
-            fixedDiscountBtn: document.getElementById('fixedDiscountBtn'),
-            percentDiscountGroup: document.getElementById('percentDiscountGroup'),
-            fixedDiscountGroup: document.getElementById('fixedDiscountGroup'),
-            discountPercent: document.getElementById('discountPercent'),
-            discountAmount: document.getElementById('discountAmount'),
-            reasonInput: document.getElementById('reasonInput'),
-            confirmDiscount: document.getElementById('confirmDiscount'),
-            cashPayment: document.getElementById('cashPayment'),
-            cardPayment: document.getElementById('cardPayment'),
-            transferPayment: document.getElementById('transferPayment'),
-            finalPriceValue: document.getElementById('finalPriceValue'),
-            sellBtn: document.getElementById('sellBtn'),
-            returnBtn: document.getElementById('returnBtn'),
-            toast: document.getElementById('toast'),
-            returnConfirmModal: document.getElementById('returnConfirmModal'),
-            returnConfirmText: document.getElementById('returnConfirmText'),
-            returnReasonInput: document.getElementById('returnReasonInput'),
-            confirmReturnBtn: document.getElementById('confirmReturnBtn'),
-            cancelReturnBtn: document.getElementById('cancelReturnBtn'),
-            returnSuccessNotice: document.getElementById('returnSuccessNotice'),
-            returnSuccessText: document.getElementById('returnSuccessText'),
-            invoicePlaceholder: document.getElementById('invoicePlaceholder')
-        };
-        
-        // 4. التحكم في شريط البحث
-        elements.searchToggle.addEventListener('click', function() {
-            toggleSearch();
-            if (elements.barcodeInput.value.trim()) {
+        // 2. تهيئة النظام بعد تحميل الترجمة
+        function initializeSystem() {
+            // 3. تهيئة Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyDRtJBPOjpfXXfsaDo98E_NTT7KWzz8gj4",
+                authDomain: "pharmacy-system-9def6.firebaseapp.com",
+                databaseURL: "https://pharmacy-system-9def6-default-rtdb.firebaseio.com",
+                projectId: "pharmacy-system-9def6",
+                storageBucket: "pharmacy-system-9def6.appspot.com",
+                messagingSenderId: "630855008414",
+                appId: "1:630855008414:web:b464bcb81c8a2091d0fb8f",
+                measurementId: "G-LC5NDKP6QZ"
+            };
+            
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            
+            // 4. تهيئة النظام
+            const codeReader = new ZXing.BrowserMultiFormatReader();
+            let cameraActive = false;
+            let currentProduct = null;
+            let paymentMethod = 'cash';
+            let invoiceCounter = 1;
+            const pharmacyName = i18next.t("general.pharmacyName");
+            
+            // 5. عناصر واجهة المستخدم
+            const elements = {
+                searchToggle: document.getElementById('searchToggle'),
+                searchWrapper: document.getElementById('searchWrapper'),
+                barcodeInput: document.getElementById('barcodeInput'),
+                cameraBtn: document.getElementById('cameraBtn'),
+                cameraScanner: document.getElementById('cameraScanner'),
+                productDetails: document.getElementById('productDetails'),
+                productImage: document.getElementById('productImage'),
+                productName: document.getElementById('productName'),
+                basePrice: document.getElementById('basePrice'),
+                productQuantity: document.getElementById('productQuantity'),
+                productExpiry: document.getElementById('productExpiry'),
+                applyDiscount: document.getElementById('applyDiscount'),
+                discountSection: document.getElementById('discountSection'),
+                percentDiscountBtn: document.getElementById('percentDiscountBtn'),
+                fixedDiscountBtn: document.getElementById('fixedDiscountBtn'),
+                percentDiscountGroup: document.getElementById('percentDiscountGroup'),
+                fixedDiscountGroup: document.getElementById('fixedDiscountGroup'),
+                discountPercent: document.getElementById('discountPercent'),
+                discountAmount: document.getElementById('discountAmount'),
+                reasonInput: document.getElementById('reasonInput'),
+                confirmDiscount: document.getElementById('confirmDiscount'),
+                cashPayment: document.getElementById('cashPayment'),
+                cardPayment: document.getElementById('cardPayment'),
+                transferPayment: document.getElementById('transferPayment'),
+                finalPriceValue: document.getElementById('finalPriceValue'),
+                sellBtn: document.getElementById('sellBtn'),
+                returnBtn: document.getElementById('returnBtn'),
+                toast: document.getElementById('toast'),
+                returnConfirmModal: document.getElementById('returnConfirmModal'),
+                returnConfirmText: document.getElementById('returnConfirmText'),
+                returnReasonInput: document.getElementById('returnReasonInput'),
+                confirmReturnBtn: document.getElementById('confirmReturnBtn'),
+                cancelReturnBtn: document.getElementById('cancelReturnBtn'),
+                returnSuccessNotice: document.getElementById('returnSuccessNotice'),
+                returnSuccessText: document.getElementById('returnSuccessText'),
+                invoicePlaceholder: document.getElementById('invoicePlaceholder')
+            };
+            
+            // باقي الكود يبقى كما هو مع استبدال النصوص الثابتة بالترجمات
+            // مثلاً: showToast(i18next.t('messages.productFound'), 'success');
+            
+            // 6. التحكم في شريط البحث
+            elements.searchToggle.addEventListener('click', function() {
+                toggleSearch();
+                if (elements.barcodeInput.value.trim()) {
+                    searchProduct();
+                }
+            });
+            
+            function toggleSearch() {
+                elements.searchWrapper.style.display = elements.searchWrapper.style.display === 'flex' ? 'none' : 'flex';
+                if (elements.searchWrapper.style.display === 'flex') {
+                    elements.barcodeInput.focus();
+                }
+            }
+            
+            // 7. التحكم في كاميرا الباركود
+            elements.cameraBtn.addEventListener('click', toggleCamera);
+            
+            async function toggleCamera() {
+                if (cameraActive) {
+                    await stopCamera();
+                } else {
+                    await startCamera();
+                }
+            }
+            
+            async function startCamera() {
+                try {
+                    elements.cameraScanner.style.display = 'block';
+                    elements.cameraBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${i18next.t('messages.startingCamera')}`;
+                    
+                    await codeReader.decodeFromVideoDevice(
+                        undefined, 
+                        elements.cameraScanner.querySelector('video'), 
+                        (result, err) => {
+                            if (result) {
+                                handleBarcode(result.text);
+                            }
+                            if (err && !(err instanceof ZXing.NotFoundException)) {
+                                console.error(i18next.t('errors.scannerError'), err);
+                                showToast(i18next.t('errors.scannerError'), 'error');
+                            }
+                        }
+                    );
+                    
+                    elements.cameraBtn.innerHTML = `<i class="fas fa-camera"></i> ${i18next.t('buttons.stopCamera')}`;
+                    cameraActive = true;
+                    showToast(i18next.t('messages.cameraStarted'), 'success');
+                } catch (err) {
+                    console.error(i18next.t('errors.cameraError'), err);
+                    showToast(`${i18next.t('errors.cameraFailed')}: ${err.message}`, 'error');
+                    elements.cameraBtn.innerHTML = `<i class="fas fa-camera"></i> ${i18next.t('buttons.scan')}`;
+                    elements.cameraScanner.style.display = 'none';
+                }
+            }
+            
+            async function stopCamera() {
+                await codeReader.reset();
+                elements.cameraScanner.style.display = 'none';
+                elements.cameraBtn.innerHTML = `<i class="fas fa-camera"></i> ${i18next.t('buttons.scan')}`;
+                cameraActive = false;
+            }
+            
+            // 8. معالجة الباركود
+            function handleBarcode(barcode) {
+                elements.barcodeInput.value = barcode;
+                stopCamera();
                 searchProduct();
             }
-        });
-        
-        function toggleSearch() {
-            elements.searchWrapper.style.display = elements.searchWrapper.style.display === 'flex' ? 'none' : 'flex';
-            if (elements.searchWrapper.style.display === 'flex') {
-                elements.barcodeInput.focus();
-            }
-        }
-        
-        // 5. التحكم في كاميرا الباركود
-        elements.cameraBtn.addEventListener('click', toggleCamera);
-        
-        async function toggleCamera() {
-            if (cameraActive) {
-                await stopCamera();
-            } else {
-                await startCamera();
-            }
-        }
-        
-        async function startCamera() {
-            try {
-                elements.cameraScanner.style.display = 'block';
-                elements.cameraBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التشغيل...';
-                
-                await codeReader.decodeFromVideoDevice(
-                    undefined, 
-                    elements.cameraScanner.querySelector('video'), 
-                    (result, err) => {
-                        if (result) {
-                            handleBarcode(result.text);
-                        }
-                        if (err && !(err instanceof ZXing.NotFoundException)) {
-                            console.error('خطأ المسح:', err);
-                            showToast('حدث خطأ في المسح', 'error');
-                        }
-                    }
-                );
-                
-                elements.cameraBtn.innerHTML = '<i class="fas fa-camera"></i> إيقاف الكاميرا';
-                cameraActive = true;
-                showToast('تم تشغيل الكاميرا بنجاح', 'success');
-            } catch (err) {
-                console.error('خطأ الكاميرا:', err);
-                showToast('فشل تشغيل الكاميرا: ' + err.message, 'error');
-                elements.cameraBtn.innerHTML = '<i class="fas fa-camera"></i> مسح بالكاميرا';
-                elements.cameraScanner.style.display = 'none';
-            }
-        }
-        
-        async function stopCamera() {
-            await codeReader.reset();
-            elements.cameraScanner.style.display = 'none';
-            elements.cameraBtn.innerHTML = '<i class="fas fa-camera"></i> مسح بالكاميرا';
-            cameraActive = false;
-        }
-        
-        // 6. معالجة الباركود
-        function handleBarcode(barcode) {
-            elements.barcodeInput.value = barcode;
-            stopCamera();
-            searchProduct();
-        }
-        
-        // 7. البحث عن المنتج في قاعدة البيانات
-        elements.barcodeInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') searchProduct();
-        });
-        
-        function searchProduct() {
-            const barcode = elements.barcodeInput.value.trim();
             
-            if (!barcode) {
-                showToast('يرجى إدخال باركود المنتج', 'warning');
-                return;
-            }
-            
-            showToast('جارٍ البحث عن المنتج...', 'info');
-            
-            database.ref('products/' + barcode).once('value')
-                .then((snapshot) => {
-                    const productData = snapshot.val();
-                    
-                    if (productData) {
-                        currentProduct = {
-                            barcode: barcode,
-                            name: productData.name,
-                            price: parseFloat(productData.price),
-                            quantity: parseInt(productData.quantity),
-                            expiryDate: productData.expiryDate,
-                            image: productData.image || 'https://via.placeholder.com/150'
-                        };
-                        
-                        displayProduct(currentProduct);
-                        showToast('تم العثور على المنتج', 'success');
-                    } else {
-                        showToast('المنتج غير موجود في النظام', 'error');
-                        elements.productDetails.style.display = 'none';
-                    }
-                })
-                .catch((error) => {
-                    console.error('خطأ في جلب البيانات:', error);
-                    showToast('حدث خطأ أثناء البحث عن المنتج', 'error');
-                });
-        }
-        
-        function displayProduct(product) {
-            elements.productName.textContent = product.name;
-            elements.basePrice.innerHTML = `<i class="fas fa-tags"></i> ${product.price.toFixed(2)} MAD`;
-            
-            // تحديث عرض كمية المخزون مع التأثيرات
-            const stockElement = elements.productQuantity;
-            const stockQuantity = product.quantity || 0;
-            
-            if (stockQuantity <= 0) {
-                stockElement.innerHTML = '<i class="fas fa-boxes"></i> <span class="out-of-stock">انتهى المخزون</span>';
-                stockElement.className = 'product-stock out-of-stock';
-            } 
-            else if (stockQuantity <= 5) {
-                stockElement.innerHTML = `<i class="fas fa-boxes"></i> <span class="low-stock stock-warning">المخزون: ${stockQuantity} قطع</span>`;
-                stockElement.className = 'product-stock low-stock';
-            }
-            else {
-                stockElement.innerHTML = `<i class="fas fa-boxes"></i> المخزون: ${stockQuantity} قطع`;
-                stockElement.className = 'product-stock';
-            }
-            
-            // تحديث عرض تاريخ الصلاحية
-            const expiryElement = elements.productExpiry;
-            const expiryDate = product.expiryDate || null;
-            
-            if (!expiryDate) {
-                expiryElement.innerHTML = '<i class="fas fa-calendar-alt"></i> تاريخ الصلاحية: غير محدد';
-                expiryElement.className = 'product-expiry';
-            } else {
-                const today = new Date();
-                const expiry = new Date(expiryDate);
-                const diffTime = expiry - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
-                expiryElement.innerHTML = `<i class="fas fa-calendar-alt"></i> تاريخ الصلاحية: ${formatDate(expiryDate)}`;
-                
-                if (diffDays < 0) {
-                    expiryElement.className = 'product-expiry expiry-passed';
-                    expiryElement.innerHTML += ' <span>(منتهي الصلاحية)</span>';
-                } else if (diffDays <= 30) {
-                    expiryElement.className = 'product-expiry expiry-soon';
-                    expiryElement.innerHTML += ` <span>(متبقي ${diffDays} يوم)</span>`;
-                } else {
-                    expiryElement.className = 'product-expiry';
-                }
-            }
-            
-            elements.productImage.src = product.image;
-            elements.finalPriceValue.textContent = product.price.toFixed(2) + ' MAD';
-            elements.productDetails.style.display = 'block';
-            
-            // تعطيل زر البيع إذا لم يكن هناك مخزون
-            elements.sellBtn.disabled = product.quantity <= 0;
-            elements.sellBtn.style.opacity = product.quantity <= 0 ? 0.6 : 1;
-            elements.sellBtn.style.cursor = product.quantity <= 0 ? 'not-allowed' : 'pointer';
-            
-            elements.discountPercent.value = '';
-            elements.discountAmount.value = '';
-            elements.reasonInput.value = '';
-            elements.discountSection.style.display = 'none';
-            
-            paymentMethod = 'cash';
-            elements.cashPayment.classList.add('active');
-            elements.cardPayment.classList.remove('active');
-            elements.transferPayment.classList.remove('active');
-        }
-        
-        // دالة مساعدة لتهيئة التاريخ
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('en-GB', options);
-        }
-        
-        // 8. نظام الخصم
-        elements.applyDiscount.addEventListener('click', function() {
-            elements.discountSection.style.display = 
-                elements.discountSection.style.display === 'block' ? 'none' : 'block';
-        });
-        
-        elements.percentDiscountBtn.addEventListener('click', function() {
-            elements.percentDiscountBtn.classList.add('active');
-            elements.fixedDiscountBtn.classList.remove('active');
-            elements.percentDiscountGroup.style.display = 'block';
-            elements.fixedDiscountGroup.style.display = 'none';
-        });
-        
-        elements.fixedDiscountBtn.addEventListener('click', function() {
-            elements.fixedDiscountBtn.classList.add('active');
-            elements.percentDiscountBtn.classList.remove('active');
-            elements.fixedDiscountGroup.style.display = 'block';
-            elements.percentDiscountGroup.style.display = 'none';
-        });
-        
-        elements.confirmDiscount.addEventListener('click', applyDiscount);
-        
-        function applyDiscount() {
-            const basePrice = currentProduct.price;
-            let finalPrice = basePrice;
-            let discountApplied = false;
-            
-            if (elements.percentDiscountBtn.classList.contains('active')) {
-                const discountPercent = parseFloat(elements.discountPercent.value) || 0;
-                
-                if (discountPercent < 0 || discountPercent > 100) {
-                    showToast('نسبة الخصم يجب أن تكون بين 0 و 100', 'warning');
-                    return;
-                }
-                
-                if (discountPercent > 20) {
-                    const reason = elements.reasonInput.value.trim();
-                    if (!reason) {
-                        showToast('الخصم أكثر من 20% يطلب إدخال السبب', 'warning');
-                        return;
-                    }
-                }
-                
-                finalPrice = basePrice - (basePrice * (discountPercent / 100));
-                discountApplied = discountPercent > 0;
-            } else {
-                const discountAmount = parseFloat(elements.discountAmount.value) || 0;
-                
-                if (discountAmount < 0) {
-                    showToast('قيمة الخصم يجب أن تكون موجبة', 'warning');
-                    return;
-                }
-                
-                if (discountAmount > basePrice * 0.2) {
-                    const reason = elements.reasonInput.value.trim();
-                    if (!reason) {
-                        showToast('الخصم أكثر من 20% من السعر يطلب إدخال السبب', 'warning');
-                        return;
-                    }
-                }
-                
-                finalPrice = basePrice - discountAmount;
-                discountApplied = discountAmount > 0;
-                
-                if (finalPrice < 0) {
-                    showToast('لا يمكن أن يكون السعر النهائي أقل من الصفر', 'error');
-                    return;
-                }
-            }
-            
-            elements.finalPriceValue.textContent = finalPrice.toFixed(2) + ' ر.س';
-            
-            if (discountApplied) {
-                showToast('تم تطبيق الخصم بنجاح', 'success');
-            } else {
-                showToast('تم إلغاء الخصم', 'info');
-            }
-        }
-        
-        // 9. اختيار طريقة الدفع
-        elements.cashPayment.addEventListener('click', function() {
-            paymentMethod = 'cash';
-            elements.cashPayment.classList.add('active');
-            elements.cardPayment.classList.remove('active');
-            elements.transferPayment.classList.remove('active');
-        });
-        
-        elements.cardPayment.addEventListener('click', function() {
-            paymentMethod = 'card';
-            elements.cardPayment.classList.add('active');
-            elements.cashPayment.classList.remove('active');
-            elements.transferPayment.classList.remove('active');
-        });
-        
-        elements.transferPayment.addEventListener('click', function() {
-            paymentMethod = 'transfer';
-            elements.transferPayment.classList.add('active');
-            elements.cashPayment.classList.remove('active');
-            elements.cardPayment.classList.remove('active');
-        });
-        
-        elements.sellBtn.addEventListener('click', function() {
-            if (!currentProduct) return;
-            
-            // التحقق من وجود مخزون
-            if (currentProduct.quantity <= 0) {
-                showToast('⚠️ لا يمكن إتمام البيع - انتهى المخزون!', 'error');
-                return;
-            }
-            
-            // التحقق من تاريخ الصلاحية إذا كان موجوداً
-            if (currentProduct.expiryDate) {
-                const today = new Date();
-                const expiryDate = new Date(currentProduct.expiryDate);
-                
-                if (expiryDate < today) {
-                    showToast('⚠️ لا يمكن بيع منتج منتهي الصلاحية!', 'error');
-                    return;
-                }
-            }
-            
-            const finalPrice = parseFloat(elements.finalPriceValue.textContent);
-            const basePrice = currentProduct.price;
-            const discountApplied = finalPrice < basePrice;
-            let discountInfo = null;
-            
-            if (discountApplied) {
-                const discountValue = (basePrice - finalPrice).toFixed(2);
-                const discountType = elements.percentDiscountBtn.classList.contains('active') ? 'percent' : 'fixed';
-                const reason = elements.reasonInput.value.trim() || 'لا يوجد سبب مذكور';
-                
-                discountInfo = {
-                    type: discountType,
-                    value: discountType === 'percent' ? elements.discountPercent.value : elements.discountAmount.value,
-                    reason: reason
-                };
-            }
-            
-            // تحديث المخزون في قاعدة البيانات
-            const newQuantity = currentProduct.quantity - 1;
-            
-            database.ref('products/' + currentProduct.barcode).update({
-                quantity: newQuantity
-            })
-            .then(() => {
-                // إنشاء الفاتورة
-                const invoice = createInvoice(currentProduct, finalPrice, paymentMethod, discountInfo);
-                
-                // حفظ الفاتورة في قاعدة البيانات
-                saveInvoiceToDatabase(invoice);
-                
-                // عرض الفاتورة في صفحة منفصلة
-                showInvoice(invoice);
-                
-                // إعادة تعيين النظام
-                resetSystem();
-            })
-            .catch((error) => {
-                console.error('خطأ في تحديث المخزون:', error);
-                showToast('حدث خطأ أثناء تحديث المخزون', 'error');
+            // 9. البحث عن المنتج في قاعدة البيانات
+            elements.barcodeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') searchProduct();
             });
-        });
-        
-        // 11. وظيفة إنشاء الفاتورة
-        function createInvoice(product, finalPrice, paymentMethod, discountInfo = null) {
-            const now = new Date();
-            const invoiceId = 'INV-' + now.getFullYear() + (now.getMonth()+1).toString().padStart(2, '0') + 
-                              now.getDate().toString().padStart(2, '0') + '-' + invoiceCounter.toString().padStart(4, '0');
             
-            const invoice = {
-                id: invoiceId,
-                date: now.toISOString(),
-                pharmacy: pharmacyName,
-                product: product.name,
-                originalPrice: product.price,
-                finalPrice: finalPrice,
-                paymentMethod: paymentMethod,
-                discount: discountInfo
-            };
+            function searchProduct() {
+                const barcode = elements.barcodeInput.value.trim();
+                
+                if (!barcode) {
+                    showToast(i18next.t('errors.enterBarcode'), 'warning');
+                    return;
+                }
+                
+                showToast(i18next.t('messages.searchingProduct'), 'info');
+                
+                database.ref('products/' + barcode).once('value')
+                    .then((snapshot) => {
+                        const productData = snapshot.val();
+                        
+                        if (productData) {
+                            currentProduct = {
+                                barcode: barcode,
+                                name: productData.name,
+                                price: parseFloat(productData.price),
+                                quantity: parseInt(productData.quantity),
+                                expiryDate: productData.expiryDate,
+                                image: productData.image || 'https://via.placeholder.com/150'
+                            };
+                            
+                            displayProduct(currentProduct);
+                            showToast(i18next.t('messages.productFound'), 'success');
+                        } else {
+                            showToast(i18next.t('errors.productNotFound'), 'error');
+                            elements.productDetails.style.display = 'none';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(i18next.t('errors.databaseError'), error);
+                        showToast(i18next.t('errors.searchError'), 'error');
+                    });
+            }
             
-            invoiceCounter++;
+            function displayProduct(product) {
+                elements.productName.textContent = product.name;
+                elements.basePrice.querySelector('.price-value').textContent = product.price.toFixed(2);
+                
+                // تحديث عرض كمية المخزون مع التأثيرات
+                const stockElement = elements.productQuantity;
+                const stockQuantity = product.quantity || 0;
+                
+                if (stockQuantity <= 0) {
+                    stockElement.querySelector('.stock-value').innerHTML = `<span class="out-of-stock">${i18next.t('productStatus.outOfStock')}</span>`;
+                    stockElement.className = 'product-stock out-of-stock';
+                } 
+                else if (stockQuantity <= 5) {
+                    stockElement.querySelector('.stock-value').innerHTML = `<span class="low-stock stock-warning">${stockQuantity}</span>`;
+                    stockElement.className = 'product-stock low-stock';
+                }
+                else {
+                    stockElement.querySelector('.stock-value').textContent = stockQuantity;
+                    stockElement.className = 'product-stock';
+                }
+                
+                // تحديث عرض تاريخ الصلاحية
+                const expiryElement = elements.productExpiry;
+                const expiryDate = product.expiryDate || null;
+                
+                if (!expiryDate) {
+                    expiryElement.querySelector('.expiry-value').textContent = i18next.t('general.notSpecified');
+                    expiryElement.className = 'product-expiry';
+                } else {
+                    const today = new Date();
+                    const expiry = new Date(expiryDate);
+                    const diffTime = expiry - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    expiryElement.querySelector('.expiry-value').textContent = formatDate(expiryDate);
+                    
+                    if (diffDays < 0) {
+                        expiryElement.className = 'product-expiry expiry-passed';
+                        expiryElement.querySelector('.expiry-value').innerHTML += ` <span>(${i18next.t('productStatus.expired')})</span>`;
+                    } else if (diffDays <= 30) {
+                        expiryElement.className = 'product-expiry expiry-soon';
+                        expiryElement.querySelector('.expiry-value').innerHTML += ` <span>(${i18next.t('productStatus.expiringIn', {days: diffDays})})</span>`;
+                    } else {
+                        expiryElement.className = 'product-expiry';
+                    }
+                }
+                
+                elements.productImage.src = product.image;
+                elements.finalPriceValue.textContent = product.price.toFixed(2) + ' ' + i18next.t('general.currency');
+                elements.productDetails.style.display = 'block';
+                
+                // تعطيل زر البيع إذا لم يكن هناك مخزون
+                elements.sellBtn.disabled = product.quantity <= 0;
+                elements.sellBtn.style.opacity = product.quantity <= 0 ? 0.6 : 1;
+                elements.sellBtn.style.cursor = product.quantity <= 0 ? 'not-allowed' : 'pointer';
+                
+                elements.discountPercent.value = '';
+                elements.discountAmount.value = '';
+                elements.reasonInput.value = '';
+                elements.discountSection.style.display = 'none';
+                
+                paymentMethod = 'cash';
+                elements.cashPayment.classList.add('active');
+                elements.cardPayment.classList.remove('active');
+                elements.transferPayment.classList.remove('active');
+            }
             
-            return invoice;
-        }
-        
-        function showInvoice(invoice) {
-            // إنشاء iframe لعرض الفاتورة
-            const iframe = document.createElement('iframe');
-            iframe.id = 'invoiceFrame';
-            iframe.style.width = '100%';
-            iframe.style.height = '600px';
-            iframe.style.border = 'none';
-            iframe.style.marginTop = '20px';
+            // دالة مساعدة لتهيئة التاريخ
+            function formatDate(dateString) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString(i18next.language, options);
+            }
             
-            // إضافة الـ iframe إلى الصفحة
-            elements.invoicePlaceholder.innerHTML = '';
-            elements.invoicePlaceholder.appendChild(iframe);
-            elements.invoicePlaceholder.style.display = 'block';
+            // 10. نظام الخصم
+            elements.applyDiscount.addEventListener('click', function() {
+                elements.discountSection.style.display = 
+                    elements.discountSection.style.display === 'block' ? 'none' : 'block';
+            });
             
-            // إخفاء الأقسام الأخرى
-            elements.productDetails.style.display = 'none';
-            elements.searchWrapper.style.display = 'none';
+            elements.percentDiscountBtn.addEventListener('click', function() {
+                elements.percentDiscountBtn.classList.add('active');
+                elements.fixedDiscountBtn.classList.remove('active');
+                elements.percentDiscountGroup.style.display = 'block';
+                elements.fixedDiscountGroup.style.display = 'none';
+            });
             
-            // تحميل الفاتورة في الـ iframe
-            const invoiceData = encodeURIComponent(JSON.stringify(invoice));
-            iframe.src = `invoice.html?data=${invoiceData}`;
-        }
-        
-        // 13. حفظ الفاتورة في قاعدة البيانات
-        function saveInvoiceToDatabase(invoice) {
-            const invoiceRef = database.ref('invoices').push();
-            invoiceRef.set(invoice)
+            elements.fixedDiscountBtn.addEventListener('click', function() {
+                elements.fixedDiscountBtn.classList.add('active');
+                elements.percentDiscountBtn.classList.remove('active');
+                elements.fixedDiscountGroup.style.display = 'block';
+                elements.percentDiscountGroup.style.display = 'none';
+            });
+            
+            elements.confirmDiscount.addEventListener('click', applyDiscount);
+            
+            function applyDiscount() {
+                const basePrice = currentProduct.price;
+                let finalPrice = basePrice;
+                let discountApplied = false;
+                
+                if (elements.percentDiscountBtn.classList.contains('active')) {
+                    const discountPercent = parseFloat(elements.discountPercent.value) || 0;
+                    
+                    if (discountPercent < 0 || discountPercent > 100) {
+                        showToast(i18next.t('errors.invalidDiscountPercent'), 'warning');
+                        return;
+                    }
+                    
+                    if (discountPercent > 20) {
+                        const reason = elements.reasonInput.value.trim();
+                        if (!reason) {
+                            showToast(i18next.t('errors.discountReasonRequired'), 'warning');
+                            return;
+                        }
+                    }
+                    
+                    finalPrice = basePrice - (basePrice * (discountPercent / 100));
+                    discountApplied = discountPercent > 0;
+                } else {
+                    const discountAmount = parseFloat(elements.discountAmount.value) || 0;
+                    
+                    if (discountAmount < 0) {
+                        showToast(i18next.t('errors.invalidDiscountAmount'), 'warning');
+                        return;
+                    }
+                    
+                    if (discountAmount > basePrice * 0.2) {
+                        const reason = elements.reasonInput.value.trim();
+                        if (!reason) {
+                            showToast(i18next.t('errors.discountReasonRequired'), 'warning');
+                            return;
+                        }
+                    }
+                    
+                    finalPrice = basePrice - discountAmount;
+                    discountApplied = discountAmount > 0;
+                    
+                    if (finalPrice < 0) {
+                        showToast(i18next.t('errors.invalidFinalPrice'), 'error');
+                        return;
+                    }
+                }
+                
+                elements.finalPriceValue.textContent = finalPrice.toFixed(2) + ' ' + i18next.t('general.currency');
+                
+                if (discountApplied) {
+                    showToast(i18next.t('messages.discountApplied'), 'success');
+                } else {
+                    showToast(i18next.t('messages.discountRemoved'), 'info');
+                }
+            }
+            
+            // 11. اختيار طريقة الدفع
+            elements.cashPayment.addEventListener('click', function() {
+                paymentMethod = 'cash';
+                elements.cashPayment.classList.add('active');
+                elements.cardPayment.classList.remove('active');
+                elements.transferPayment.classList.remove('active');
+            });
+            
+            elements.cardPayment.addEventListener('click', function() {
+                paymentMethod = 'card';
+                elements.cardPayment.classList.add('active');
+                elements.cashPayment.classList.remove('active');
+                elements.transferPayment.classList.remove('active');
+            });
+            
+            elements.transferPayment.addEventListener('click', function() {
+                paymentMethod = 'transfer';
+                elements.transferPayment.classList.add('active');
+                elements.cashPayment.classList.remove('active');
+                elements.cardPayment.classList.remove('active');
+            });
+            
+            elements.sellBtn.addEventListener('click', function() {
+                if (!currentProduct) return;
+                
+                // التحقق من وجود مخزون
+                if (currentProduct.quantity <= 0) {
+                    showToast(i18next.t('errors.noStock'), 'error');
+                    return;
+                }
+                
+                // التحقق من تاريخ الصلاحية إذا كان موجوداً
+                if (currentProduct.expiryDate) {
+                    const today = new Date();
+                    const expiryDate = new Date(currentProduct.expiryDate);
+                    
+                    if (expiryDate < today) {
+                        showToast(i18next.t('errors.expiredProduct'), 'error');
+                        return;
+                    }
+                }
+                
+                const finalPrice = parseFloat(elements.finalPriceValue.textContent);
+                const basePrice = currentProduct.price;
+                const discountApplied = finalPrice < basePrice;
+                let discountInfo = null;
+                
+                if (discountApplied) {
+                    const discountValue = (basePrice - finalPrice).toFixed(2);
+                    const discountType = elements.percentDiscountBtn.classList.contains('active') ? 'percent' : 'fixed';
+                    const reason = elements.reasonInput.value.trim() || i18next.t('general.noReasonGiven');
+                    
+                    discountInfo = {
+                        type: discountType,
+                        value: discountType === 'percent' ? elements.discountPercent.value : elements.discountAmount.value,
+                        reason: reason
+                    };
+                }
+                
+                // تحديث المخزون في قاعدة البيانات
+                const newQuantity = currentProduct.quantity - 1;
+                
+                database.ref('products/' + currentProduct.barcode).update({
+                    quantity: newQuantity
+                })
                 .then(() => {
-                    console.log('تم حفظ الفاتورة بنجاح');
+                    // إنشاء الفاتورة
+                    const invoice = createInvoice(currentProduct, finalPrice, paymentMethod, discountInfo);
+                    
+                    // حفظ الفاتورة في قاعدة البيانات
+                    saveInvoiceToDatabase(invoice);
+                    
+                    // عرض الفاتورة في صفحة منفصلة
+                    showInvoice(invoice);
+                    
+                    // إعادة تعيين النظام
+                    resetSystem();
                 })
                 .catch((error) => {
-                    console.error('خطأ في حفظ الفاتورة:', error);
+                    console.error(i18next.t('errors.updateStockError'), error);
+                    showToast(i18next.t('errors.updateStockFailed'), 'error');
                 });
-        }
-        
-        // 14. وظيفة إرجاع المنتج
-        elements.returnBtn.addEventListener('click', function() {
-            if (!currentProduct) {
-                showToast('لا يوجد منتج مختار للإرجاع', 'warning');
-                return;
-            }
+            });
             
-            // عرض نافذة التأكيد
-            elements.returnConfirmText.textContent = `هل أنت متأكد من إرجاع المنتج: ${currentProduct.name}؟`;
-            elements.returnReasonInput.value = '';
-            elements.returnConfirmModal.style.display = 'flex';
-            elements.returnReasonInput.focus();
-        });
-        
-        // تأكيد الإرجاع
-        elements.confirmReturnBtn.addEventListener('click', processProductReturn);
-        
-        // إلغاء الإرجاع
-        elements.cancelReturnBtn.addEventListener('click', function() {
-            elements.returnConfirmModal.style.display = 'none';
-        });
-        
-        async function processProductReturn() {
-            elements.returnConfirmModal.style.display = 'none';
-            const returnReason = elements.returnReasonInput.value.trim() || 'غير محدد';
-            
-            try {
-                showToast('جارٍ معالجة طلب الإرجاع...', 'info');
+            // 12. وظيفة إنشاء الفاتورة
+            function createInvoice(product, finalPrice, paymentMethod, discountInfo = null) {
+                const now = new Date();
+                const invoiceId = 'INV-' + now.getFullYear() + (now.getMonth()+1).toString().padStart(2, '0') + 
+                                  now.getDate().toString().padStart(2, '0') + '-' + invoiceCounter.toString().padStart(4, '0');
                 
-                // 1. تحديث المخزون
-                const newQuantity = currentProduct.quantity + 1;
-                await database.ref('products/' + currentProduct.barcode).update({
-                    quantity: newQuantity
-                });
-                
-                // 2. تسجيل عملية الإرجاع
-                const returnData = {
-                    barcode: currentProduct.barcode,
-                    productName: currentProduct.name,
-                    returnedAt: firebase.database.ServerValue.TIMESTAMP,
-                    price: currentProduct.price,
-                    reason: returnReason,
-                    processedBy: "User"
+                const invoice = {
+                    id: invoiceId,
+                    date: now.toISOString(),
+                    pharmacy: pharmacyName,
+                    product: product.name,
+                    originalPrice: product.price,
+                    finalPrice: finalPrice,
+                    paymentMethod: paymentMethod,
+                    discount: discountInfo,
+                    currency: i18next.t('general.currency')
                 };
                 
-                await database.ref('returns/').push(returnData);
+                invoiceCounter++;
                 
-                // 3. عرض إشعار النجاح
-                showReturnSuccess(currentProduct.name, currentProduct.price);
-                
-                // 4. إعادة تعيين النظام
-                resetSystem();
-                
-            } catch (error) {
-                console.error('حدث خطأ أثناء الإرجاع:', error);
-                showToast('حدث خطأ أثناء معالجة الإرجاع: ' + error.message, 'error');
+                return invoice;
             }
-        }
-        
-        function showReturnSuccess(productName, productPrice) {
-            elements.returnSuccessText.textContent = `تم إرجاع ${productName} بقيمة ${productPrice.toFixed(2)} MAD`;
-            elements.returnSuccessNotice.style.display = 'block';
             
-            setTimeout(() => {
-                elements.returnSuccessNotice.style.display = 'none';
-            }, 3000);
-        }
-        
-        // 15. إعادة تعيين النظام
-        function resetSystem() {
-            elements.barcodeInput.value = '';
-            elements.productDetails.style.display = 'none';
-            elements.searchWrapper.style.display = 'none';
-            currentProduct = null;
-        }
-        
-        // 16. عرض التنبيهات
-        function showToast(message, type = 'info', duration = 3000) {
-            const toast = elements.toast;
-            toast.textContent = message;
-            toast.className = 'toast';
+            function showInvoice(invoice) {
+                // إنشاء iframe لعرض الفاتورة
+                const iframe = document.createElement('iframe');
+                iframe.id = 'invoiceFrame';
+                iframe.style.width = '100%';
+                iframe.style.height = '600px';
+                iframe.style.border = 'none';
+                iframe.style.marginTop = '20px';
+                
+                // إضافة الـ iframe إلى الصفحة
+                elements.invoicePlaceholder.innerHTML = '';
+                elements.invoicePlaceholder.appendChild(iframe);
+                elements.invoicePlaceholder.style.display = 'block';
+                
+                // إخفاء الأقسام الأخرى
+                elements.productDetails.style.display = 'none';
+                elements.searchWrapper.style.display = 'none';
+                
+                // تحميل الفاتورة في الـ iframe
+                const invoiceData = encodeURIComponent(JSON.stringify(invoice));
+                iframe.src = `invoice.html?data=${invoiceData}&lang=${i18next.language}`;
+            }
             
-            const colors = {
-                success: 'linear-gradient(135deg, #38b000, #2b9348)',
-                error: 'linear-gradient(135deg, #f72585, #b5179e)',
-                warning: 'linear-gradient(135deg, #f8961e, #f3722c)',
-                info: 'linear-gradient(135deg, #4361ee, #3f37c9)'
-            };
+            // 13. حفظ الفاتورة في قاعدة البيانات
+            function saveInvoiceToDatabase(invoice) {
+                const invoiceRef = database.ref('invoices').push();
+                invoiceRef.set(invoice)
+                    .then(() => {
+                        console.log(i18next.t('messages.invoiceSaved'));
+                    })
+                    .catch((error) => {
+                        console.error(i18next.t('errors.saveInvoiceError'), error);
+                    });
+            }
             
-            toast.style.background = colors[type] || colors.info;
-            toast.style.display = 'block';
+            // 14. وظيفة إرجاع المنتج
+            elements.returnBtn.addEventListener('click', function() {
+                if (!currentProduct) {
+                    showToast(i18next.t('errors.noProductSelected'), 'warning');
+                    return;
+                }
+                
+                // عرض نافذة التأكيد
+                elements.returnConfirmText.textContent = i18next.t('return.confirmReturnText', {productName: currentProduct.name});
+                elements.returnReasonInput.value = '';
+                elements.returnConfirmModal.style.display = 'flex';
+                elements.returnReasonInput.focus();
+            });
             
-            setTimeout(() => {
-                toast.classList.add('hide');
+            // تأكيد الإرجاع
+            elements.confirmReturnBtn.addEventListener('click', processProductReturn);
+            
+            // إلغاء الإرجاع
+            elements.cancelReturnBtn.addEventListener('click', function() {
+                elements.returnConfirmModal.style.display = 'none';
+            });
+            
+            async function processProductReturn() {
+                elements.returnConfirmModal.style.display = 'none';
+                const returnReason = elements.returnReasonInput.value.trim() || i18next.t('general.notSpecified');
+                
+                try {
+                    showToast(i18next.t('messages.processingReturn'), 'info');
+                    
+                    // 1. تحديث المخزون
+                    const newQuantity = currentProduct.quantity + 1;
+                    await database.ref('products/' + currentProduct.barcode).update({
+                        quantity: newQuantity
+                    });
+                    
+                    // 2. تسجيل عملية الإرجاع
+                    const returnData = {
+                        barcode: currentProduct.barcode,
+                        productName: currentProduct.name,
+                        returnedAt: firebase.database.ServerValue.TIMESTAMP,
+                        price: currentProduct.price,
+                        reason: returnReason,
+                        processedBy: "User"
+                    };
+                    
+                    await database.ref('returns/').push(returnData);
+                    
+                    // 3. عرض إشعار النجاح
+                    showReturnSuccess(currentProduct.name, currentProduct.price);
+                    
+                    // 4. إعادة تعيين النظام
+                    resetSystem();
+                    
+                } catch (error) {
+                    console.error(i18next.t('errors.returnError'), error);
+                    showToast(`${i18next.t('errors.returnFailed')}: ${error.message}`, 'error');
+                }
+            }
+            
+            function showReturnSuccess(productName, productPrice) {
+                elements.returnSuccessText.textContent = i18next.t('return.successText', {
+                    productName: productName,
+                    price: productPrice.toFixed(2),
+                    currency: i18next.t('general.currency')
+                });
+                elements.returnSuccessNotice.style.display = 'block';
+                
                 setTimeout(() => {
-                    toast.style.display = 'none';
-                    toast.classList.remove('hide');
-                }, 500);
-            }, duration);
-        }
-        
-        // 17. استقبال رسالة من الفاتورة للإغلاق
-        window.addEventListener('message', function(e) {
-            if (e.data === 'closeInvoice') {
-                elements.invoicePlaceholder.style.display = 'none';
-                resetSystem();
+                    elements.returnSuccessNotice.style.display = 'none';
+                }, 3000);
             }
-        });
-        
-        // 18. إيقاف الكاميرا عند مغادرة الصفحة
-        window.addEventListener('beforeunload', stopCamera);
+            
+            // 15. إعادة تعيين النظام
+            function resetSystem() {
+                elements.barcodeInput.value = '';
+                elements.productDetails.style.display = 'none';
+                elements.searchWrapper.style.display = 'none';
+                currentProduct = null;
+            }
+            
+            // 16. عرض التنبيهات
+            function showToast(message, type = 'info', duration = 3000) {
+                const toast = elements.toast;
+                toast.textContent = message;
+                toast.className = 'toast';
+                
+                const colors = {
+                    success: 'linear-gradient(135deg, #38b000, #2b9348)',
+                    error: 'linear-gradient(135deg, #f72585, #b5179e)',
+                    warning: 'linear-gradient(135deg, #f8961e, #f3722c)',
+                    info: 'linear-gradient(135deg, #4361ee, #3f37c9)'
+                };
+                
+                toast.style.background = colors[type] || colors.info;
+                toast.style.display = 'block';
+                
+                setTimeout(() => {
+                    toast.classList.add('hide');
+                    setTimeout(() => {
+                        toast.style.display = 'none';
+                        toast.classList.remove('hide');
+                    }, 500);
+                }, duration);
+            }
+            
+            // 17. استقبال رسالة من الفاتورة للإغلاق
+            window.addEventListener('message', function(e) {
+                if (e.data === 'closeInvoice') {
+                    elements.invoicePlaceholder.style.display = 'none';
+                    resetSystem();
+                }
+            });
+            
+            // 18. إيقاف الكاميرا عند مغادرة الصفحة
+            window.addEventListener('beforeunload', stopCamera);
+        }
     </script>
 </body>
 </html>
