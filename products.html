@@ -512,11 +512,10 @@ const i18nextConfig = {
   }
 };
 
-// ✅ تحميل ملفات الترجمة من مسار نسبي مثل i18nextHttpBackend
 async function loadTranslations(lang) {
   try {
-    const path = `locales/${lang}/translation.json`; // ✅ لا تبدأ بـ /
-    const response = await fetch(path);
+    // تعديل المسار ليتناسب مع GitHub Pages
+    const response = await fetch(`./locales/${lang}/translation.json`);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const translations = await response.json();
     i18n.addResourceBundle(lang, 'translation', translations);
