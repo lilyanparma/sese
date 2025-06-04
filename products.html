@@ -495,7 +495,109 @@
   <div id="alertsContainer"></div>
 
 <script>
-// تهيئة Firebase
+// ================ تهيئة نظام الترجمة ================
+const i18nextConfig = {
+  lng: document.documentElement.lang || 'ar', // اللغة الحالية من وسم HTML
+  fallbackLng: 'ar', // اللغة الافتراضية عند عدم توفر الترجمة
+  supportedLngs: ['ar', 'fr'], // اللغات المدعومة
+  debug: false, // وضع التصحيح (إيقاف في الإنتاج)
+  interpolation: {
+    escapeValue: false, // لا نحتاج إلى تهريب القيم
+  },
+  resources: {
+    ar: { translation: {} }, // سيتم تحميله من ملف خارجي
+    fr: { translation: {} }  // سيتم تحميله من ملف خارجي
+  }
+};
+
+// دالة لتحميل ملفات الترجمة
+async function loadTranslations(lang) {
+  try {
+    const response = await fetch(`/locales/${lang}/translation.json`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const translations = await response.json();
+    i18n.addResourceBundle(lang, 'translation', translations);
+    return translations;
+  } catch (error) {
+    console.error(`Failed to load ${lang} translations:`, error);
+    // العودة للغة الافتراضية إذا فشل تحميل اللغة المطلوبة
+    if (lang !== i18nextConfig.fallbackLng) {
+      return loadTranslations(i18nextConfig.fallbackLng);
+    }
+    return {};
+  }
+}
+
+// دالة لتهيئة نظام الترجمة
+async function initI18n() {
+  try {
+    await i18n.init(i18nextConfig);
+    await loadTranslations(i18n.language);
+    
+    // تحديث اتجاه الصفحة حسب اللغة
+    document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    
+    console.log('i18n initialized successfully with language:', i18n.language);
+    return true;
+  } catch (error) {
+    console.error('Failed to initialize i18n:', error);
+    return false;
+  }
+}
+
+// دالة تغيير اللغة
+async function changeLanguage(lng) {
+  try {
+    if (!i18nextConfig.supportedLngs.includes(lng)) {
+      throw new Error(`Language ${lng} is not supported`);
+    }
+    
+    await loadTranslations(lng);
+    await i18n.changeLanguage(lng);
+    
+    // تحديث لغة واتجاه المستند
+    document.documentElement.lang = lng;
+    document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
+    
+    // إعادة تحميل البيانات أو العناصر التي تحتاج تحديث
+    refreshTranslatedContent();
+    
+    return true;
+  } catch (error) {
+    console.error(`Failed to change language to ${lng}:`, error);
+    return false;
+  }
+}
+
+// دالة مساعدة للترجمة مع معالجة الأخطاء
+function t(key, options = {}) {
+  try {
+    return i18n.t(key, options);
+  } catch (error) {
+    console.error(`Translation error for key "${key}":`, error);
+    return key; // إرجاع المفتاح نفسه في حالة الخطأ
+  }
+}
+
+// دالة لتحديث المحتوى المترجم في الصفحة
+function refreshTranslatedContent() {
+  const elementsToTranslate = document.querySelectorAll('[data-i18n]');
+  
+  elementsToTranslate.forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const options = JSON.parse(el.getAttribute('data-i18n-options') || '{}');
+    el.textContent = t(key, options);
+  });
+  
+  // تحديث عناصر أخرى حسب الحاجة
+  document.title = t('siteTitle');
+  const productCodeInput = document.getElementById('productCodeInput');
+  if (productCodeInput) {
+    productCodeInput.placeholder = t('enterProductCode');
+  }
+}
+
+// ================ تهيئة Firebase ================
 const firebaseConfig = {
   apiKey: "AIzaSyDRtJBPOjpfXXfsaDo98E_NTT7KWzz8gj4",
   authDomain: "pharmacy-system-9def6.firebaseapp.com",
@@ -511,166 +613,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
- i18next
-  .use(i18nextHttpBackend)              // تحميل ملفات الترجمة من السيرفر (من ملفات JSON)
-  .use(i18nextBrowserLanguageDetector) // اكتشاف لغة المتصفح تلقائياً
-  .init({
-    fallbackLng: 'ar',
-    debug: false,
-    ns: ['translation'],
-    defaultNS: 'translation',
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json'
-    }
-  }, function(err, t) {
-    updateContent();
-  });
-
-// استبدال جزء التهيئة الحالي بهذا الكود
-// تهيئة i18next مع تحسينات
-const i18nextConfig = {
-  lng: document.documentElement.lang || 'ar', // تأخذ اللغة من عنصر html
-  fallbackLng: 'ar', // اللغة الافتراضية في حالة عدم توفر اللغة المطلوبة
-  supportedLngs: ['ar', 'fr'], // اللغات المدعومة في التطبيق
-  debug: false, // وضع التصحيح (يفضل إيقافه في الإنتاج)
-  interpolation: {
-    escapeValue: false, // لا نحتاج إلى تهريب القيم لأننا نتعامل مع HTML آمن
-    formatSeparator: ',', // فاصل التنسيق
-  },
-  resources: {
-    ar: {
-      translation: {} // سيتم تحميله من ملف خارجي
-    },
-    fr: {
-      translation: {} // سيتم تحميله من ملف خارجي
-    }
-  },
-  backend: {
-    loadPath: '/locales/{{lng}}/translation.json', // مسار ملفات الترجمة
-  },
-  detection: {
-    order: ['htmlTag'], // اكتشاف اللغة من وسم html فقط
-    caches: [], // لا نستخدم التخزين المؤقت للغة
-  },
-  react: {
-    useSuspense: false // لا نستخدم Suspense (غير ضروري في هذا السياق)
-  }
-};
-
-// دالة لتحميل الترجمات بشكل متزامن
-async function loadTranslations(lang) {
-  try {
-    const response = await fetch(`/locales/${lang}/translation.json`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const translations = await response.json();
-    i18next.addResourceBundle(lang, 'translation', translations);
-    return translations;
-  } catch (error) {
-    console.error(`Failed to load ${lang} translations:`, error);
-    // في حالة الفشل، نعود إلى اللغة الافتراضية
-    if (lang !== i18nextConfig.fallbackLng) {
-      return loadTranslations(i18nextConfig.fallbackLng);
-    }
-    return {};
-  }
-}
-
-// تهيئة i18next مع معالجة الأخطاء
-async function initializeI18n() {
-  try {
-    await i18next.init(i18nextConfig);
-    
-    // تحميل الترجمات للغة الحالية
-    const currentLang = i18next.language;
-    await loadTranslations(currentLang);
-    
-    // إضافة مستمع لتغير اللغة
-    i18next.on('languageChanged', (lng) => {
-      console.log(`Language changed to ${lng}`);
-      // هنا يمكنك إضافة أي كود تحتاج تنفيذه عند تغيير اللغة
-    });
-    
-    return i18next;
-  } catch (error) {
-    console.error('Failed to initialize i18next:', error);
-    // نعود إلى اللغة الافتراضية في حالة الخطأ
-    i18next.changeLanguage(i18nextConfig.fallbackLng);
-    return i18next;
-  }
-}
-
-// استدعاء التهيئة
-initializeI18n().then(() => {
-  console.log('i18next initialized successfully');
-  // هنا يمكنك بدء تطبيقك بعد التأكد من تهيئة i18next
-}).catch(error => {
-  console.error('Failed to initialize i18next:', error);
-});
-
-// دالة مساعدة للترجمة مع معالجة الأخطاء
-function t(key, options = {}) {
-  try {
-    return i18next.t(key, options);
-  } catch (error) {
-    console.error(`Translation error for key "${key}":`, error);
-    return key; // نعيد المفتاح نفسه في حالة الخطأ
-  }
-}
-
-// دالة لتغيير اللغة
-async function changeLanguage(lng) {
-  try {
-    if (!i18nextConfig.supportedLngs.includes(lng)) {
-      throw new Error(`Language ${lng} is not supported`);
-    }
-    
-    await loadTranslations(lng);
-    await i18next.changeLanguage(lng);
-    
-    // تحديث لغة المستند
-    document.documentElement.lang = lng;
-    document.documentElement.dir = lng === 'ar' ? 'rtl' : 'ltr';
-    
-    return true;
-  } catch (error) {
-    console.error(`Failed to change language to ${lng}:`, error);
-    return false;
-  }
-}
-
-// تغيير اللغة
-function changeLanguage(lang) {
-  i18next.changeLanguage(lang, (err, t) => {
-    if (err) return console.error(err);
-    updateContent();
-  });
-}
-
-// متغيرات النظام
+// ================ متغيرات النظام ================
 let currentProduct = null;
 let codeReader = new ZXing.BrowserMultiFormatReader();
 let cameraActive = false;
-
-// ================ وظائف الترجمة ================
-function t(key, options) {
-  return i18next.t(key, options);
-}
-
-async function loadTranslations() {
-  try {
-    const lang = i18next.language;
-    const response = await fetch(`/locales/${lang}/translation.json`);
-    const translations = await response.json();
-    i18next.addResourceBundle(lang, 'translation', translations, true, true);
-  } catch (error) {
-    console.error('Error loading translations:', error);
-  }
-}
-
-// تهيئة i18next ثم تحميل الترجمات
-i18next.init(i18nextConfig).then(loadTranslations);
 
 // ================ وظائف المسح الضوئي ================
 async function toggleCamera() {
@@ -682,10 +628,13 @@ async function toggleCamera() {
 }
 
 async function startScanner() {
-  document.getElementById('manualEntry').style.display = 'none';
+  const manualEntry = document.getElementById('manualEntry');
   const scannerContainer = document.getElementById('cameraScanner');
-  scannerContainer.style.display = 'block';
-  document.getElementById('resultMessage').textContent = t('preparingScanner');
+  const resultMessage = document.getElementById('resultMessage');
+  
+  if (manualEntry) manualEntry.style.display = 'none';
+  if (scannerContainer) scannerContainer.style.display = 'block';
+  if (resultMessage) resultMessage.textContent = t('preparingScanner');
 
   try {
     await codeReader.decodeFromVideoDevice(
@@ -707,11 +656,11 @@ async function startScanner() {
     );
     
     cameraActive = true;
-    document.getElementById('resultMessage').textContent = t('scanningMessage');
+    if (resultMessage) resultMessage.textContent = t('scanningMessage');
   } catch (err) {
     console.error(err);
     showAlert(t('cameraError', {error: err.message}), 'danger');
-    scannerContainer.style.display = 'none';
+    if (scannerContainer) scannerContainer.style.display = 'none';
   }
 }
 
@@ -720,8 +669,10 @@ function stopScanner() {
     codeReader.reset();
     cameraActive = false;
   }
-  document.getElementById('cameraScanner').style.display = 'none';
-  document.getElementById('resultMessage').textContent = '';
+  const scannerContainer = document.getElementById('cameraScanner');
+  const resultMessage = document.getElementById('resultMessage');
+  if (scannerContainer) scannerContainer.style.display = 'none';
+  if (resultMessage) resultMessage.textContent = '';
 }
 
 // ================ وظائف إدارة المنتجات ================
@@ -747,13 +698,21 @@ async function processScannedCode(code) {
 
 function showManualEntry() {
   stopScanner();
-  document.getElementById('manualEntry').style.display = 'block';
-  document.getElementById('productCodeInput').placeholder = t('enterProductCode');
-  document.getElementById('productCodeInput').focus();
+  const manualEntry = document.getElementById('manualEntry');
+  const productCodeInput = document.getElementById('productCodeInput');
+  
+  if (manualEntry) manualEntry.style.display = 'block';
+  if (productCodeInput) {
+    productCodeInput.placeholder = t('enterProductCode');
+    productCodeInput.focus();
+  }
 }
 
 async function searchProduct() {
-  const code = document.getElementById('productCodeInput').value.trim();
+  const productCodeInput = document.getElementById('productCodeInput');
+  if (!productCodeInput) return;
+  
+  const code = productCodeInput.value.trim();
   if (!code) {
     showAlert(t('enterProductCodeWarning'), 'warning');
     return;
@@ -786,7 +745,9 @@ function showProductInfo(product) {
     totalQuantity = Object.values(product.batches).reduce((sum, batch) => sum + (parseFloat(batch.quantity) || 0), 0);
   }
   
-  document.getElementById('modalTitle').textContent = product.name || t('productInfo');
+  const modalTitle = document.getElementById('modalTitle');
+  if (modalTitle) modalTitle.textContent = product.name || t('productInfo');
+  
   document.getElementById('infoCode').textContent = product.code;
   document.getElementById('infoName').textContent = product.name || t('notSpecified');
   document.getElementById('infoTotalQuantity').textContent = totalQuantity;
@@ -795,73 +756,78 @@ function showProductInfo(product) {
   document.getElementById('infoDate').textContent = product.date || t('notSpecified');
   
   const imageContainer = document.getElementById('productImageContainer');
-  imageContainer.innerHTML = product.image ? 
-    `<img src="${product.image}" alt="${t('productImageAlt')}" class="product-image">` : 
-    `<p>${t('noProductImage')}</p>`;
+  if (imageContainer) {
+    imageContainer.innerHTML = product.image ? 
+      `<img src="${product.image}" alt="${t('productImageAlt')}" class="product-image">` : 
+      `<p>${t('noProductImage')}</p>`;
+  }
   
   const batchesContainer = document.getElementById('batchesContainer');
-  batchesContainer.innerHTML = '';
-  
-  if (!product.batches || Object.keys(product.batches).length === 0) {
-    batchesContainer.innerHTML = `<p>${t('noBatches')}</p>`;
-  } else {
-    const batchesArray = Object.entries(product.batches).map(([batchId, batch]) => ({
-      id: batchId,
-      ...batch
-    }));
+  if (batchesContainer) {
+    batchesContainer.innerHTML = '';
     
-    batchesArray.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
-    
-    batchesArray.forEach(batch => {
-      const batchCard = document.createElement('div');
-      batchCard.className = 'batch-card';
+    if (!product.batches || Object.keys(product.batches).length === 0) {
+      batchesContainer.innerHTML = `<p>${t('noBatches')}</p>`;
+    } else {
+      const batchesArray = Object.entries(product.batches).map(([batchId, batch]) => ({
+        id: batchId,
+        ...batch
+      }));
       
-      const today = new Date();
-      const expiryDate = new Date(batch.expiryDate);
-      const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+      batchesArray.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
       
-      let expiryStatus = '';
-      if (diffDays < 0) {
-        expiryStatus = `<span class="expired">(${t('expired')})</span>`;
-      } else if (diffDays <= 30) {
-        expiryStatus = `<span class="expiring-soon">(${t('expiringSoon', {days: diffDays})})</span>`;
-      }
-      
-      batchCard.innerHTML = `
-        <div class="batch-header">
-          <div>
-            <strong>${t('batch')}: ${batch.batchNumber || batch.id}</strong>
-            <p>${t('quantity')}: ${batch.quantity} - ${t('expiryDate')}: ${batch.expiryDate} ${expiryStatus}</p>
+      batchesArray.forEach(batch => {
+        const batchCard = document.createElement('div');
+        batchCard.className = 'batch-card';
+        
+        const today = new Date();
+        const expiryDate = new Date(batch.expiryDate);
+        const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+        
+        let expiryStatus = '';
+        if (diffDays < 0) {
+          expiryStatus = `<span class="expired">(${t('expired')})</span>`;
+        } else if (diffDays <= 30) {
+          expiryStatus = `<span class="expiring-soon">(${t('expiringSoon', {days: diffDays})})</span>`;
+        }
+        
+        batchCard.innerHTML = `
+          <div class="batch-header">
+            <div>
+              <strong>${t('batch')}: ${batch.batchNumber || batch.id}</strong>
+              <p>${t('quantity')}: ${batch.quantity} - ${t('expiryDate')}: ${batch.expiryDate} ${expiryStatus}</p>
+            </div>
+            <div class="batch-actions">
+              <button class="batch-btn btn-warning" onclick="editBatch('${batch.id}')">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="batch-btn btn-danger" onclick="deleteBatch('${batch.id}')">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </div>
-          <div class="batch-actions">
-            <button class="batch-btn btn-warning" onclick="editBatch('${batch.id}')">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="batch-btn btn-danger" onclick="deleteBatch('${batch.id}')">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      `;
-      
-      batchesContainer.appendChild(batchCard);
-    });
+        `;
+        
+        batchesContainer.appendChild(batchCard);
+      });
+    }
   }
   
   const actions = document.getElementById('modalActions');
-  let buttonsHTML = `
-    <button class="btn btn-warning" onclick="showEditForm()">
-      <i class="fas fa-edit"></i> ${t('editProduct')}
-    </button>
-    <button class="btn btn-info" onclick="showAddBatchForm()">
-      <i class="fas fa-plus"></i> ${t('addBatch')}
-    </button>
-    <button class="btn btn-danger" onclick="deleteProduct()">
-      <i class="fas fa-trash"></i> ${t('deleteProduct')}
-    </button>
-  `;
+  if (actions) {
+    actions.innerHTML = `
+      <button class="btn btn-warning" onclick="showEditForm()">
+        <i class="fas fa-edit"></i> ${t('editProduct')}
+      </button>
+      <button class="btn btn-info" onclick="showAddBatchForm()">
+        <i class="fas fa-plus"></i> ${t('addBatch')}
+      </button>
+      <button class="btn btn-danger" onclick="deleteProduct()">
+        <i class="fas fa-trash"></i> ${t('deleteProduct')}
+      </button>
+    `;
+  }
   
-  actions.innerHTML = buttonsHTML;
   currentProduct = product;
   
   document.getElementById('productInfo').style.display = 'block';
@@ -872,9 +838,10 @@ function showProductInfo(product) {
 }
 
 function showAddProductForm(code) {
-  document.getElementById('modalTitle').textContent = t('addNewProduct');
-  document.getElementById('infoCode').textContent = code;
+  const modalTitle = document.getElementById('modalTitle');
+  if (modalTitle) modalTitle.textContent = t('addNewProduct');
   
+  document.getElementById('infoCode').textContent = code;
   document.getElementById('productInfo').style.display = 'none';
   document.getElementById('productForm').style.display = 'block';
   
@@ -889,20 +856,23 @@ function showAddProductForm(code) {
   document.getElementById('batchExpiry').value = '';
   
   const actions = document.getElementById('modalActions');
-  actions.innerHTML = `
-    <button class="btn btn-success" onclick="addNewProduct()">
-      <i class="fas fa-save"></i> ${t('save')}
-    </button>
-    <button class="btn btn-danger" onclick="closeModal()">
-      <i class="fas fa-times"></i> ${t('cancel')}
-    </button>
-  `;
+  if (actions) {
+    actions.innerHTML = `
+      <button class="btn btn-success" onclick="addNewProduct()">
+        <i class="fas fa-save"></i> ${t('save')}
+      </button>
+      <button class="btn btn-danger" onclick="closeModal()">
+        <i class="fas fa-times"></i> ${t('cancel')}
+      </button>
+    `;
+  }
   
   document.getElementById('productModal').style.display = 'block';
 }
 
 function showEditForm() {
-  document.getElementById('modalTitle').textContent = t('editProduct');
+  const modalTitle = document.getElementById('modalTitle');
+  if (modalTitle) modalTitle.textContent = t('editProduct');
   
   document.getElementById('editName').value = currentProduct.name || '';
   document.getElementById('editPrice').value = currentProduct.price || '';
@@ -910,32 +880,37 @@ function showEditForm() {
   document.getElementById('editDate').value = currentProduct.date || new Date().toISOString().split('T')[0];
   
   const imageContainer = document.getElementById('productImageContainer');
-  if (currentProduct.image) {
-    imageContainer.innerHTML = `
-      <p>${t('currentImage')}:</p>
-      <img src="${currentProduct.image}" alt="${t('currentProductImageAlt')}" class="product-image">
-      <p>${t('changeImageInstruction')}:</p>
-    `;
-  } else {
-    imageContainer.innerHTML = `<p>${t('noCurrentProductImage')}</p>`;
+  if (imageContainer) {
+    if (currentProduct.image) {
+      imageContainer.innerHTML = `
+        <p>${t('currentImage')}:</p>
+        <img src="${currentProduct.image}" alt="${t('currentProductImageAlt')}" class="product-image">
+        <p>${t('changeImageInstruction')}:</p>
+      `;
+    } else {
+      imageContainer.innerHTML = `<p>${t('noCurrentProductImage')}</p>`;
+    }
   }
   
   document.getElementById('productInfo').style.display = 'none';
   document.getElementById('productForm').style.display = 'block';
   
   const actions = document.getElementById('modalActions');
-  actions.innerHTML = `
-    <button class="btn btn-success" onclick="updateProduct()">
-      <i class="fas fa-save"></i> ${t('saveChanges')}
-    </button>
-    <button class="btn btn-danger" onclick="showProductInfo(currentProduct)">
-      <i class="fas fa-times"></i> ${t('cancel')}
-    </button>
-  `;
+  if (actions) {
+    actions.innerHTML = `
+      <button class="btn btn-success" onclick="updateProduct()">
+        <i class="fas fa-save"></i> ${t('saveChanges')}
+      </button>
+      <button class="btn btn-danger" onclick="showProductInfo(currentProduct)">
+        <i class="fas fa-times"></i> ${t('cancel')}
+      </button>
+    `;
+  }
 }
 
 function showAddBatchForm() {
-  document.getElementById('modalTitle').textContent = t('addNewBatch');
+  const modalTitle = document.getElementById('modalTitle');
+  if (modalTitle) modalTitle.textContent = t('addNewBatch');
   
   document.getElementById('productInfo').style.display = 'none';
   document.getElementById('productForm').style.display = 'block';
@@ -950,14 +925,16 @@ function showAddBatchForm() {
   document.getElementById('batchExpiry').value = '';
   
   const actions = document.getElementById('modalActions');
-  actions.innerHTML = `
-    <button class="btn btn-success" onclick="addNewBatch()">
-      <i class="fas fa-save"></i> ${t('saveBatch')}
-    </button>
-    <button class="btn btn-danger" onclick="showProductInfo(currentProduct)">
-      <i class="fas fa-times"></i> ${t('cancel')}
-    </button>
-  `;
+  if (actions) {
+    actions.innerHTML = `
+      <button class="btn btn-success" onclick="addNewBatch()">
+        <i class="fas fa-save"></i> ${t('saveBatch')}
+      </button>
+      <button class="btn btn-danger" onclick="showProductInfo(currentProduct)">
+        <i class="fas fa-times"></i> ${t('cancel')}
+      </button>
+    `;
+  }
 }
 
 // ================ رفع الصور إلى Imgur ================
@@ -1166,6 +1143,8 @@ async function editBatch(batchId) {
   if (!batch) return;
   
   const newQuantity = prompt(t('enterNewQuantity'), batch.quantity);
+  if (newQuantity === null) return; // User cancelled
+  
   const quantityNum = parseFloat(newQuantity);
   
   if (isNaN(quantityNum) || quantityNum < 0) {
@@ -1209,23 +1188,28 @@ function checkInventory(quantity) {
   quantity = parseFloat(quantity) || 0;
   
   const quantityElement = document.getElementById('infoTotalQuantity');
-  if (quantity <= 3) {
-    quantityElement.style.color = 'red';
-    quantityElement.style.fontWeight = 'bold';
-    
-    if (quantity === 0) {
-      showAlert(t('outOfStockWarning'), 'danger');
+  if (quantityElement) {
+    if (quantity <= 3) {
+      quantityElement.style.color = 'red';
+      quantityElement.style.fontWeight = 'bold';
+      
+      if (quantity === 0) {
+        showAlert(t('outOfStockWarning'), 'danger');
+      } else {
+        showAlert(t('lowStockWarning', {quantity}), 'warning');
+      }
     } else {
-      showAlert(t('lowStockWarning', {quantity}), 'warning');
+      quantityElement.style.color = '';
+      quantityElement.style.fontWeight = '';
     }
-  } else {
-    quantityElement.style.color = '';
-    quantityElement.style.fontWeight = '';
   }
 }
 
 // ================ وظائف مساعدة ================
 function showAlert(message, type = 'info') {
+  const alertsContainer = document.getElementById('alertsContainer');
+  if (!alertsContainer) return;
+  
   const alert = document.createElement('div');
   alert.className = `alert alert-${type}`;
   alert.innerHTML = `
@@ -1234,13 +1218,16 @@ function showAlert(message, type = 'info') {
       &times;
     </button>
   `;
-  document.getElementById('alertsContainer').appendChild(alert);
+  alertsContainer.appendChild(alert);
   setTimeout(() => alert.remove(), 5000);
 }
 
 function closeModal() {
-  document.getElementById('productModal').style.display = 'none';
-  document.getElementById('resultMessage').textContent = '';
+  const productModal = document.getElementById('productModal');
+  const resultMessage = document.getElementById('resultMessage');
+  
+  if (productModal) productModal.style.display = 'none';
+  if (resultMessage) resultMessage.textContent = '';
 }
 
 function deleteProduct() {
@@ -1259,8 +1246,29 @@ function deleteProduct() {
     });
 }
 
-// فحص جميع المنتجات عند تحميل الصفحة
-window.addEventListener('DOMContentLoaded', async () => {
+// ================ تهيئة التطبيق ================
+async function initializeApp() {
+  // تهيئة نظام الترجمة أولاً
+  await initI18n();
+  
+  // تحديث المحتوى المترجم
+  refreshTranslatedContent();
+  
+  // إضافة مستمع لتغير اللغة
+  const langSwitch = document.getElementById('langSwitch');
+  if (langSwitch) {
+    langSwitch.addEventListener('click', async () => {
+      const newLang = i18n.language === 'ar' ? 'fr' : 'ar';
+      await changeLanguage(newLang);
+    });
+  }
+  
+  // فحص المنتجات المنتهية الصلاحية
+  checkExpiredProducts();
+}
+
+// فحص المنتجات المنتهية الصلاحية
+async function checkExpiredProducts() {
   try {
     const snapshot = await database.ref('products').once('value');
     if (!snapshot.exists()) return;
@@ -1299,6 +1307,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   } catch (error) {
     console.error('Error checking products expiry:', error);
   }
+}
+
+// عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', async () => {
+  await initializeApp();
 });
 
 // إيقاف الماسح عند مغادرة الصفحة
