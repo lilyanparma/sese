@@ -495,7 +495,7 @@
   <div id="alertsContainer"></div>
 
   <script>
-    // تهيئة i18next للترجمة
+   // تهيئة i18next
     i18next
       .use(i18nextHttpBackend)
       .use(i18nextBrowserLanguageDetector)
@@ -505,13 +505,21 @@
         ns: ['translation'],
         defaultNS: 'translation',
         backend: {
-          loadPath: '/locales/{{lng}}/{{ns}}.json'
+          loadPath: 'locales/{{lng}}/{{ns}}.json'
+        },
+        detection: {
+          order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+          caches: ['localStorage', 'cookie'],
+          lookupQuerystring: 'lng',
+          lookupCookie: 'i18next',
+          lookupLocalStorage: 'i18nextLng',
+          convertDetectedLanguage: (lng) => lng === 'fr' ? 'fr' : 'ar'
         }
       }, function(err, t) {
-        // تهيئة الترجمة عند تحميل الصفحة
+        if (err) console.error('i18next initialization error:', err);
         updateContent();
       });
-
+    
     // تحديث المحتوى بناءً على اللغة المحددة
     function updateContent() {
       document.querySelectorAll('[data-i18n]').forEach(element => {
