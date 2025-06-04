@@ -511,18 +511,19 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
- i18next
-  .use(i18nextHttpBackend)              // تحميل ملفات الترجمة من السيرفر (من ملفات JSON)
-  .use(i18nextBrowserLanguageDetector) // اكتشاف لغة المتصفح تلقائياً
+i18next
+  .use(i18nextHttpBackend)
+  .use(i18nextBrowserLanguageDetector)
   .init({
     fallbackLng: 'ar',
-    debug: false,
+    debug: true, // مؤقتاً لرؤية تفاصيل التحميل
     ns: ['translation'],
     defaultNS: 'translation',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json'
+      loadPath: 'locales/{{lng}}/{{ns}}.json' // بدون / في البداية
     }
   }, function(err, t) {
+    if (err) return console.error(err);
     updateContent();
   });
 
