@@ -493,6 +493,7 @@
 
   <!-- منطقة التنبيهات -->
   <div id="alertsContainer"></div>
+
 <script>
 // تهيئة Firebase
 const firebaseConfig = {
@@ -510,7 +511,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-    // تهيئة i18next
+ // تهيئة i18next للترجمة
     i18next
       .use(i18nextHttpBackend)
       .use(i18nextBrowserLanguageDetector)
@@ -520,20 +521,13 @@ const database = firebase.database();
         ns: ['translation'],
         defaultNS: 'translation',
         backend: {
-          loadPath: 'locales/{{lng}}/{{ns}}.json'
-        },
-        detection: {
-          order: ['querystring', 'cookie', 'localStorage', 'navigator'],
-          caches: ['localStorage', 'cookie'],
-          lookupQuerystring: 'lng',
-          lookupCookie: 'i18next',
-          lookupLocalStorage: 'i18nextLng',
-          convertDetectedLanguage: (lng) => lng === 'fr' ? 'fr' : 'ar'
+          loadPath: '/locales/{{lng}}/{{ns}}.json'
         }
       }, function(err, t) {
-        if (err) console.error('i18next initialization error:', err);
+        // تهيئة الترجمة عند تحميل الصفحة
         updateContent();
       });
+
 
 // متغيرات النظام
 let currentProduct = null;
@@ -1190,6 +1184,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 // إيقاف الماسح عند مغادرة الصفحة
 window.addEventListener('beforeunload', stopScanner);
-  </script>
+ </script>
 </body>
 </html>
