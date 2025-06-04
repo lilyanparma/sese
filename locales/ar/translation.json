@@ -58,7 +58,7 @@
     "currency": "د.ج",
     "backToTop": "العودة لأعلى"
 },
-  "preparingScanner": "جاري تحضير الماسح...", {
+  "preparingScanner": "جاري تحضير الماسح..." {
   "scanningMessage": "جاري المسح... ضع الباركود أمام الكاميرا",
   "scannerError": "حدث خطأ في الماسح: {{error}}",
   "cameraError": "تعذر تشغيل الكاميرا: {{error}}",
