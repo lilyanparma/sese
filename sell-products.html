@@ -1048,9 +1048,6 @@
                 invoicePlaceholder: document.getElementById('invoicePlaceholder')
             };
             
-            // باقي الكود يبقى كما هو مع استبدال النصوص الثابتة بالترجمات
-            // مثلاً: showToast(i18next.t('messages.productFound'), 'success');
-            
             // 6. التحكم في شريط البحث
             elements.searchToggle.addEventListener('click', function() {
                 toggleSearch();
@@ -1141,13 +1138,35 @@
                         const productData = snapshot.val();
                         
                         if (productData) {
+                            // حساب الكمية الإجمالية من الدفعات
+                            let totalQuantity = 0;
+                            let earliestExpiry = null;
+                            
+                            if (productData.batches) {
+                                // تحويل الدفعات إلى مصفوفة وترتيبها حسب تاريخ الصلاحية (الأقرب أولاً)
+                                const batchesArray = Object.values(productData.batches);
+                                
+                                batchesArray.forEach(batch => {
+                                    totalQuantity += parseInt(batch.quantity) || 0;
+                                    
+                                    // تحديد أقرب تاريخ صلاحية
+                                    if (batch.expiryDate) {
+                                        const expiryDate = new Date(batch.expiryDate);
+                                        if (!earliestExpiry || expiryDate < earliestExpiry) {
+                                            earliestExpiry = expiryDate;
+                                        }
+                                    }
+                                });
+                            }
+                            
                             currentProduct = {
                                 barcode: barcode,
                                 name: productData.name,
                                 price: parseFloat(productData.price),
-                                quantity: parseInt(productData.quantity),
-                                expiryDate: productData.expiryDate,
-                                image: productData.image || 'https://via.placeholder.com/150'
+                                quantity: totalQuantity,
+                                expiryDate: earliestExpiry ? earliestExpiry.toISOString().split('T')[0] : null,
+                                image: productData.image || 'https://via.placeholder.com/150',
+                                batches: productData.batches || {}
                             };
                             
                             displayProduct(currentProduct);
@@ -1374,15 +1393,50 @@
                     };
                 }
                 
-                // تحديث المخزون في قاعدة البيانات
-                const newQuantity = currentProduct.quantity - 1;
+                // البحث عن الدفعة الأقدم (الأقرب للانتهاء)
+                let batchToUpdate = null;
+                let batchId = null;
                 
-                database.ref('products/' + currentProduct.barcode).update({
+                if (currentProduct.batches) {
+                    // تحويل الدفعات إلى مصفوفة وترتيبها حسب تاريخ الصلاحية (الأقرب أولاً)
+                    const batchesArray = Object.entries(currentProduct.batches).map(([id, batch]) => ({
+                        id,
+                        ...batch
+                    }));
+                    
+                    batchesArray.sort((a, b) => {
+                        const dateA = a.expiryDate ? new Date(a.expiryDate) : new Date(9999, 0, 1);
+                        const dateB = b.expiryDate ? new Date(b.expiryDate) : new Date(9999, 0, 1);
+                        return dateA - dateB;
+                    });
+                    
+                    // البحث عن أول دفعة بها كمية متاحة
+                    for (const batch of batchesArray) {
+                        if (batch.quantity > 0) {
+                            batchToUpdate = batch;
+                            batchId = batch.id;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!batchToUpdate) {
+                    showToast(i18next.t('errors.noAvailableBatches'), 'error');
+                    return;
+                }
+                
+                // تحديث كمية الدفعة في قاعدة البيانات
+                const newQuantity = batchToUpdate.quantity - 1;
+                
+                database.ref(`products/${currentProduct.barcode}/batches/${batchId}`).update({
                     quantity: newQuantity
                 })
                 .then(() => {
+                    // تحديث الكمية الإجمالية للمنتج
+                    const newTotalQuantity = currentProduct.quantity - 1;
+                    
                     // إنشاء الفاتورة
-                    const invoice = createInvoice(currentProduct, finalPrice, paymentMethod, discountInfo);
+                    const invoice = createInvoice(currentProduct, finalPrice, paymentMethod, discountInfo, batchToUpdate);
                     
                     // حفظ الفاتورة في قاعدة البيانات
                     saveInvoiceToDatabase(invoice);
@@ -1400,7 +1454,7 @@
             });
             
             // 12. وظيفة إنشاء الفاتورة
-            function createInvoice(product, finalPrice, paymentMethod, discountInfo = null) {
+            function createInvoice(product, finalPrice, paymentMethod, discountInfo = null, batchInfo = null) {
                 const now = new Date();
                 const invoiceId = 'INV-' + now.getFullYear() + (now.getMonth()+1).toString().padStart(2, '0') + 
                                   now.getDate().toString().padStart(2, '0') + '-' + invoiceCounter.toString().padStart(4, '0');
@@ -1410,11 +1464,16 @@
                     date: now.toISOString(),
                     pharmacy: pharmacyName,
                     product: product.name,
+                    barcode: product.barcode,
                     originalPrice: product.price,
                     finalPrice: finalPrice,
                     paymentMethod: paymentMethod,
                     discount: discountInfo,
-                    currency: i18next.t('general.currency')
+                    currency: i18next.t('general.currency'),
+                    batchInfo: batchInfo ? {
+                        batchNumber: batchInfo.batchNumber || batchInfo.id,
+                        expiryDate: batchInfo.expiryDate || null
+                    } : null
                 };
                 
                 invoiceCounter++;
@@ -1486,11 +1545,17 @@
                 try {
                     showToast(i18next.t('messages.processingReturn'), 'info');
                     
-                    // 1. تحديث المخزون
-                    const newQuantity = currentProduct.quantity + 1;
-                    await database.ref('products/' + currentProduct.barcode).update({
-                        quantity: newQuantity
-                    });
+                    // 1. إضافة دفعة جديدة للمنتج المرتجع
+                    const batchId = database.ref().child('batches').push().key;
+                    const newBatch = {
+                        batchNumber: `RTN-${new Date().toISOString().split('T')[0]}`,
+                        quantity: 1,
+                        expiryDate: currentProduct.expiryDate || null,
+                        addedDate: new Date().toISOString().split('T')[0],
+                        returnReason: returnReason
+                    };
+                    
+                    await database.ref(`products/${currentProduct.barcode}/batches/${batchId}`).set(newBatch);
                     
                     // 2. تسجيل عملية الإرجاع
                     const returnData = {
@@ -1499,7 +1564,8 @@
                         returnedAt: firebase.database.ServerValue.TIMESTAMP,
                         price: currentProduct.price,
                         reason: returnReason,
-                        processedBy: "User"
+                        processedBy: "User",
+                        batchId: batchId
                     };
                     
                     await database.ref('returns/').push(returnData);
