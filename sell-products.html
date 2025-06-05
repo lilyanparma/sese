@@ -1566,12 +1566,13 @@ async function processProductReturn() {
             lastSale = childSnapshot.val();
         });
         
-        if (!lastSale || !lastSale.batchInfo) {
+        // التحقق من وجود معلومات الدفعة
+        if (!lastSale || !lastSale.batchInfo || !lastSale.batchInfo.batchNumber) {
             showToast(i18next.t('errors.noBatchInfoForReturn'), 'error');
             return;
         }
         
-        // 2. تحديث كمية الدفعة الأصلية
+        // 2. الحصول على معلومات الدفعة الأصلية
         const batchRef = database.ref(`products/${currentProduct.barcode}/batches/${lastSale.batchInfo.batchNumber}`);
         const batchSnapshot = await batchRef.once('value');
         
@@ -1580,32 +1581,37 @@ async function processProductReturn() {
             return;
         }
         
+        // 3. تحديث كمية الدفعة الأصلية
         const currentQuantity = batchSnapshot.val().quantity || 0;
         await batchRef.update({
-            quantity: currentQuantity + 1
+            quantity: currentQuantity + 1,
+            lastReturn: {
+                date: new Date().toISOString(),
+                reason: returnReason
+            }
         });
         
-        // 3. تسجيل عملية الإرجاع مع ربطها بالبيع الأصلي
+        // 4. تسجيل عملية الإرجاع
         const returnData = {
             barcode: currentProduct.barcode,
             productName: currentProduct.name,
             returnedAt: firebase.database.ServerValue.TIMESTAMP,
-            price: lastSale.finalPrice,
+            originalPrice: lastSale.originalPrice,
+            returnedPrice: lastSale.finalPrice,
+            paymentMethod: lastSale.paymentMethod,
             reason: returnReason,
-            processedBy: "User",
+            processedBy: "System",
             originalSale: saleKey,
             originalBatch: lastSale.batchInfo.batchNumber,
-            originalPrice: lastSale.originalPrice,
-            finalPrice: lastSale.finalPrice,
-            paymentMethod: lastSale.paymentMethod
+            expiryDate: batchSnapshot.val().expiryDate || null
         };
         
         await database.ref('returns/').push(returnData);
         
-        // 4. عرض إشعار النجاح
+        // 5. عرض إشعار النجاح
         showReturnSuccess(currentProduct.name, lastSale.finalPrice);
         
-        // 5. إعادة تعيين النظام
+        // 6. إعادة تعيين النظام
         resetSystem();
         
     } catch (error) {
