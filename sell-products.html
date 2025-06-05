@@ -1567,13 +1567,14 @@ async function processProductReturn() {
         });
         
         // التحقق من وجود معلومات الدفعة
-        if (!lastSale || !lastSale.batchInfo || !lastSale.batchInfo.batchNumber) {
+        if (!lastSale?.batchInfo?.batchNumber) {
             showToast(i18next.t('errors.noBatchInfoForReturn'), 'error');
             return;
         }
         
         // 2. الحصول على معلومات الدفعة الأصلية
-        const batchRef = database.ref(`products/${currentProduct.barcode}/batches/${lastSale.batchInfo.batchNumber}`);
+        const batchPath = `products/${currentProduct.barcode}/batches/${lastSale.batchInfo.batchNumber}`;
+        const batchRef = database.ref(batchPath);
         const batchSnapshot = await batchRef.once('value');
         
         if (!batchSnapshot.exists()) {
@@ -1581,42 +1582,64 @@ async function processProductReturn() {
             return;
         }
         
-        // 3. تحديث كمية الدفعة الأصلية
-        const currentQuantity = batchSnapshot.val().quantity || 0;
+        // 3. التحقق من كمية الدفعة وتحديثها
+        const batchData = batchSnapshot.val();
+        const currentQuantity = parseInt(batchData.quantity) || 0;
+        
+        if (isNaN(currentQuantity)) {
+            throw new Error(i18next.t('errors.invalidQuantityValue'));
+        }
+        
+        const newQuantity = currentQuantity + 1;
+        
+        // التحقق من أن القيمة الجديدة صالحة
+        if (isNaN(newQuantity) || newQuantity < 0) {
+            throw new Error(i18next.t('errors.invalidNewQuantity'));
+        }
+        
+        // 4. تنفيذ التحديث
         await batchRef.update({
-            quantity: currentQuantity + 1,
+            quantity: newQuantity,
             lastReturn: {
                 date: new Date().toISOString(),
-                reason: returnReason
+                reason: returnReason,
+                processedBy: "System"
             }
         });
         
-        // 4. تسجيل عملية الإرجاع
+        // 5. تسجيل عملية الإرجاع
         const returnData = {
             barcode: currentProduct.barcode,
             productName: currentProduct.name,
             returnedAt: firebase.database.ServerValue.TIMESTAMP,
-            originalPrice: lastSale.originalPrice,
-            returnedPrice: lastSale.finalPrice,
-            paymentMethod: lastSale.paymentMethod,
+            originalPrice: parseFloat(lastSale.originalPrice) || 0,
+            returnedPrice: parseFloat(lastSale.finalPrice) || 0,
+            paymentMethod: lastSale.paymentMethod || 'cash',
             reason: returnReason,
             processedBy: "System",
             originalSale: saleKey,
             originalBatch: lastSale.batchInfo.batchNumber,
-            expiryDate: batchSnapshot.val().expiryDate || null
+            expiryDate: batchData.expiryDate || null,
+            batchPath: batchPath // لحفظ مسار الدفعة لأغراض التتبع
         };
         
         await database.ref('returns/').push(returnData);
         
-        // 5. عرض إشعار النجاح
+        // 6. عرض إشعار النجاح
         showReturnSuccess(currentProduct.name, lastSale.finalPrice);
         
-        // 6. إعادة تعيين النظام
+        // 7. إعادة تعيين النظام
         resetSystem();
         
     } catch (error) {
         console.error(i18next.t('errors.returnError'), error);
-        showToast(`${i18next.t('errors.returnFailed')}: ${error.message}`, 'error');
+        
+        // رسالة خطأ أكثر تفصيلاً
+        const errorMsg = error.message.includes('NaN') 
+            ? i18next.t('errors.nanErrorInUpdate')
+            : error.message;
+            
+        showToast(`${i18next.t('errors.returnFailed')}: ${errorMsg}`, 'error');
     }
 }
             
