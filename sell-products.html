@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -1517,70 +1518,101 @@
             }
             
             // 14. وظيفة إرجاع المنتج
-            elements.returnBtn.addEventListener('click', function() {
-                if (!currentProduct) {
-                    showToast(i18next.t('errors.noProductSelected'), 'warning');
-                    return;
-                }
-                
-                // عرض نافذة التأكيد
-                elements.returnConfirmText.textContent = i18next.t('return.confirmReturnText', {productName: currentProduct.name});
-                elements.returnReasonInput.value = '';
-                elements.returnConfirmModal.style.display = 'flex';
-                elements.returnReasonInput.focus();
-            });
-            
-            // تأكيد الإرجاع
-            elements.confirmReturnBtn.addEventListener('click', processProductReturn);
-            
-            // إلغاء الإرجاع
-            elements.cancelReturnBtn.addEventListener('click', function() {
-                elements.returnConfirmModal.style.display = 'none';
-            });
-            
-            async function processProductReturn() {
-                elements.returnConfirmModal.style.display = 'none';
-                const returnReason = elements.returnReasonInput.value.trim() || i18next.t('general.notSpecified');
-                
-                try {
-                    showToast(i18next.t('messages.processingReturn'), 'info');
-                    
-                    // 1. إضافة دفعة جديدة للمنتج المرتجع
-                    const batchId = database.ref().child('batches').push().key;
-                    const newBatch = {
-                        batchNumber: `RTN-${new Date().toISOString().split('T')[0]}`,
-                        quantity: 1,
-                        expiryDate: currentProduct.expiryDate || null,
-                        addedDate: new Date().toISOString().split('T')[0],
-                        returnReason: returnReason
-                    };
-                    
-                    await database.ref(`products/${currentProduct.barcode}/batches/${batchId}`).set(newBatch);
-                    
-                    // 2. تسجيل عملية الإرجاع
-                    const returnData = {
-                        barcode: currentProduct.barcode,
-                        productName: currentProduct.name,
-                        returnedAt: firebase.database.ServerValue.TIMESTAMP,
-                        price: currentProduct.price,
-                        reason: returnReason,
-                        processedBy: "User",
-                        batchId: batchId
-                    };
-                    
-                    await database.ref('returns/').push(returnData);
-                    
-                    // 3. عرض إشعار النجاح
-                    showReturnSuccess(currentProduct.name, currentProduct.price);
-                    
-                    // 4. إعادة تعيين النظام
-                    resetSystem();
-                    
-                } catch (error) {
-                    console.error(i18next.t('errors.returnError'), error);
-                    showToast(`${i18next.t('errors.returnFailed')}: ${error.message}`, 'error');
-                }
-            }
+// 14. وظيفة إرجاع المنتج
+elements.returnBtn.addEventListener('click', function() {
+    if (!currentProduct) {
+        showToast(i18next.t('errors.noProductSelected'), 'warning');
+        return;
+    }
+    
+    // عرض نافذة التأكيد
+    elements.returnConfirmText.textContent = i18next.t('return.confirmReturnText', {productName: currentProduct.name});
+    elements.returnReasonInput.value = '';
+    elements.returnConfirmModal.style.display = 'flex';
+    elements.returnReasonInput.focus();
+});
+
+// تأكيد الإرجاع
+elements.confirmReturnBtn.addEventListener('click', processProductReturn);
+
+// إلغاء الإرجاع
+elements.cancelReturnBtn.addEventListener('click', function() {
+    elements.returnConfirmModal.style.display = 'none';
+});
+
+async function processProductReturn() {
+    elements.returnConfirmModal.style.display = 'none';
+    const returnReason = elements.returnReasonInput.value.trim() || i18next.t('general.notSpecified');
+    
+    try {
+        showToast(i18next.t('messages.processingReturn'), 'info');
+        
+        // 1. البحث عن آخر عملية بيع لهذا المنتج
+        const salesSnapshot = await database.ref('invoices')
+            .orderByChild('barcode')
+            .equalTo(currentProduct.barcode)
+            .limitToLast(1)
+            .once('value');
+        
+        if (!salesSnapshot.exists()) {
+            showToast(i18next.t('errors.noSaleFoundForReturn'), 'error');
+            return;
+        }
+        
+        let lastSale = null;
+        let saleKey = null;
+        salesSnapshot.forEach((childSnapshot) => {
+            saleKey = childSnapshot.key;
+            lastSale = childSnapshot.val();
+        });
+        
+        if (!lastSale || !lastSale.batchInfo) {
+            showToast(i18next.t('errors.noBatchInfoForReturn'), 'error');
+            return;
+        }
+        
+        // 2. تحديث كمية الدفعة الأصلية
+        const batchRef = database.ref(`products/${currentProduct.barcode}/batches/${lastSale.batchInfo.batchNumber}`);
+        const batchSnapshot = await batchRef.once('value');
+        
+        if (!batchSnapshot.exists()) {
+            showToast(i18next.t('errors.originalBatchNotFound'), 'error');
+            return;
+        }
+        
+        const currentQuantity = batchSnapshot.val().quantity || 0;
+        await batchRef.update({
+            quantity: currentQuantity + 1
+        });
+        
+        // 3. تسجيل عملية الإرجاع مع ربطها بالبيع الأصلي
+        const returnData = {
+            barcode: currentProduct.barcode,
+            productName: currentProduct.name,
+            returnedAt: firebase.database.ServerValue.TIMESTAMP,
+            price: lastSale.finalPrice,
+            reason: returnReason,
+            processedBy: "User",
+            originalSale: saleKey,
+            originalBatch: lastSale.batchInfo.batchNumber,
+            originalPrice: lastSale.originalPrice,
+            finalPrice: lastSale.finalPrice,
+            paymentMethod: lastSale.paymentMethod
+        };
+        
+        await database.ref('returns/').push(returnData);
+        
+        // 4. عرض إشعار النجاح
+        showReturnSuccess(currentProduct.name, lastSale.finalPrice);
+        
+        // 5. إعادة تعيين النظام
+        resetSystem();
+        
+    } catch (error) {
+        console.error(i18next.t('errors.returnError'), error);
+        showToast(`${i18next.t('errors.returnFailed')}: ${error.message}`, 'error');
+    }
+}
             
             function showReturnSuccess(productName, productPrice) {
                 elements.returnSuccessText.textContent = i18next.t('return.successText', {
